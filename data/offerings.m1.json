@@ -1,0 +1,414 @@
+[
+  {
+    "id": "ktr-electrical-and-electronics-engineering",
+    "programme": "Electrical and Electronics Engineering",
+    "campus_code": "KTR",
+    "campus": "Kattankulathur",
+    "degree": "B.Tech",
+    "program_type": "Full Time",
+    "annual_fee": {
+      "value": 275000,
+      "unit": "INR per year",
+      "status": "verified",
+      "source_id": "S1",
+      "captured_on": "2026-10-26",
+      "locator": "Programs Offered table, Campus=KTR, Branch='Electrical and Electronics Engineering'"
+    },
+    "intake": {
+      "value": 240,
+      "unit": "seats",
+      "status": "verified",
+      "source_id": "S1",
+      "captured_on": "2026-10-26",
+      "locator": "Programs Offered table, Campus=KTR, Branch='Electrical and Electronics Engineering'"
+    },
+    "duration": {
+      "value": 4,
+      "unit": "years",
+      "status": "verified",
+      "source_id": "S1",
+      "captured_on": "2026-10-26",
+      "locator": "Programs Offered table, Campus=KTR, Branch='Electrical and Electronics Engineering'"
+    },
+    "department": {
+      "value": "Department of Electrical and Electronics Engineering",
+      "unit": "text",
+      "status": "verified",
+      "source_id": "S1",
+      "captured_on": "2026-10-26",
+      "locator": "Programs Offered table, Campus=KTR, Branch='Electrical and Electronics Engineering'"
+    },
+    "eligibility": {
+      "value": "Min 60% aggregate (3 subjects) in Physics + Maths + one of Chemistry / Biotechnology / Biology / Computer Science / IT / Informatics Practices / Engineering Graphics / Botany & Zoology; age 16y6m on 31 July",
+      "unit": "rule",
+      "status": "conflict",
+      "source_id": "S2",
+      "captured_on": "2026-10-26",
+      "locator": "Eligibility section, B.TECH / M.TECH Integrated - ELIGIBILITY CRITERIA 2026-2027",
+      "conflicts_with": {
+        "source_id": "S1",
+        "value": "Table text says 50% aggregate and cites SRMJEEE (UG) 2022"
+      }
+    }
+  },
+  {
+    "id": "rmp-electrical-and-electronics-engineering",
+    "programme": "Electrical and Electronics Engineering",
+    "campus_code": "RMP",
+    "campus": "Ramapuram",
+    "degree": "B.Tech",
+    "program_type": "Full Time",
+    "annual_fee": {
+      "value": 200000,
+      "unit": "INR per year",
+      "status": "verified",
+      "source_id": "S1",
+      "captured_on": "2026-10-26",
+      "locator": "Programs Offered table, Campus=RMP, Branch='Electrical and Electronics Engineering'"
+    },
+    "intake": {
+      "value": 30,
+      "unit": "seats",
+      "status": "verified",
+      "source_id": "S1",
+      "captured_on": "2026-10-26",
+      "locator": "Programs Offered table, Campus=RMP, Branch='Electrical and Electronics Engineering'"
+    },
+    "duration": {
+      "value": 4,
+      "unit": "years",
+      "status": "verified",
+      "source_id": "S1",
+      "captured_on": "2026-10-26",
+      "locator": "Programs Offered table, Campus=RMP, Branch='Electrical and Electronics Engineering'"
+    },
+    "department": {
+      "value": "Department of Electrical and Electronics Engineering",
+      "unit": "text",
+      "status": "verified",
+      "source_id": "S1",
+      "captured_on": "2026-10-26",
+      "locator": "Programs Offered table, Campus=RMP, Branch='Electrical and Electronics Engineering'"
+    },
+    "eligibility": {
+      "value": "Min 60% aggregate (3 subjects) in Physics + Maths + one of Chemistry / Biotechnology / Biology / Computer Science / IT / Informatics Practices / Engineering Graphics / Botany & Zoology; age 16y6m on 31 July",
+      "unit": "rule",
+      "status": "conflict",
+      "source_id": "S2",
+      "captured_on": "2026-10-26",
+      "locator": "Eligibility section, B.TECH / M.TECH Integrated - ELIGIBILITY CRITERIA 2026-2027",
+      "conflicts_with": {
+        "source_id": "S1",
+        "value": "Table text says 50% aggregate and cites SRMJEEE (UG) 2022"
+      }
+    }
+  },
+  {
+    "id": "trichy-electrical-and-electronics-engineering",
+    "programme": "Electrical and Electronics Engineering",
+    "campus_code": "Trichy",
+    "campus": "Tiruchirappalli",
+    "degree": "B.Tech",
+    "program_type": "Full Time",
+    "annual_fee": {
+      "value": 150000,
+      "unit": "INR per year",
+      "status": "verified",
+      "source_id": "S1",
+      "captured_on": "2026-10-26",
+      "locator": "Programs Offered table, Campus=Trichy, Branch='Electrical and Electronics Engineering'"
+    },
+    "intake": {
+      "value": 60,
+      "unit": "seats",
+      "status": "verified",
+      "source_id": "S1",
+      "captured_on": "2026-10-26",
+      "locator": "Programs Offered table, Campus=Trichy, Branch='Electrical and Electronics Engineering'"
+    },
+    "duration": {
+      "value": 4,
+      "unit": "years",
+      "status": "verified",
+      "source_id": "S1",
+      "captured_on": "2026-10-26",
+      "locator": "Programs Offered table, Campus=Trichy, Branch='Electrical and Electronics Engineering'"
+    },
+    "department": {
+      "value": "Electrical and Electronics Engineering",
+      "unit": "text",
+      "status": "verified",
+      "source_id": "S1",
+      "captured_on": "2026-10-26",
+      "locator": "Programs Offered table, Campus=Trichy, Branch='Electrical and Electronics Engineering'"
+    },
+    "eligibility": {
+      "value": "Min 60% aggregate (3 subjects) in Physics + Maths + one of Chemistry / Biotechnology / Biology / Computer Science / IT / Informatics Practices / Engineering Graphics / Botany & Zoology; age 16y6m on 31 July",
+      "unit": "rule",
+      "status": "verified",
+      "source_id": "S2",
+      "captured_on": "2026-10-26",
+      "locator": "Eligibility section, B.TECH / M.TECH Integrated - ELIGIBILITY CRITERIA 2026-2027"
+    }
+  },
+  {
+    "id": "ktr-computer-science-and-engineering",
+    "programme": "Computer Science and Engineering",
+    "campus_code": "KTR",
+    "campus": "Kattankulathur",
+    "degree": "B.Tech",
+    "program_type": "Full Time",
+    "annual_fee": {
+      "value": 475000,
+      "unit": "INR per year",
+      "status": "verified",
+      "source_id": "S1",
+      "captured_on": "2026-10-26",
+      "locator": "Programs Offered table, Campus=KTR, Branch='Computer Science and Engineering'"
+    },
+    "intake": {
+      "value": 1140,
+      "unit": "seats",
+      "status": "verified",
+      "source_id": "S1",
+      "captured_on": "2026-10-26",
+      "locator": "Programs Offered table, Campus=KTR, Branch='Computer Science and Engineering'"
+    },
+    "duration": {
+      "value": 4,
+      "unit": "years",
+      "status": "verified",
+      "source_id": "S1",
+      "captured_on": "2026-10-26",
+      "locator": "Programs Offered table, Campus=KTR, Branch='Computer Science and Engineering'"
+    },
+    "department": {
+      "value": "Department of Computing Technologies",
+      "unit": "text",
+      "status": "verified",
+      "source_id": "S1",
+      "captured_on": "2026-10-26",
+      "locator": "Programs Offered table, Campus=KTR, Branch='Computer Science and Engineering'"
+    },
+    "eligibility": {
+      "value": "Min 60% aggregate (3 subjects) in Physics + Maths + one of Chemistry / Biotechnology / Biology / Computer Science / IT / Informatics Practices / Engineering Graphics / Botany & Zoology; age 16y6m on 31 July",
+      "unit": "rule",
+      "status": "conflict",
+      "source_id": "S2",
+      "captured_on": "2026-10-26",
+      "locator": "Eligibility section, B.TECH / M.TECH Integrated - ELIGIBILITY CRITERIA 2026-2027",
+      "conflicts_with": {
+        "source_id": "S1",
+        "value": "Table text says 50% aggregate and cites SRMJEEE (UG) 2022"
+      }
+    }
+  },
+  {
+    "id": "rmp-computer-science-and-engineering",
+    "programme": "Computer Science and Engineering",
+    "campus_code": "RMP",
+    "campus": "Ramapuram",
+    "degree": "B.Tech",
+    "program_type": "Full Time",
+    "annual_fee": {
+      "value": 350000,
+      "unit": "INR per year",
+      "status": "verified",
+      "source_id": "S1",
+      "captured_on": "2026-10-26",
+      "locator": "Programs Offered table, Campus=RMP, Branch='Computer Science and Engineering'"
+    },
+    "intake": {
+      "value": 900,
+      "unit": "seats",
+      "status": "verified",
+      "source_id": "S1",
+      "captured_on": "2026-10-26",
+      "locator": "Programs Offered table, Campus=RMP, Branch='Computer Science and Engineering'"
+    },
+    "duration": {
+      "value": 4,
+      "unit": "years",
+      "status": "verified",
+      "source_id": "S1",
+      "captured_on": "2026-10-26",
+      "locator": "Programs Offered table, Campus=RMP, Branch='Computer Science and Engineering'"
+    },
+    "department": {
+      "value": "Department of Computer Science Engineering",
+      "unit": "text",
+      "status": "verified",
+      "source_id": "S1",
+      "captured_on": "2026-10-26",
+      "locator": "Programs Offered table, Campus=RMP, Branch='Computer Science and Engineering'"
+    },
+    "eligibility": {
+      "value": "Min 60% aggregate (3 subjects) in Physics + Maths + one of Chemistry / Biotechnology / Biology / Computer Science / IT / Informatics Practices / Engineering Graphics / Botany & Zoology; age 16y6m on 31 July",
+      "unit": "rule",
+      "status": "conflict",
+      "source_id": "S2",
+      "captured_on": "2026-10-26",
+      "locator": "Eligibility section, B.TECH / M.TECH Integrated - ELIGIBILITY CRITERIA 2026-2027",
+      "conflicts_with": {
+        "source_id": "S1",
+        "value": "Table text says 50% aggregate and cites SRMJEEE (UG) 2022"
+      }
+    }
+  },
+  {
+    "id": "ktr-automobile-engineering",
+    "programme": "Automobile Engineering",
+    "campus_code": "KTR",
+    "campus": "Kattankulathur",
+    "degree": "B.Tech",
+    "program_type": "Full Time",
+    "annual_fee": {
+      "value": 275000,
+      "unit": "INR per year",
+      "status": "verified",
+      "source_id": "S1",
+      "captured_on": "2026-10-26",
+      "locator": "Programs Offered table, Campus=KTR, Branch='Automobile Engineering'"
+    },
+    "intake": {
+      "value": 60,
+      "unit": "seats",
+      "status": "verified",
+      "source_id": "S1",
+      "captured_on": "2026-10-26",
+      "locator": "Programs Offered table, Campus=KTR, Branch='Automobile Engineering'"
+    },
+    "duration": {
+      "value": 4,
+      "unit": "years",
+      "status": "verified",
+      "source_id": "S1",
+      "captured_on": "2026-10-26",
+      "locator": "Programs Offered table, Campus=KTR, Branch='Automobile Engineering'"
+    },
+    "department": {
+      "value": "Department of Automobile Engineering",
+      "unit": "text",
+      "status": "verified",
+      "source_id": "S1",
+      "captured_on": "2026-10-26",
+      "locator": "Programs Offered table, Campus=KTR, Branch='Automobile Engineering'"
+    },
+    "eligibility": {
+      "value": "Min 60% aggregate (3 subjects) in Physics + Maths + one of Chemistry / Biotechnology / Biology / Computer Science / IT / Informatics Practices / Engineering Graphics / Botany & Zoology; age 16y6m on 31 July",
+      "unit": "rule",
+      "status": "conflict",
+      "source_id": "S2",
+      "captured_on": "2026-10-26",
+      "locator": "Eligibility section, B.TECH / M.TECH Integrated - ELIGIBILITY CRITERIA 2026-2027",
+      "conflicts_with": {
+        "source_id": "S1",
+        "value": "Table text says 50% aggregate and cites SRMJEEE (UG) 2022"
+      }
+    }
+  },
+  {
+    "id": "ktr-mechatronics-engineering",
+    "programme": "Mechatronics Engineering",
+    "campus_code": "KTR",
+    "campus": "Kattankulathur",
+    "degree": "B.Tech",
+    "program_type": "Full Time",
+    "annual_fee": {
+      "value": 275000,
+      "unit": "INR per year",
+      "status": "verified",
+      "source_id": "S1",
+      "captured_on": "2026-10-26",
+      "locator": "Programs Offered table, Campus=KTR, Branch='Mechatronics Engineering'"
+    },
+    "intake": {
+      "value": 120,
+      "unit": "seats",
+      "status": "verified",
+      "source_id": "S1",
+      "captured_on": "2026-10-26",
+      "locator": "Programs Offered table, Campus=KTR, Branch='Mechatronics Engineering'"
+    },
+    "duration": {
+      "value": 4,
+      "unit": "years",
+      "status": "verified",
+      "source_id": "S1",
+      "captured_on": "2026-10-26",
+      "locator": "Programs Offered table, Campus=KTR, Branch='Mechatronics Engineering'"
+    },
+    "department": {
+      "value": "Department of Mechatronics Engineering",
+      "unit": "text",
+      "status": "verified",
+      "source_id": "S1",
+      "captured_on": "2026-10-26",
+      "locator": "Programs Offered table, Campus=KTR, Branch='Mechatronics Engineering'"
+    },
+    "eligibility": {
+      "value": "Min 60% aggregate (3 subjects) in Physics + Maths + one of Chemistry / Biotechnology / Biology / Computer Science / IT / Informatics Practices / Engineering Graphics / Botany & Zoology; age 16y6m on 31 July",
+      "unit": "rule",
+      "status": "conflict",
+      "source_id": "S2",
+      "captured_on": "2026-10-26",
+      "locator": "Eligibility section, B.TECH / M.TECH Integrated - ELIGIBILITY CRITERIA 2026-2027",
+      "conflicts_with": {
+        "source_id": "S1",
+        "value": "Table text says 50% aggregate and cites SRMJEEE (UG) 2022"
+      }
+    }
+  },
+  {
+    "id": "ktr-biotechnology",
+    "programme": "Biotechnology",
+    "campus_code": "KTR",
+    "campus": "Kattankulathur",
+    "degree": "B.Tech",
+    "program_type": "Full Time",
+    "annual_fee": {
+      "value": 275000,
+      "unit": "INR per year",
+      "status": "verified",
+      "source_id": "S1",
+      "captured_on": "2026-10-26",
+      "locator": "Programs Offered table, Campus=KTR, Branch='Biotechnology'"
+    },
+    "intake": {
+      "value": 300,
+      "unit": "seats",
+      "status": "verified",
+      "source_id": "S1",
+      "captured_on": "2026-10-26",
+      "locator": "Programs Offered table, Campus=KTR, Branch='Biotechnology'"
+    },
+    "duration": {
+      "value": 4,
+      "unit": "years",
+      "status": "verified",
+      "source_id": "S1",
+      "captured_on": "2026-10-26",
+      "locator": "Programs Offered table, Campus=KTR, Branch='Biotechnology'"
+    },
+    "department": {
+      "value": "Department of Biotechnology",
+      "unit": "text",
+      "status": "verified",
+      "source_id": "S1",
+      "captured_on": "2026-10-26",
+      "locator": "Programs Offered table, Campus=KTR, Branch='Biotechnology'"
+    },
+    "eligibility": {
+      "value": "Min 60% aggregate in PCM / PMB / PCB / PCBT or Z (Botany or Zoology); extra 4-credit Maths in year 1 if no Maths in 10+2",
+      "unit": "rule",
+      "status": "conflict",
+      "source_id": "S2",
+      "captured_on": "2026-10-26",
+      "locator": "Eligibility section, B.TECH / M.TECH Integrated - ELIGIBILITY CRITERIA 2026-2027",
+      "conflicts_with": {
+        "source_id": "S1",
+        "value": "Table text says 50% aggregate and cites SRMJEEE (UG) 2022"
+      }
+    }
+  }
+]

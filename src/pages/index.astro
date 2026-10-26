@@ -1,13 +1,139 @@
 ---
-// Stage M0 - Data foundation and verification only. No UI built yet.
+import Layout from '../layouts/Layout.astro';
+import VerifiedFact, { type FactData, type SourceData } from '../components/VerifiedFact.astro';
+import offeringsData from '../../data/offerings.m1.json';
+import sourcesData from '../../data/sources.json';
+
+interface OfferingItem {
+  id: string;
+  programme: string;
+  campus_code: string;
+  campus: string;
+  degree: string;
+  program_type: string;
+  annual_fee: FactData;
+  intake: FactData;
+  duration: FactData;
+  department: FactData | null;
+  eligibility: FactData;
+}
+
+const offerings = offeringsData as OfferingItem[];
+const sources = sourcesData as SourceData[];
+
+// Create sources map for fast lookup
+const sourcesMap = sources.reduce<Record<string, SourceData>>((acc, src) => {
+  acc[src.id] = src;
+  return acc;
+}, {});
+
+// Group offerings by programme in the exact display order
+const programmeOrder = [
+  'Electrical and Electronics Engineering',
+  'Computer Science and Engineering',
+  'Automobile Engineering',
+  'Mechatronics Engineering',
+  'Biotechnology'
+];
+
+const groupedOfferings = programmeOrder.map((progName) => ({
+  programme: progName,
+  items: offerings.filter((o) => o.programme === progName)
+}));
 ---
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <title>SRM Compass M0</title>
-  </head>
-  <body>
-    <h1>SRM Compass (M0)</h1>
-  </body>
-</html>
+
+<Layout
+  title="SRM Compass: M1 preview"
+  description="Find the SRM programme that fits you. Fees, seats and departments from SRM’s official table, each linked to its source."
+>
+  <section class="hero">
+    <div class="w">
+      <div>
+        <h1>Find the SRM programme that fits you.</h1>
+        <p class="lede">
+          Fees, seats and departments for B.Tech at six SRMIST campuses, copied from SRM’s official Programs Offered table on 26 October 2026. Every row links to its source.
+        </p>
+        <div class="btn-row">
+          <a class="btn p" href="#programmes">See programmes</a>
+          <a class="btn s" href="/apply">How applying works</a>
+        </div>
+      </div>
+      <div class="seal" role="img" aria-label="Verified 26 October 2026">
+        <b>✓</b>
+        <span>Verified<br />26 Oct 2026</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="blk" id="programmes">
+    <div class="w">
+      <h2>Eight offerings, checked against the source</h2>
+      <p class="lede">
+        This preview shows 8 of the 106 full-time B.Tech offerings in our dataset. Same programme, different campus: compare fee and seats within each group.
+      </p>
+
+      {groupedOfferings.map((group) => (
+        <section class="grp">
+          <h3>{group.programme}</h3>
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">Campus</th>
+                <th scope="col">Fee per year</th>
+                <th scope="col">Seats</th>
+                <th scope="col">Department</th>
+                <th scope="col">Source check</th>
+              </tr>
+            </thead>
+            <tbody>
+              {group.items.map((offering) => {
+                const feeSource = offering.annual_fee.source_id
+                  ? sourcesMap[offering.annual_fee.source_id]
+                  : undefined;
+                const sourceUrl = feeSource ? feeSource.url : '/evidence';
+
+                return (
+                  <tr>
+                    <td data-l="Campus">{offering.campus}</td>
+                    <td data-l="Fee per year" class="fee">
+                      <VerifiedFact
+                        fact={offering.annual_fee}
+                        format="currency"
+                        sourcesMap={sourcesMap}
+                      />
+                    </td>
+                    <td data-l="Seats">
+                      <VerifiedFact
+                        fact={offering.intake}
+                        format="number"
+                        sourcesMap={sourcesMap}
+                      />
+                    </td>
+                    <td data-l="Department">
+                      {offering.department?.value ?? 'Not assigned'}
+                    </td>
+                    <td data-l="Source check">
+                      <a
+                        class="stamp"
+                        href={sourceUrl}
+                        rel="noopener"
+                        target="_blank"
+                      >
+                        Verified {offering.annual_fee.captured_on}
+                      </a>
+                      {offering.eligibility.status === 'conflict' && (
+                        <a class="flag" href="/eligibility">
+                          Eligibility note
+                        </a>
+                      )}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </section>
+      ))}
+    </div>
+  </section>
+</Layout>

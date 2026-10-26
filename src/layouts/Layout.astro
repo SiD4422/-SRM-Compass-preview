@@ -1,0 +1,76 @@
+---
+import '../styles/tokens.css';
+
+export interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = 'SRM Compass: M1 preview',
+  description = 'Find the SRM programme that fits you. Fees, seats and departments from SRM’s official table, each linked to its source.'
+} = Astro.props;
+
+// Determine active pathname cleanly
+const pathname = Astro.url.pathname.replace(/\/$/, '') || '/';
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+  </head>
+  <body>
+    <a class="skip" href="#main-content">Skip to content</a>
+
+    <header class="top">
+      <div class="w">
+        <a class="brand" href="/">
+          <i>✦</i>SRM Compass
+        </a>
+        <nav aria-label="Main">
+          <a
+            href="/"
+            aria-current={pathname === '/' ? 'page' : undefined}
+          >
+            Programmes
+          </a>
+          <a
+            href="/eligibility"
+            aria-current={pathname === '/eligibility' ? 'page' : undefined}
+          >
+            Eligibility
+          </a>
+          <a
+            href="/apply"
+            aria-current={pathname === '/apply' ? 'page' : undefined}
+          >
+            How applying works
+          </a>
+          <a
+            href="/evidence"
+            aria-current={pathname === '/evidence' ? 'page' : undefined}
+          >
+            Sources
+          </a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main-content">
+      <slot />
+    </main>
+
+    <footer>
+      <div class="w">
+        <p>
+          Independent design entry for the SRM Next-Gen Website Design Challenge 2026. Not an official SRM site. Check each source link before relying on a number.
+        </p>
+      </div>
+    </footer>
+  </body>
+</html>

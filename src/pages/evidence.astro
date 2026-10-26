@@ -1,0 +1,60 @@
+---
+import Layout from '../layouts/Layout.astro';
+import sourcesData from '../../data/sources.json';
+
+interface SourceItem {
+  id: string;
+  title: string;
+  url: string;
+  kind?: string;
+  captured_on?: string;
+  note?: string;
+}
+
+const sources = sourcesData as SourceItem[];
+---
+
+<Layout
+  title="Sources & Evidence — SRM Compass"
+  description="Every number and requirement on SRM Compass is cited to its exact primary source."
+>
+  <section class="blk">
+    <div class="w">
+      <h1>Sources &amp; Evidence</h1>
+      <p class="lede">
+        Primary official sources audited and verified for the SRM Compass dataset. Every number, fee, seat count, and rule references one of these sources.
+      </p>
+
+      <ul class="src">
+        {sources.map((src) => (
+          <li id={src.id}>
+            <strong>[{src.id}]</strong>{' '}
+            <a href={src.url} rel="noopener" target="_blank">
+              {src.title}
+            </a>
+            {src.captured_on && (
+              <span style="color: var(--muted); margin-left: 6px;">
+                — Captured {src.captured_on}
+              </span>
+            )}
+            {src.kind && (
+              <span style="display: block; font-size: 0.9rem; color: var(--muted); margin-top: 4px;">
+                Type: <em>{src.kind}</em>
+              </span>
+            )}
+            {src.note && (
+              <span style="display: block; font-size: 0.95rem; margin-top: 4px;">
+                {src.note}
+              </span>
+            )}
+          </li>
+        ))}
+      </ul>
+
+      <div class="btn-row" style="margin-top: 36px;">
+        <a class="btn p" href="/#programmes">Back to programmes</a>
+        <a class="btn s" href="/eligibility">Check eligibility</a>
+      </div>
+    </div>
+  </section>
+</Layout>

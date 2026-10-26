@@ -1,0 +1,82 @@
+---
+export interface FactData {
+  value: number | string | null;
+  unit?: string;
+  status: 'verified' | 'conflict' | 'unverified' | string;
+  source_id?: string;
+  captured_on?: string;
+  locator?: string;
+  conflicts_with?: {
+    source_id: string;
+    value: unknown;
+  };
+}
+
+export interface SourceData {
+  id: string;
+  title: string;
+  url: string;
+  kind?: string;
+  captured_on?: string;
+  note?: string;
+}
+
+export interface Props {
+  fact: FactData;
+  sourcesMap?: Record<string, SourceData>;
+  format?: 'currency' | 'number' | 'text';
+  showDateLink?: boolean;
+  class?: string;
+}
+
+const {
+  fact,
+  sourcesMap = {},
+  format = 'text',
+  showDateLink = true,
+  class: className = ''
+} = Astro.props;
+
+let displayValue = '';
+if (fact.status === 'unverified') {
+  displayValue = 'Not confirmed';
+} else if (typeof fact.value === 'number') {
+  if (format === 'currency') {
+    displayValue = `₹${fact.value.toLocaleString('en-IN')}`;
+  } else {
+    displayValue = fact.value.toLocaleString('en-IN');
+  }
+} else {
+  displayValue = String(fact.value ?? '');
+}
+
+const source = fact.source_id ? sourcesMap[fact.source_id] : undefined;
+const conflictSource = fact.conflicts_with?.source_id ? sourcesMap[fact.conflicts_with.source_id] : undefined;
+---
+
+{fact.status === 'unverified' ? (
+  <span class:list={['fact-unverified', className]}>Not confirmed</span>
+) : fact.status === 'conflict' ? (
+  <span class:list={['fact-conflict', className]}>
+    <span class="fact-val">{displayValue}</span>
+    <span class="fact-conflict-note">
+      (disagrees with {conflictSource?.title ?? fact.conflicts_with?.source_id ?? 'alternate source'}: {String(fact.conflicts_with?.value ?? '')})
+    </span>
+  </span>
+) : (
+  <span class:list={['fact-verified', className]}>
+    <span class="fact-val">{displayValue}</span>
+    {showDateLink && fact.captured_on && source ? (
+      <span class="fact-meta">
+        <a
+          href={source.url}
+          rel="noopener"
+          target="_blank"
+          title={`Verified on ${fact.captured_on} via ${source.title}${fact.locator ? ` [${fact.locator}]` : ''}`}
+        >
+          <span class="sr-only">verified on </span>({fact.captured_on})
+        </a>
+      </span>
+    ) : null}
+  </span>
+)}

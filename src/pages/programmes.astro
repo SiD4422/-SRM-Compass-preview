@@ -1,0 +1,503 @@
+---
+import Layout from '../layouts/Layout.astro';
+import VerifiedFact, { type SourceData } from '../components/VerifiedFact.astro';
+import offeringsData from '../../data/offerings.json';
+import sourcesData from '../../data/sources.json';
+import tagsData from '../../data/tags.json';
+import synonymsData from '../../data/synonyms.json';
+import { type OfferingItem } from '../lib/filter';
+
+const offerings = offeringsData as OfferingItem[];
+const sources = sourcesData as SourceData[];
+const tagsByOffering = tagsData.by_offering as Record<string, string[]>;
+
+// Create sources map for fast lookup
+const sourcesMap = sources.reduce<Record<string, SourceData>>((acc, src) => {
+  acc[src.id] = src;
+  return acc;
+}, {});
+
+function formatDate(dateStr?: string): string {
+  if (!dateStr) return '';
+  const [year, month, day] = dateStr.split('-');
+  if (year && month && day) {
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const mIdx = parseInt(month, 10) - 1;
+    if (mIdx >= 0 && mIdx < 12) {
+      return `${parseInt(day, 10)} ${months[mIdx]} ${year}`;
+    }
+  }
+  return dateStr;
+}
+
+// Initial default sort: Programme A-Z, then campus code
+const initialOfferings = [...offerings].sort((a, b) => {
+  const diff = a.programme.localeCompare(b.programme);
+  if (diff !== 0) return diff;
+  return a.campus_code.localeCompare(b.campus_code);
+});
+
+const campusesList = [
+  { code: 'KTR', name: 'Kattankulathur' },
+  { code: 'RMP', name: 'Ramapuram' },
+  { code: 'Trichy', name: 'Tiruchirappalli' },
+  { code: 'NCR', name: 'Delhi-NCR' },
+  { code: 'VDP', name: 'Vadapalani' },
+  { code: 'BAB', name: 'Baburayanpettai' }
+];
+
+const feeSteps = [
+  { val: '100000', label: '₹1,00,000' },
+  { val: '150000', label: '₹1,50,000' },
+  { val: '200000', label: '₹2,00,000' },
+  { val: '250000', label: '₹2,50,000' },
+  { val: '300000', label: '₹3,00,000' },
+  { val: '400000', label: '₹4,00,000' }
+];
+---
+
+<Layout
+  title="All 106 SRM Programmes | SRM Compass"
+  description="Explore all 106 SRM B.Tech offerings with real fees, seats, departments, and eligibility notes. Filter by field, campus, and fee."
+>
+  <section class="blk">
+    <div class="w">
+      <h1>All 106 SRM Programmes</h1>
+      <p class="lede">
+        Search and filter across all 106 full-time B.Tech offerings at six SRMIST campuses. Every row links directly to SRM’s official Programs Offered table.
+      </p>
+
+      <!-- Filter Controls: Details element on phones, open by default -->
+      <details class="mobile-filters" id="filters-details" open>
+        <summary>Filters</summary>
+        <div class="filters-body">
+          <div class="filter-grid">
+            <!-- Search box with accessible label -->
+            <div class="ctrl-group">
+              <label for="search-input" class="ctrl-label">Search programmes</label>
+              <div class="search-input-wrap">
+                <input
+                  type="search"
+                  id="search-input"
+                  name="q"
+                  placeholder="e.g. cse, artificial intelligence, kattankulathur..."
+                  autocomplete="off"
+                />
+              </div>
+            </div>
+
+            <!-- 8 Tags Chips -->
+            <div class="ctrl-group">
+              <span id="chips-group-label" class="ctrl-label">Field of interest</span>
+              <div class="chips-row" role="group" aria-labelledby="chips-group-label">
+                {Object.entries(tagsData.labels).map(([tagKey, tagLabel]) => (
+                  <button
+                    type="button"
+                    class="chip"
+                    data-tag={tagKey}
+                    aria-pressed="false"
+                  >
+                    {tagLabel}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <!-- Campuses checkboxes -->
+            <div class="ctrl-group">
+              <span id="campus-group-label" class="ctrl-label">Campuses</span>
+              <div class="checkbox-grid" role="group" aria-labelledby="campus-group-label">
+                {campusesList.map((c) => (
+                  <label class="checkbox-label">
+                    <input type="checkbox" name="campus" value={c.code} />
+                    <span>{c.name} ({c.code})</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            <!-- Fee Range & Sort Dropdowns -->
+            <div class="filter-grid-3">
+              <div class="ctrl-group">
+                <label for="min-fee" class="ctrl-label">Minimum Fee</label>
+                <select id="min-fee" name="min" class="ctrl-select">
+                  <option value="">No minimum</option>
+                  {feeSteps.map((s) => (
+                    <option value={s.val}>{s.label}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div class="ctrl-group">
+                <label for="max-fee" class="ctrl-label">Maximum Fee</label>
+                <select id="max-fee" name="max" class="ctrl-select">
+                  <option value="">No maximum</option>
+                  {feeSteps.map((s) => (
+                    <option value={s.val}>{s.label}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div class="ctrl-group">
+                <label for="sort-order" class="ctrl-label">Sort By</label>
+                <select id="sort-order" name="sort" class="ctrl-select">
+                  <option value="prog-asc">Programme A–Z (default)</option>
+                  <option value="fee-asc">Fee (lowest first)</option>
+                  <option value="fee-desc">Fee (highest first)</option>
+                  <option value="seats-desc">Seats (highest first)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <!-- Status Bar & Live Region -->
+      <div class="status-bar">
+        <div id="live-count" class="live-count" role="status" aria-live="polite">
+          Showing 106 of 106 offerings
+        </div>
+      </div>
+
+      <!-- Empty State with Reset Button -->
+      <div id="empty-state" class="empty-state" hidden>
+        <p>No programmes match your current filters.</p>
+        <button type="button" id="reset-filters" class="btn p">
+          Reset all filters
+        </button>
+      </div>
+
+      <!-- Offerings Ledger Table (Renders all 106 in static HTML for JS-off) -->
+      <table id="programmes-table" class="ledger-table">
+        <thead>
+          <tr>
+            <th scope="col">Programme</th>
+            <th scope="col">Campus</th>
+            <th scope="col">Fee per year</th>
+            <th scope="col">Seats</th>
+            <th scope="col">Department</th>
+            <th scope="col">Source check</th>
+          </tr>
+        </thead>
+        <tbody id="offerings-body">
+          {initialOfferings.map((offering) => {
+            const feeSource = offering.annual_fee?.source_id
+              ? sourcesMap[offering.annual_fee.source_id]
+              : undefined;
+            const sourceUrl = feeSource ? feeSource.url : '/evidence';
+            const formattedDate = formatDate(offering.annual_fee?.captured_on) || '26 Oct 2026';
+            const rowTags = tagsByOffering[offering.id] || [];
+
+            return (
+              <tr
+                data-id={offering.id}
+                data-prog={offering.programme.toLowerCase()}
+                data-campus={offering.campus.toLowerCase()}
+                data-campus-code={offering.campus_code.toUpperCase()}
+                data-dept={(offering.department?.value ?? '').toLowerCase()}
+                data-fee={offering.annual_fee?.value ?? 0}
+                data-seats={offering.intake?.value ?? 0}
+                data-tags={rowTags.join(' ')}
+              >
+                <td data-l="Programme">
+                  <strong>{offering.programme}</strong>
+                  <span class="sr-only"> ({offering.degree})</span>
+                </td>
+                <td data-l="Campus">
+                  {offering.campus} <span class="badge-code">{offering.campus_code}</span>
+                </td>
+                <td data-l="Fee per year" class="fee">
+                  ₹{(offering.annual_fee?.value ?? 0).toLocaleString('en-IN')}
+                </td>
+                <td data-l="Seats">
+                  {(offering.intake?.value ?? 0).toLocaleString('en-IN')}
+                </td>
+                <td data-l="Department">
+                  {offering.department?.value ? offering.department.value : "Not confirmed in SRM's table"}
+                </td>
+                <td data-l="Source check">
+                  <a
+                    class="stamp"
+                    href={sourceUrl}
+                    rel="noopener"
+                    target="_blank"
+                  >
+                    Verified {formattedDate}
+                  </a>
+                  {offering.eligibility?.status === 'conflict' && (
+                    <a class="flag" href="/eligibility">
+                      Eligibility note
+                    </a>
+                  )}
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Client-side vanilla TypeScript engine: filters, searches and sorts in place -->
+  <script define:vars={{ synonymsData }}>
+    (function () {
+      const table = document.getElementById('programmes-table');
+      const tbody = document.getElementById('offerings-body');
+      if (!table || !tbody) return;
+
+      const rows = Array.from(tbody.querySelectorAll('tr'));
+      const searchInput = document.getElementById('search-input');
+      const chipButtons = Array.from(document.querySelectorAll('.chip[data-tag]'));
+      const campusCheckboxes = Array.from(document.querySelectorAll('input[name="campus"]'));
+      const minFeeSelect = document.getElementById('min-fee');
+      const maxFeeSelect = document.getElementById('max-fee');
+      const sortSelect = document.getElementById('sort-order');
+      const liveCount = document.getElementById('live-count');
+      const emptyState = document.getElementById('empty-state');
+      const resetBtn = document.getElementById('reset-filters');
+
+      const synonyms = synonymsData || {};
+      let activeTag = null;
+
+      function matchesWord(targetText, word) {
+        const w = word.toLowerCase().trim();
+        if (!w) return true;
+
+        if (synonyms[w]) {
+          for (let i = 0; i < synonyms[w].length; i++) {
+            if (targetText.includes(synonyms[w][i].toLowerCase())) {
+              return true;
+            }
+          }
+        }
+
+        if (w.length <= 3) {
+          const escaped = w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+          const regex = new RegExp('\\b' + escaped + '\\b', 'i');
+          if (regex.test(targetText)) return true;
+        } else {
+          if (targetText.includes(w)) return true;
+        }
+
+        return false;
+      }
+
+      function syncStateToURL() {
+        const params = new URLSearchParams();
+        const q = searchInput ? searchInput.value.trim() : '';
+        if (q) params.set('q', q);
+
+        if (activeTag) params.set('tag', activeTag);
+
+        const checked = campusCheckboxes.filter((cb) => cb.checked).map((cb) => cb.value);
+        if (checked.length > 0) {
+          params.set('campus', checked.join(','));
+        }
+
+        const min = minFeeSelect ? minFeeSelect.value : '';
+        if (min) params.set('min', min);
+
+        const max = maxFeeSelect ? maxFeeSelect.value : '';
+        if (max) params.set('max', max);
+
+        const sort = sortSelect ? sortSelect.value : 'prog-asc';
+        if (sort && sort !== 'prog-asc') params.set('sort', sort);
+
+        const qs = params.toString();
+        const newUrl = qs ? window.location.pathname + '?' + qs : window.location.pathname;
+        window.history.replaceState(null, '', newUrl);
+      }
+
+      function applyFiltersAndSort() {
+        const q = searchInput ? searchInput.value.toLowerCase().trim() : '';
+        const words = q ? q.split(/\s+/).filter(Boolean) : [];
+
+        const checkedCampuses = new Set(
+          campusCheckboxes.filter((cb) => cb.checked).map((cb) => cb.value.toUpperCase())
+        );
+        const hasCampuses = checkedCampuses.size > 0;
+
+        const minFee = minFeeSelect && minFeeSelect.value ? parseInt(minFeeSelect.value, 10) : null;
+        const maxFee = maxFeeSelect && maxFeeSelect.value ? parseInt(maxFeeSelect.value, 10) : null;
+        const sortOrder = sortSelect ? sortSelect.value : 'prog-asc';
+
+        let visibleCount = 0;
+
+        rows.forEach((row) => {
+          // 1. Tag filter
+          if (activeTag) {
+            const rowTags = (row.getAttribute('data-tags') || '').split(' ');
+            if (!rowTags.includes(activeTag)) {
+              row.hidden = true;
+              return;
+            }
+          }
+
+          // 2. Campus filter
+          if (hasCampuses) {
+            const rowCampus = (row.getAttribute('data-campus-code') || '').toUpperCase();
+            if (!checkedCampuses.has(rowCampus)) {
+              row.hidden = true;
+              return;
+            }
+          }
+
+          // 3. Fee bounds
+          const fee = parseInt(row.getAttribute('data-fee') || '0', 10);
+          if (minFee !== null && fee < minFee) {
+            row.hidden = true;
+            return;
+          }
+          if (maxFee !== null && fee > maxFee) {
+            row.hidden = true;
+            return;
+          }
+
+          // 4. Search query
+          if (words.length > 0) {
+            const prog = row.getAttribute('data-prog') || '';
+            const campus = row.getAttribute('data-campus') || '';
+            const campusCode = row.getAttribute('data-campus-code') || '';
+            const dept = row.getAttribute('data-dept') || '';
+            const targetText = (prog + ' ' + campus + ' ' + campusCode + ' ' + dept).toLowerCase();
+
+            let allMatch = true;
+            for (let i = 0; i < words.length; i++) {
+              if (!matchesWord(targetText, words[i])) {
+                allMatch = false;
+                break;
+              }
+            }
+
+            if (!allMatch) {
+              row.hidden = true;
+              return;
+            }
+          }
+
+          row.hidden = false;
+          visibleCount++;
+        });
+
+        // Sort visible rows
+        const visibleRows = rows.filter((r) => !r.hidden);
+        visibleRows.sort((a, b) => {
+          const feeA = parseInt(a.getAttribute('data-fee') || '0', 10);
+          const feeB = parseInt(b.getAttribute('data-fee') || '0', 10);
+          const seatsA = parseInt(a.getAttribute('data-seats') || '0', 10);
+          const seatsB = parseInt(b.getAttribute('data-seats') || '0', 10);
+          const progA = a.getAttribute('data-prog') || '';
+          const progB = b.getAttribute('data-prog') || '';
+          const codeA = a.getAttribute('data-campus-code') || '';
+          const codeB = b.getAttribute('data-campus-code') || '';
+
+          switch (sortOrder) {
+            case 'fee-asc':
+              return feeA - feeB || progA.localeCompare(progB);
+            case 'fee-desc':
+              return feeB - feeA || progA.localeCompare(progB);
+            case 'seats-desc':
+              return seatsB - seatsA || progA.localeCompare(progB);
+            case 'prog-asc':
+            default:
+              return progA.localeCompare(progB) || codeA.localeCompare(codeB);
+          }
+        });
+
+        const frag = document.createDocumentFragment();
+        visibleRows.forEach((r) => frag.appendChild(r));
+        tbody.appendChild(frag);
+
+        if (liveCount) {
+          liveCount.textContent = `${visibleCount} of ${rows.length} offerings`;
+        }
+
+        if (visibleCount === 0) {
+          table.hidden = true;
+          if (emptyState) emptyState.hidden = false;
+        } else {
+          table.hidden = false;
+          if (emptyState) emptyState.hidden = true;
+        }
+
+        syncStateToURL();
+      }
+
+      function loadStateFromURL() {
+        const params = new URLSearchParams(window.location.search);
+        const q = params.get('q');
+        if (q && searchInput) searchInput.value = q;
+
+        const tag = params.get('tag');
+        if (tag) {
+          activeTag = tag;
+          chipButtons.forEach((btn) => {
+            btn.setAttribute('aria-pressed', btn.getAttribute('data-tag') === tag ? 'true' : 'false');
+          });
+        }
+
+        const campusParam = params.get('campus');
+        if (campusParam) {
+          const selected = new Set(campusParam.split(',').map((c) => c.trim().toUpperCase()));
+          campusCheckboxes.forEach((cb) => {
+            cb.checked = selected.has(cb.value.toUpperCase());
+          });
+        }
+
+        const min = params.get('min');
+        if (min && minFeeSelect) minFeeSelect.value = min;
+
+        const max = params.get('max');
+        if (max && maxFeeSelect) maxFeeSelect.value = max;
+
+        const sort = params.get('sort');
+        if (sort && sortSelect) sortSelect.value = sort;
+      }
+
+      // Event Listeners
+      if (searchInput) {
+        searchInput.addEventListener('input', applyFiltersAndSort);
+      }
+
+      chipButtons.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const tag = btn.getAttribute('data-tag');
+          if (activeTag === tag) {
+            activeTag = null;
+            btn.setAttribute('aria-pressed', 'false');
+          } else {
+            activeTag = tag;
+            chipButtons.forEach((b) => b.setAttribute('aria-pressed', 'false'));
+            btn.setAttribute('aria-pressed', 'true');
+          }
+          applyFiltersAndSort();
+        });
+      });
+
+      campusCheckboxes.forEach((cb) => {
+        cb.addEventListener('change', applyFiltersAndSort);
+      });
+
+      if (minFeeSelect) minFeeSelect.addEventListener('change', applyFiltersAndSort);
+      if (maxFeeSelect) maxFeeSelect.addEventListener('change', applyFiltersAndSort);
+      if (sortSelect) sortSelect.addEventListener('change', applyFiltersAndSort);
+
+      if (resetBtn) {
+        resetBtn.addEventListener('click', () => {
+          if (searchInput) searchInput.value = '';
+          activeTag = null;
+          chipButtons.forEach((b) => b.setAttribute('aria-pressed', 'false'));
+          campusCheckboxes.forEach((cb) => (cb.checked = false));
+          if (minFeeSelect) minFeeSelect.value = '';
+          if (maxFeeSelect) maxFeeSelect.value = '';
+          if (sortSelect) sortSelect.value = 'prog-asc';
+          applyFiltersAndSort();
+        });
+      }
+
+      // Initialize state from URL on page load
+      loadStateFromURL();
+      applyFiltersAndSort();
+    })();
+  </script>
+</Layout>

@@ -3,6 +3,7 @@ import Layout from '../layouts/Layout.astro';
 import VerifiedFact, { type FactData, type SourceData } from '../components/VerifiedFact.astro';
 import offeringsData from '../../data/offerings.m1.json';
 import sourcesData from '../../data/sources.json';
+import tagsData from '../../data/tags.json';
 
 interface OfferingItem {
   id: string;
@@ -66,8 +67,34 @@ const groupedOfferings = programmeOrder.map((progName) => ({
         <p class="lede">
           Fees, seats and departments for B.Tech at six SRMIST campuses, copied from SRM’s official Programs Offered table on 26 Oct 2026. Every row links to its source.
         </p>
+
+        <form action="/programmes" method="get" role="search" class="search-form">
+          <label for="home-search" class="sr-only">Search programmes, campuses, or departments</label>
+          <div class="search-input-wrap">
+            <input
+              type="search"
+              id="home-search"
+              name="q"
+              placeholder="Search by programme, campus, or keyword (e.g. CSE, AI, KTR)..."
+              required
+            />
+            <button type="submit" class="btn p">Search</button>
+          </div>
+        </form>
+
+        <div class="quick-tags">
+          <span class="quick-tags-label">Explore by field:</span>
+          <div class="chips-row">
+            {Object.entries(tagsData.labels).map(([tagKey, tagLabel]) => (
+              <a class="chip-link" href={`/programmes?tag=${tagKey}`}>
+                {tagLabel}
+              </a>
+            ))}
+          </div>
+        </div>
+
         <div class="btn-row">
-          <a class="btn p" href="#programmes">See programmes</a>
+          <a class="btn p" href="/programmes">Browse all 106 programmes</a>
           <a class="btn s" href="/apply">How applying works</a>
         </div>
       </div>

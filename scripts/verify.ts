@@ -75,6 +75,8 @@ export function verifyData(offerings: unknown[], sources: unknown[]): Verificati
     };
   }
 
+  const seenIds = new Set<string>();
+
   for (const item of offerings) {
     if (!item || typeof item !== 'object') {
       errors.push({ id: 'UNKNOWN', field: 'offering', message: 'Offering entry must be an object' });
@@ -84,21 +86,64 @@ export function verifyData(offerings: unknown[], sources: unknown[]): Verificati
     const offering = item as Partial<Offering>;
     const id = typeof offering.id === 'string' && offering.id.trim() !== '' ? offering.id : 'UNKNOWN_ID';
 
-    // Rule 5: a department is null
-    if (offering.department === null || (typeof offering.department === 'object' && offering.department !== null && offering.department.value === null)) {
+    // Check for duplicate ids
+    if (seenIds.has(id)) {
       errors.push({
         id,
-        field: 'department',
-        message: 'Department is null'
+        field: 'id',
+        message: `Duplicate offering id: '${id}'`
       });
+    } else {
+      seenIds.add(id);
+    }
+
+    // Rule 5: a null department is allowed only if status is 'unverified' and a note exists
+    const dept = offering.department;
+    const isDeptNull = dept === null || (typeof dept === 'object' && dept !== null && (dept.value === null || dept.value === undefined));
+
+    if (isDeptNull) {
+      const isFactObj = typeof dept === 'object' && dept !== null;
+      const hasUnverifiedStatus = isFactObj && dept.status === 'unverified';
+      const hasNote = isFactObj && typeof (dept as { note?: string }).note === 'string' && ((dept as { note?: string }).note || '').trim() !== '';
+
+      if (!hasUnverifiedStatus || !hasNote) {
+        errors.push({
+          id,
+          field: 'department',
+          message: 'Null department is allowed only if status is unverified and a note exists'
+        });
+      }
     }
 
     // Inspect each fact field
     for (const factField of FACT_FIELDS) {
       const fact = offering[factField] as Partial<Fact> | null | undefined;
 
-      // If department is null, it was already recorded above
-      if (factField === 'department' && (fact === null || (fact && fact.value === null))) {
+      // If department is null:
+      if (factField === 'department' && isDeptNull) {
+        if (typeof fact === 'object' && fact !== null) {
+          if (!fact.source_id || typeof fact.source_id !== 'string' || fact.source_id.trim() === '') {
+            errors.push({
+              id,
+              field: 'department',
+              message: "Fact 'department' has no source_id"
+            });
+          }
+          if (!fact.captured_on || typeof fact.captured_on !== 'string' || fact.captured_on.trim() === '') {
+            errors.push({
+              id,
+              field: 'department',
+              message: "Fact 'department' has no captured_on"
+            });
+          }
+          if (fact.source_id && !validSourceIds.has(fact.source_id)) {
+            errors.push({
+              id,
+              field: 'department',
+              message: `Fact 'department' references unknown source_id '${fact.source_id}' not in sources.json`
+            });
+          }
+        }
         continue;
       }
 
@@ -199,29 +244,14 @@ export function verifyData(offerings: unknown[], sources: unknown[]): Verificati
  */
 export function runCli(customOfferingsPath?: string, customSourcesPath?: string): number {
   const baseDir = process.cwd();
-  const offeringsPath = customOfferingsPath ?? path.resolve(baseDir, 'data', 'offerings.m1.json');
   const sourcesPath = customSourcesPath ?? path.resolve(baseDir, 'data', 'sources.json');
-
-  if (!fs.existsSync(offeringsPath)) {
-    console.error(`[VERIFY ERROR] Offerings file not found: ${offeringsPath}`);
-    return 1;
-  }
 
   if (!fs.existsSync(sourcesPath)) {
     console.error(`[VERIFY ERROR] Sources file not found: ${sourcesPath}`);
     return 1;
   }
 
-  let offerings: unknown[];
   let sources: unknown[];
-
-  try {
-    offerings = JSON.parse(fs.readFileSync(offeringsPath, 'utf-8'));
-  } catch (e) {
-    console.error(`[VERIFY ERROR] Failed to parse offerings JSON at ${offeringsPath}:`, e);
-    return 1;
-  }
-
   try {
     sources = JSON.parse(fs.readFileSync(sourcesPath, 'utf-8'));
   } catch (e) {
@@ -229,19 +259,44 @@ export function runCli(customOfferingsPath?: string, customSourcesPath?: string)
     return 1;
   }
 
-  const result = verifyData(offerings, sources);
+  const offeringsPaths = customOfferingsPath
+    ? [customOfferingsPath]
+    : [
+        path.resolve(baseDir, 'data', 'offerings.m1.json'),
+        path.resolve(baseDir, 'data', 'offerings.json')
+      ].filter((p) => fs.existsSync(p));
 
-  if (!result.valid) {
-    console.error(`\n❌ VERIFICATION FAILED: Found ${result.errors.length} error(s):\n`);
-    for (const err of result.errors) {
-      console.error(`  - Offending ID: "${err.id}" | Offending Field: "${err.field}" | Reason: ${err.message}`);
-    }
-    console.error('');
+  if (offeringsPaths.length === 0) {
+    console.error(`[VERIFY ERROR] No offerings files found in ${path.resolve(baseDir, 'data')}`);
     return 1;
   }
 
-  console.log(`\n✅ VERIFICATION PASSED: All ${offerings.length} offerings verified successfully against ${sources.length} sources.`);
-  return 0;
+  let totalErrors = 0;
+  for (const offPath of offeringsPaths) {
+    let offerings: unknown[];
+    try {
+      offerings = JSON.parse(fs.readFileSync(offPath, 'utf-8'));
+    } catch (e) {
+      console.error(`[VERIFY ERROR] Failed to parse offerings JSON at ${offPath}:`, e);
+      return 1;
+    }
+
+    const result = verifyData(offerings, sources);
+    const relPath = path.relative(baseDir, offPath);
+
+    if (!result.valid) {
+      console.error(`\n❌ VERIFICATION FAILED for ${relPath}: Found ${result.errors.length} error(s):\n`);
+      for (const err of result.errors) {
+        console.error(`  - Offending ID: "${err.id}" | Offending Field: "${err.field}" | Reason: ${err.message}`);
+      }
+      console.error('');
+      totalErrors += result.errors.length;
+    } else {
+      console.log(`\n✅ VERIFICATION PASSED for ${relPath}: All ${offerings.length} offerings verified successfully against ${(sources as unknown[]).length} sources.`);
+    }
+  }
+
+  return totalErrors > 0 ? 1 : 0;
 }
 
 // Execute if run directly

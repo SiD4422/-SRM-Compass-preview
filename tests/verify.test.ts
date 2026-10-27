@@ -118,25 +118,71 @@ describe('M0 Data Verification Suite (scripts/verify.ts)', () => {
     expect(result.errors.some((e) => e.id === targetId && e.field === 'duration')).toBe(true);
   });
 
-  it('fails when department is null (null object or null value)', () => {
+  it('allows a null department only if status is unverified and a note exists', () => {
+    const offerings = cloneOfferings();
+    const targetId = 'ktr-biotechnology';
+    const target = offerings.find((o) => o.id === targetId)!;
+    target.department = {
+      value: null,
+      status: 'unverified',
+      note: 'Department not confirmed in official table',
+      source_id: 'S1',
+      captured_on: '2026-10-26'
+    };
+
+    const result = verifyData(offerings, realSources);
+    expect(result.valid).toBe(true);
+    expect(result.errors).toHaveLength(0);
+  });
+
+  it('fails when a null department has verified status or is missing a note', () => {
+    // Case 1: value is null, but status is verified
     const offerings1 = cloneOfferings();
     const targetId1 = 'ktr-biotechnology';
     const target1 = offerings1.find((o) => o.id === targetId1)!;
-    target1.department = null;
-
+    target1.department = {
+      value: null,
+      status: 'verified',
+      note: 'Some note',
+      source_id: 'S1',
+      captured_on: '2026-10-26'
+    };
     const result1 = verifyData(offerings1, realSources);
     expect(result1.valid).toBe(false);
     expect(result1.errors.some((e) => e.id === targetId1 && e.field === 'department')).toBe(true);
 
+    // Case 2: value is null, status is unverified, but note is missing or empty
     const offerings2 = cloneOfferings();
     const targetId2 = 'ktr-automobile-engineering';
     const target2 = offerings2.find((o) => o.id === targetId2)!;
-    // @ts-expect-error planting intentional null value
-    target2.department.value = null;
-
+    target2.department = {
+      value: null,
+      status: 'unverified',
+      source_id: 'S1',
+      captured_on: '2026-10-26'
+    };
     const result2 = verifyData(offerings2, realSources);
     expect(result2.valid).toBe(false);
     expect(result2.errors.some((e) => e.id === targetId2 && e.field === 'department')).toBe(true);
+
+    // Case 3: department is null directly without object wrapper
+    const offerings3 = cloneOfferings();
+    const targetId3 = 'ktr-mechatronics-engineering';
+    const target3 = offerings3.find((o) => o.id === targetId3)!;
+    target3.department = null;
+    const result3 = verifyData(offerings3, realSources);
+    expect(result3.valid).toBe(false);
+    expect(result3.errors.some((e) => e.id === targetId3 && e.field === 'department')).toBe(true);
+  });
+
+  it('fails when offerings contain duplicate ids', () => {
+    const offerings = cloneOfferings();
+    const dup = cloneOfferings()[0];
+    offerings.push(dup);
+
+    const result = verifyData(offerings, realSources);
+    expect(result.valid).toBe(false);
+    expect(result.errors.some((e) => e.id === dup.id && e.field === 'id')).toBe(true);
   });
 
   it('fails when status is not verified, conflict, or unverified', () => {
@@ -165,33 +211,37 @@ describe('M0 Data Verification Suite (scripts/verify.ts)', () => {
   });
 });
 
-describe('Data Hash Integrity Guard', () => {
-  it('asserts that data/offerings.m1.json matches stored cryptographic hash in src/data-hash.json', () => {
-    const rawOfferings = fs.readFileSync(path.resolve(__dirname, '../data/offerings.m1.json'));
-    const actualHash = crypto.createHash('sha256').update(rawOfferings).digest('hex');
-    const storedHashes = JSON.parse(
-      fs.readFileSync(path.resolve(__dirname, '../src/data-hash.json'), 'utf-8')
-    );
-    expect(actualHash).toBe(storedHashes['offerings.m1.json'].sha256);
+describe('Data File Integrity Suite (data/HASHES.json)', () => {
+  const dataDir = path.resolve(__dirname, '../data');
+  const hashesPath = path.resolve(dataDir, 'HASHES.json');
+
+  it('asserts that every data file matches its SHA-256 in data/HASHES.json', () => {
+    expect(fs.existsSync(hashesPath)).toBe(true);
+    const storedHashes: Record<string, string> = JSON.parse(fs.readFileSync(hashesPath, 'utf-8'));
+
+    const dataFiles = fs.readdirSync(dataDir).filter((f) => {
+      const fullPath = path.join(dataDir, f);
+      return f !== 'HASHES.json' && fs.statSync(fullPath).isFile();
+    });
+
+    expect(dataFiles.length).toBeGreaterThan(0);
+
+    for (const file of dataFiles) {
+      expect(storedHashes).toHaveProperty(file);
+      const content = fs.readFileSync(path.join(dataDir, file));
+      const actualHash = crypto.createHash('sha256').update(content).digest('hex');
+      expect(actualHash).toBe(storedHashes[file]);
+    }
   });
 
-  it('asserts that data/sources.json matches stored cryptographic hash in src/data-hash.json', () => {
-    const rawSources = fs.readFileSync(path.resolve(__dirname, '../data/sources.json'));
-    const actualHash = crypto.createHash('sha256').update(rawSources).digest('hex');
-    const storedHashes = JSON.parse(
-      fs.readFileSync(path.resolve(__dirname, '../src/data-hash.json'), 'utf-8')
-    );
-    expect(actualHash).toBe(storedHashes['sources.json'].sha256);
-  });
-
-  it('fails if any byte of offerings.m1.json is mutated without updating the stored hash', () => {
-    const rawOfferings = fs.readFileSync(path.resolve(__dirname, '../data/offerings.m1.json'), 'utf-8');
-    const mutated = rawOfferings.replace('"annual_fee"', '"fee"');
+  it('fails if any data file SHA-256 differs from data/HASHES.json', () => {
+    const storedHashes: Record<string, string> = JSON.parse(fs.readFileSync(hashesPath, 'utf-8'));
+    const targetFile = 'offerings.m1.json';
+    const content = fs.readFileSync(path.join(dataDir, targetFile), 'utf-8');
+    const mutated = content + ' ';
     const mutatedHash = crypto.createHash('sha256').update(mutated).digest('hex');
-    const storedHashes = JSON.parse(
-      fs.readFileSync(path.resolve(__dirname, '../src/data-hash.json'), 'utf-8')
-    );
-    expect(mutatedHash).not.toBe(storedHashes['offerings.m1.json'].sha256);
+
+    expect(mutatedHash).not.toBe(storedHashes[targetFile]);
   });
 });
 

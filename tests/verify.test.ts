@@ -29,6 +29,16 @@ describe('M0 Data Verification Suite (scripts/verify.ts)', () => {
     expect(result.errors).toHaveLength(0);
   });
 
+  it('asserts that pristine 106-offering dataset (data/offerings.json) passes verification with zero errors', () => {
+    const fullOfferingsPath = path.resolve(__dirname, '../data/offerings.json');
+    expect(fs.existsSync(fullOfferingsPath)).toBe(true);
+    const fullOfferings = JSON.parse(fs.readFileSync(fullOfferingsPath, 'utf-8'));
+    const result = verifyData(fullOfferings, realSources);
+    expect(result.valid).toBe(true);
+    expect(result.errors).toHaveLength(0);
+    expect(fullOfferings).toHaveLength(106);
+  });
+
   it('fails when a fact has no source_id', () => {
     const offerings = cloneOfferings();
     const targetId = 'ktr-electrical-and-electronics-engineering';
@@ -236,12 +246,15 @@ describe('Data File Integrity Suite (data/HASHES.json)', () => {
 
   it('fails if any data file SHA-256 differs from data/HASHES.json', () => {
     const storedHashes: Record<string, string> = JSON.parse(fs.readFileSync(hashesPath, 'utf-8'));
-    const targetFile = 'offerings.m1.json';
-    const content = fs.readFileSync(path.join(dataDir, targetFile), 'utf-8');
-    const mutated = content + ' ';
-    const mutatedHash = crypto.createHash('sha256').update(mutated).digest('hex');
+    const dataFiles = ['offerings.m1.json', 'offerings.json', 'sources.json'];
 
-    expect(mutatedHash).not.toBe(storedHashes[targetFile]);
+    for (const file of dataFiles) {
+      const content = fs.readFileSync(path.join(dataDir, file));
+      const mutated = Buffer.concat([content, Buffer.from(' ')]);
+      const mutatedHash = crypto.createHash('sha256').update(mutated).digest('hex');
+
+      expect(mutatedHash).not.toBe(storedHashes[file]);
+    }
   });
 });
 

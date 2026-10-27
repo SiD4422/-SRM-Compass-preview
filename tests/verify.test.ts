@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import fs from 'node:fs';
 import path from 'node:path';
+import crypto from 'node:crypto';
 import { verifyData, type Offering, type Source } from '../scripts/verify';
 
 // Load the pristine real data
@@ -163,3 +164,34 @@ describe('M0 Data Verification Suite (scripts/verify.ts)', () => {
     expect(result.errors.some((e) => e.id === targetId && e.field === 'eligibility')).toBe(true);
   });
 });
+
+describe('Data Hash Integrity Guard', () => {
+  it('asserts that data/offerings.m1.json matches stored cryptographic hash in src/data-hash.json', () => {
+    const rawOfferings = fs.readFileSync(path.resolve(__dirname, '../data/offerings.m1.json'));
+    const actualHash = crypto.createHash('sha256').update(rawOfferings).digest('hex');
+    const storedHashes = JSON.parse(
+      fs.readFileSync(path.resolve(__dirname, '../src/data-hash.json'), 'utf-8')
+    );
+    expect(actualHash).toBe(storedHashes['offerings.m1.json'].sha256);
+  });
+
+  it('asserts that data/sources.json matches stored cryptographic hash in src/data-hash.json', () => {
+    const rawSources = fs.readFileSync(path.resolve(__dirname, '../data/sources.json'));
+    const actualHash = crypto.createHash('sha256').update(rawSources).digest('hex');
+    const storedHashes = JSON.parse(
+      fs.readFileSync(path.resolve(__dirname, '../src/data-hash.json'), 'utf-8')
+    );
+    expect(actualHash).toBe(storedHashes['sources.json'].sha256);
+  });
+
+  it('fails if any byte of offerings.m1.json is mutated without updating the stored hash', () => {
+    const rawOfferings = fs.readFileSync(path.resolve(__dirname, '../data/offerings.m1.json'), 'utf-8');
+    const mutated = rawOfferings.replace('"annual_fee"', '"fee"');
+    const mutatedHash = crypto.createHash('sha256').update(mutated).digest('hex');
+    const storedHashes = JSON.parse(
+      fs.readFileSync(path.resolve(__dirname, '../src/data-hash.json'), 'utf-8')
+    );
+    expect(mutatedHash).not.toBe(storedHashes['offerings.m1.json'].sha256);
+  });
+});
+

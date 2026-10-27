@@ -1,0 +1,12 @@
+{
+  "offerings.m1.json": {
+    "sha256": "b708c3db0db241e58caa98c1ba8da3d87c0fa7957ca6c6eec6eb7ff2d0f8b37d",
+    "md5": "45db558661e415c688d374f0f1cd6153",
+    "bytes": 14797
+  },
+  "sources.json": {
+    "sha256": "6265a5104aa11b7b554521df82c31ed6572d36fda5e82fbfe5e13510dc934147",
+    "md5": "33608b2255aef01326b9c353deb574af",
+    "bytes": 956
+  }
+}

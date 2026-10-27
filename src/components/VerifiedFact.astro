@@ -22,7 +22,7 @@ export interface SourceData {
 }
 
 export interface Props {
-  fact: FactData;
+  fact: FactData | null | undefined;
   sourcesMap?: Record<string, SourceData>;
   format?: 'currency' | 'number' | 'text';
   showDateLink?: boolean;
@@ -33,13 +33,26 @@ const {
   fact,
   sourcesMap = {},
   format = 'text',
-  showDateLink = true,
+  showDateLink = false,
   class: className = ''
 } = Astro.props;
 
+function formatDate(dateStr?: string): string {
+  if (!dateStr) return '';
+  const [year, month, day] = dateStr.split('-');
+  if (year && month && day) {
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const mIdx = parseInt(month, 10) - 1;
+    if (mIdx >= 0 && mIdx < 12) {
+      return `${parseInt(day, 10)} ${months[mIdx]} ${year}`;
+    }
+  }
+  return dateStr;
+}
+
 let displayValue = '';
-if (fact.status === 'unverified') {
-  displayValue = 'Not confirmed';
+if (!fact || fact.value === null || fact.status === 'unverified') {
+  displayValue = fact?.unit === 'department' ? "Not confirmed in SRM's table" : 'Not confirmed';
 } else if (typeof fact.value === 'number') {
   if (format === 'currency') {
     displayValue = `₹${fact.value.toLocaleString('en-IN')}`;
@@ -50,12 +63,12 @@ if (fact.status === 'unverified') {
   displayValue = String(fact.value ?? '');
 }
 
-const source = fact.source_id ? sourcesMap[fact.source_id] : undefined;
-const conflictSource = fact.conflicts_with?.source_id ? sourcesMap[fact.conflicts_with.source_id] : undefined;
+const source = fact?.source_id ? sourcesMap[fact.source_id] : undefined;
+const conflictSource = fact?.conflicts_with?.source_id ? sourcesMap[fact.conflicts_with.source_id] : undefined;
 ---
 
-{fact.status === 'unverified' ? (
-  <span class:list={['fact-unverified', className]}>Not confirmed</span>
+{!fact || fact.status === 'unverified' ? (
+  <span class:list={['fact-unverified', className]}>{displayValue}</span>
 ) : fact.status === 'conflict' ? (
   <span class:list={['fact-conflict', className]}>
     <span class="fact-val">{displayValue}</span>
@@ -72,9 +85,9 @@ const conflictSource = fact.conflicts_with?.source_id ? sourcesMap[fact.conflict
           href={source.url}
           rel="noopener"
           target="_blank"
-          title={`Verified on ${fact.captured_on} via ${source.title}${fact.locator ? ` [${fact.locator}]` : ''}`}
+          title={`Verified on ${formatDate(fact.captured_on)} via ${source.title}${fact.locator ? ` [${fact.locator}]` : ''}`}
         >
-          <span class="sr-only">verified on </span>({fact.captured_on})
+          <span class="sr-only">verified on </span>({formatDate(fact.captured_on)})
         </a>
       </span>
     ) : null}

@@ -27,6 +27,19 @@ const sourcesMap = sources.reduce<Record<string, SourceData>>((acc, src) => {
   return acc;
 }, {});
 
+function formatDate(dateStr?: string): string {
+  if (!dateStr) return '';
+  const [year, month, day] = dateStr.split('-');
+  if (year && month && day) {
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const mIdx = parseInt(month, 10) - 1;
+    if (mIdx >= 0 && mIdx < 12) {
+      return `${parseInt(day, 10)} ${months[mIdx]} ${year}`;
+    }
+  }
+  return dateStr;
+}
+
 // Group offerings by programme in the exact display order
 const programmeOrder = [
   'Electrical and Electronics Engineering',
@@ -43,7 +56,7 @@ const groupedOfferings = programmeOrder.map((progName) => ({
 ---
 
 <Layout
-  title="SRM Compass: M1 preview"
+  title="SRM Compass: find your SRM programme"
   description="Find the SRM programme that fits you. Fees, seats and departments from SRM’s official table, each linked to its source."
 >
   <section class="hero">
@@ -51,7 +64,7 @@ const groupedOfferings = programmeOrder.map((progName) => ({
       <div>
         <h1>Find the SRM programme that fits you.</h1>
         <p class="lede">
-          Fees, seats and departments for B.Tech at six SRMIST campuses, copied from SRM’s official Programs Offered table on 26 October 2026. Every row links to its source.
+          Fees, seats and departments for B.Tech at six SRMIST campuses, copied from SRM’s official Programs Offered table on 26 Oct 2026. Every row links to its source.
         </p>
         <div class="btn-row">
           <a class="btn p" href="#programmes">See programmes</a>
@@ -91,6 +104,7 @@ const groupedOfferings = programmeOrder.map((progName) => ({
                   ? sourcesMap[offering.annual_fee.source_id]
                   : undefined;
                 const sourceUrl = feeSource ? feeSource.url : '/evidence';
+                const formattedStampDate = formatDate(offering.annual_fee.captured_on) || '26 Oct 2026';
 
                 return (
                   <tr>
@@ -100,6 +114,7 @@ const groupedOfferings = programmeOrder.map((progName) => ({
                         fact={offering.annual_fee}
                         format="currency"
                         sourcesMap={sourcesMap}
+                        showDateLink={false}
                       />
                     </td>
                     <td data-l="Seats">
@@ -107,10 +122,11 @@ const groupedOfferings = programmeOrder.map((progName) => ({
                         fact={offering.intake}
                         format="number"
                         sourcesMap={sourcesMap}
+                        showDateLink={false}
                       />
                     </td>
                     <td data-l="Department">
-                      {offering.department?.value ?? 'Not assigned'}
+                      {offering.department?.value ? offering.department.value : "Not confirmed in SRM's table"}
                     </td>
                     <td data-l="Source check">
                       <a
@@ -119,7 +135,7 @@ const groupedOfferings = programmeOrder.map((progName) => ({
                         rel="noopener"
                         target="_blank"
                       >
-                        Verified {offering.annual_fee.captured_on}
+                        Verified {formattedStampDate}
                       </a>
                       {offering.eligibility.status === 'conflict' && (
                         <a class="flag" href="/eligibility">

@@ -1,6 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import sourcesData from '../../data/sources.json';
+import dataHashes from '../data-hash.json';
 
 interface SourceItem {
   id: string;
@@ -12,6 +13,19 @@ interface SourceItem {
 }
 
 const sources = sourcesData as SourceItem[];
+
+function formatDate(dateStr?: string): string {
+  if (!dateStr) return '';
+  const [year, month, day] = dateStr.split('-');
+  if (year && month && day) {
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const mIdx = parseInt(month, 10) - 1;
+    if (mIdx >= 0 && mIdx < 12) {
+      return `${parseInt(day, 10)} ${months[mIdx]} ${year}`;
+    }
+  }
+  return dateStr;
+}
 ---
 
 <Layout
@@ -34,7 +48,7 @@ const sources = sourcesData as SourceItem[];
             </a>
             {src.captured_on && (
               <span style="color: var(--muted); margin-left: 6px;">
-                — Captured {src.captured_on}
+                — Captured {formatDate(src.captured_on)}
               </span>
             )}
             {src.kind && (
@@ -50,6 +64,23 @@ const sources = sourcesData as SourceItem[];
           </li>
         ))}
       </ul>
+
+      <div class="card" style="margin-top: 36px;">
+        <h3>Dataset Integrity &amp; Hashes</h3>
+        <p style="font-size: 0.95rem; color: var(--muted); margin-bottom: 12px;">
+          Cryptographic SHA-256 hashes verifying that underlying JSON datasets have not been altered without audit trail:
+        </p>
+        <ul style="list-style: none; padding: 0; font-family: monospace; font-size: 0.85rem; display: flex; flex-direction: column; gap: 8px;">
+          <li>
+            <strong>data/offerings.m1.json:</strong><br />
+            <code>{dataHashes['offerings.m1.json'].sha256}</code>
+          </li>
+          <li>
+            <strong>data/sources.json:</strong><br />
+            <code>{dataHashes['sources.json'].sha256}</code>
+          </li>
+        </ul>
+      </div>
 
       <div class="btn-row" style="margin-top: 36px;">
         <a class="btn p" href="/#programmes">Back to programmes</a>

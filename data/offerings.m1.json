@@ -399,7 +399,8 @@
       "locator": "Programs Offered table, Campus=KTR, Branch='Biotechnology'"
     },
     "eligibility": {
-      "value": "Min 60% aggregate in PCM / PMB / PCB / PCBT or Z (Botany or Zoology); extra 4-credit Maths in year 1 if no Maths in 10+2",
+      "value": "Min 60% aggregate in PCM / PMB / PCB / PCB or Z (Botany or Zoology)",
+      "note": "The repeated PCB appears on SRM's page and may be a typo.",
       "unit": "rule",
       "status": "conflict",
       "source_id": "S2",

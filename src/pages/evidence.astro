@@ -66,18 +66,18 @@ function formatDate(dateStr?: string): string {
       </ul>
 
       <div class="card" style="margin-top: 36px;">
-        <h3>Dataset Integrity &amp; Hashes</h3>
+        <h2>Dataset Integrity &amp; Hashes</h2>
         <p style="font-size: 0.95rem; color: var(--muted); margin-bottom: 12px;">
           Cryptographic SHA-256 hashes verifying that underlying JSON datasets have not been altered without audit trail:
         </p>
         <ul style="list-style: none; padding: 0; font-family: monospace; font-size: 0.85rem; display: flex; flex-direction: column; gap: 8px;">
           <li>
             <strong>data/offerings.m1.json:</strong><br />
-            <code>{dataHashes['offerings.m1.json'].sha256}</code>
+            <code style="word-break: break-all; overflow-wrap: anywhere;">{dataHashes['offerings.m1.json'].sha256}</code>
           </li>
           <li>
             <strong>data/sources.json:</strong><br />
-            <code>{dataHashes['sources.json'].sha256}</code>
+            <code style="word-break: break-all; overflow-wrap: anywhere;">{dataHashes['sources.json'].sha256}</code>
           </li>
         </ul>
       </div>

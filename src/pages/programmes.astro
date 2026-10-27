@@ -355,15 +355,38 @@ const feeSteps = [
 
           // 4. Search query
           if (words.length > 0) {
-            const prog = row.getAttribute('data-prog') || '';
-            const campus = row.getAttribute('data-campus') || '';
-            const campusCode = row.getAttribute('data-campus-code') || '';
-            const dept = row.getAttribute('data-dept') || '';
-            const targetText = (prog + ' ' + campus + ' ' + campusCode + ' ' + dept).toLowerCase();
+            const prog = (row.getAttribute('data-prog') || '').toLowerCase();
+            const campus = (row.getAttribute('data-campus') || '').toLowerCase();
+            const campusCode = (row.getAttribute('data-campus-code') || '').toLowerCase();
+            const dept = (row.getAttribute('data-dept') || '').toLowerCase();
+            const progText = prog + ' ' + campus + ' ' + campusCode;
+            const fullText = progText + ' ' + dept;
 
             let allMatch = true;
             for (let i = 0; i < words.length; i++) {
-              if (!matchesWord(targetText, words[i])) {
+              const w = words[i];
+              let wordMatched = false;
+
+              if (synonyms[w]) {
+                for (let j = 0; j < synonyms[w].length; j++) {
+                  if (progText.includes(synonyms[w][j].toLowerCase())) {
+                    wordMatched = true;
+                    break;
+                  }
+                }
+              }
+
+              if (!wordMatched) {
+                if (w.length <= 3) {
+                  const escaped = w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                  const regex = new RegExp('\\b' + escaped + '\\b', 'i');
+                  if (regex.test(fullText)) wordMatched = true;
+                } else {
+                  if (fullText.includes(w)) wordMatched = true;
+                }
+              }
+
+              if (!wordMatched) {
                 allMatch = false;
                 break;
               }

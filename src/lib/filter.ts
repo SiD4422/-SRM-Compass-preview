@@ -94,11 +94,42 @@ export function matchesSearch(
   const words = query.toLowerCase().trim().split(/\s+/).filter(Boolean);
   if (words.length === 0) return true;
 
+  const progText = `${offering.programme} ${offering.campus} ${offering.campus_code}`.toLowerCase();
   const deptVal = offering.department?.value ?? '';
-  const targetText = `${offering.programme} ${offering.campus} ${offering.campus_code} ${deptVal}`.toLowerCase();
+  const fullText = `${progText} ${deptVal}`.toLowerCase();
 
   for (const word of words) {
-    if (!matchesWord(targetText, word, synonyms)) {
+    const w = word.toLowerCase().trim();
+    if (!w) continue;
+
+    let matched = false;
+
+    // 1. Synonym expansions match against programme title / campus
+    if (synonyms[w]) {
+      for (const phrase of synonyms[w]) {
+        if (progText.includes(phrase.toLowerCase())) {
+          matched = true;
+          break;
+        }
+      }
+    }
+
+    // 2. Direct word matches fullText (programme, campus, or department)
+    if (!matched) {
+      if (w.length <= 3) {
+        const escaped = w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        const regex = new RegExp(`\\b${escaped}\\b`, 'i');
+        if (regex.test(fullText)) {
+          matched = true;
+        }
+      } else {
+        if (fullText.includes(w)) {
+          matched = true;
+        }
+      }
+    }
+
+    if (!matched) {
       return false; // Logical AND across words
     }
   }

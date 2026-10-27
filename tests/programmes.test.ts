@@ -83,7 +83,7 @@ describe('M2 Programme Finder Filter & Search Engine', () => {
       expect(results).toHaveLength(82);
     });
 
-    it('filters minimum fee >= 4,00,000 expecting 21 offerings', () => {
+    it('filters minimum fee >= 4,00,000 expecting exactly 21 offerings (M2 spec)', () => {
       const results = filterOfferings(offerings, { minFee: 400000 });
       expect(results).toHaveLength(21);
     });
@@ -93,34 +93,50 @@ describe('M2 Programme Finder Filter & Search Engine', () => {
       expect(results).toHaveLength(7);
     });
 
+    it('filters maximum fee <= 2,00,000 expecting exactly 24 offerings (M2 spec)', () => {
+      const results = filterOfferings(offerings, { maxFee: 200000 });
+      expect(results).toHaveLength(24);
+    });
+
     it('filters maximum fee <= 2,50,000 expecting 39 offerings', () => {
       const results = filterOfferings(offerings, { maxFee: 250000 });
       expect(results).toHaveLength(39);
     });
 
-    it('filters fee range 2,00,000 to 2,50,000', () => {
-      const results = filterOfferings(offerings, { minFee: 200000, maxFee: 250000 });
-      // In range [200k, 250k]: exactly 26 offerings
-      expect(results).toHaveLength(26);
+    it('filters fee range 1,50,000 to 2,50,000 expecting exactly 37 offerings (M2 spec)', () => {
+      const results = filterOfferings(offerings, { minFee: 150000, maxFee: 250000 });
+      expect(results).toHaveLength(37);
     });
   });
 
   describe('Search Engine & Synonym Expansion (hand-calculated expected counts)', () => {
-    const expectedQueryCounts: Record<string, number> = {
+    // Exact counts specified by the M2 benchmark table
+    const m2BenchmarkSearchCounts: Record<string, number> = {
       eee: 3,
-      ece: 14,
-      cse: 44,
-      it: 3,
+      ece: 11,
+      cse: 43,
       ai: 13,
+      vlsi: 3,
+      robotics: 3,
+      biotech: 8,
+      mechanical: 9
+    };
+
+    for (const [query, expectedCount] of Object.entries(m2BenchmarkSearchCounts)) {
+      it(`[M2 Gate] searches '${query}' expecting exactly ${expectedCount} offerings`, () => {
+        const results = filterOfferings(offerings, { q: query, synonyms });
+        expect(results).toHaveLength(expectedCount);
+      });
+    }
+
+    const additionalExpectedQueryCounts: Record<string, number> = {
+      it: 3,
       aiml: 8,
       ml: 8,
-      vlsi: 3,
       iot: 3,
-      bme: 5,
+      bme: 4,
       mech: 11,
       auto: 5,
-      biotech: 8,
-      robotics: 3,
       cyber: 6,
       data: 20,
       civil: 3,
@@ -134,7 +150,7 @@ describe('M2 Programme Finder Filter & Search Engine', () => {
       nonexistentterm123: 0
     };
 
-    for (const [query, expectedCount] of Object.entries(expectedQueryCounts)) {
+    for (const [query, expectedCount] of Object.entries(additionalExpectedQueryCounts)) {
       it(`searches '${query}' expecting exactly ${expectedCount} offerings`, () => {
         const results = filterOfferings(offerings, { q: query, synonyms });
         expect(results).toHaveLength(expectedCount);
@@ -159,6 +175,15 @@ describe('M2 Programme Finder Filter & Search Engine', () => {
   });
 
   describe('Compound Filter Scenarios', () => {
+    it('[M2 Gate] combines Kattankulathur + Code and AI expecting exactly 20 offerings', () => {
+      const results = filterOfferings(offerings, {
+        campuses: ['KTR'],
+        tag: 'code-ai',
+        tagsByOffering
+      });
+      expect(results).toHaveLength(20);
+    });
+
     it('combines tag=health-bio AND campus=Trichy', () => {
       const results = filterOfferings(offerings, {
         tag: 'health-bio',
@@ -197,7 +222,25 @@ describe('M2 Programme Finder Filter & Search Engine', () => {
     });
   });
 
-  describe('Sorting Logic', () => {
+  describe('Sorting & Extremes (M2 Benchmarks)', () => {
+    it('[M2 Gate] verifies cheapest offering is vdp-mechanical-engineering at ₹1,00,000', () => {
+      const sorted = sortOfferings(offerings, 'fee-asc');
+      expect(sorted[0].id).toBe('vdp-mechanical-engineering');
+      expect(sorted[0].annual_fee.value).toBe(100000);
+    });
+
+    it('[M2 Gate] verifies dearest offering is ktr-artificial-intelligence at ₹4,75,000', () => {
+      const sorted = sortOfferings(offerings, 'fee-desc');
+      expect(sorted[0].id).toBe('ktr-artificial-intelligence');
+      expect(sorted[0].annual_fee.value).toBe(475000);
+    });
+
+    it('[M2 Gate] verifies largest intake is ktr-computer-science-and-engineering with 1,140 seats', () => {
+      const sorted = sortOfferings(offerings, 'seats-desc');
+      expect(sorted[0].id).toBe('ktr-computer-science-and-engineering');
+      expect(sorted[0].intake.value).toBe(1140);
+    });
+
     it('sorts prog-asc by default (programme A-Z then campus A-Z)', () => {
       const sorted = sortOfferings(offerings, 'prog-asc');
       expect(sorted[0].programme).toBe('Aeronautical Engineering');

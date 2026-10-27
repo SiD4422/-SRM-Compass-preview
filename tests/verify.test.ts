@@ -246,7 +246,7 @@ describe('Data File Integrity Suite (data/HASHES.json)', () => {
 
   it('fails if any data file SHA-256 differs from data/HASHES.json', () => {
     const storedHashes: Record<string, string> = JSON.parse(fs.readFileSync(hashesPath, 'utf-8'));
-    const dataFiles = ['offerings.m1.json', 'offerings.json', 'sources.json'];
+    const dataFiles = ['offerings.m1.json', 'offerings.json', 'sources.json', 'synonyms.json', 'tags.json'];
 
     for (const file of dataFiles) {
       const content = fs.readFileSync(path.join(dataDir, file));

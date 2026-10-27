@@ -1,0 +1,52 @@
+{
+ "eee": [
+  "electrical and electronics"
+ ],
+ "ece": [
+  "electronics and communication"
+ ],
+ "cse": [
+  "computer science"
+ ],
+ "it": [
+  "information technology"
+ ],
+ "ai": [
+  "artificial intelligence"
+ ],
+ "aiml": [
+  "artificial intelligence and machine learning"
+ ],
+ "ml": [
+  "machine learning"
+ ],
+ "vlsi": [
+  "vlsi"
+ ],
+ "iot": [
+  "internet of things"
+ ],
+ "bme": [
+  "biomedical"
+ ],
+ "mech": [
+  "mechanical"
+ ],
+ "auto": [
+  "automobile"
+ ],
+ "biotech": [
+  "biotechnology"
+ ],
+ "robotics": [
+  "robotics",
+  "automation"
+ ],
+ "cyber": [
+  "cyber security"
+ ],
+ "data": [
+  "data science",
+  "big data"
+ ]
+}

@@ -1,0 +1,428 @@
+{
+ "note": "Editorial grouping by SRM Compass from programme names. Not an SRM classification.",
+ "labels": {
+  "circuits-power": "Circuits and power",
+  "code-ai": "Code and AI",
+  "machines-vehicles": "Machines and vehicles",
+  "robots-automation": "Robots and automation",
+  "health-bio": "Health and bio",
+  "build-infrastructure": "Build and infrastructure",
+  "data-business": "Data and business",
+  "materials": "Materials and chemistry"
+ },
+ "rules": {
+  "circuits-power": [
+   "electrical and electronics",
+   "electronics and communication",
+   "electronics and instrumentation",
+   "electronics and computer",
+   "vlsi",
+   "electronics engineering",
+   "cyber physical"
+  ],
+  "code-ai": [
+   "computer science",
+   "artificial intelligence",
+   "information technology",
+   "software",
+   "cyber security",
+   "cloud",
+   "block chain",
+   "blockchain",
+   "gaming",
+   "internet of things",
+   "devsecops",
+   "mathematics and computing",
+   "data science",
+   "big data",
+   "electronics and computer",
+   "computer application"
+  ],
+  "machines-vehicles": [
+   "mechanical",
+   "automobile",
+   "aerospace",
+   "aeronautical",
+   "mechatronics"
+  ],
+  "robots-automation": [
+   "robotics",
+   "automation",
+   "mechatronics",
+   "cyber physical"
+  ],
+  "health-bio": [
+   "biomedical",
+   "biotechnology",
+   "genetic",
+   "regenerative",
+   "medical engineering"
+  ],
+  "build-infrastructure": [
+   "civil",
+   "construction"
+  ],
+  "data-business": [
+   "data science",
+   "big data",
+   "business system",
+   "mathematics and computing",
+   "data analytics"
+  ],
+  "materials": [
+   "chemical",
+   "nano"
+  ]
+ },
+ "by_offering": {
+  "ktr-aerospace-engineering": [
+   "machines-vehicles"
+  ],
+  "ktr-aeronautical-engineering": [
+   "machines-vehicles"
+  ],
+  "ktr-artificial-intelligence": [
+   "code-ai"
+  ],
+  "ktr-automation-and-robotics": [
+   "robots-automation"
+  ],
+  "ktr-automobile-engineering": [
+   "machines-vehicles"
+  ],
+  "ktr-automobile-engineering-w-s-in-automotive-electronics": [
+   "machines-vehicles"
+  ],
+  "ktr-biomedical-engineering-bme": [
+   "health-bio"
+  ],
+  "ktr-biotechnology": [
+   "health-bio"
+  ],
+  "ktr-biotechnology-computational-biology": [
+   "health-bio"
+  ],
+  "ktr-biotechnology-w-s-in-genetic-engineering": [
+   "health-bio"
+  ],
+  "ktr-biotechnology-w-s-in-regenerative-medicine": [
+   "health-bio"
+  ],
+  "ktr-chemical-engineering": [
+   "materials"
+  ],
+  "ktr-civil-engineering": [
+   "build-infrastructure"
+  ],
+  "ktr-civil-engineering-with-computer-applications": [
+   "code-ai",
+   "build-infrastructure"
+  ],
+  "ktr-computer-science-and-business-system-in-partnership-with-tcs": [
+   "code-ai",
+   "data-business"
+  ],
+  "ktr-computer-science-and-engineering": [
+   "code-ai"
+  ],
+  "ktr-computer-science-and-engineering-data-science": [
+   "code-ai",
+   "data-business"
+  ],
+  "ktr-computer-science-and-engineering-w-s-in-artificial-intelligence-and-machine-learning": [
+   "code-ai"
+  ],
+  "ktr-computer-science-and-engineering-w-s-in-big-data-analytics": [
+   "code-ai",
+   "data-business"
+  ],
+  "ktr-computer-science-and-engineering-w-s-in-block-chain-technology": [
+   "code-ai"
+  ],
+  "ktr-computer-science-and-engineering-w-s-in-cloud-computing": [
+   "code-ai"
+  ],
+  "ktr-computer-science-and-engineering-w-s-in-computer-networking": [
+   "code-ai"
+  ],
+  "ktr-computer-science-and-engineering-w-s-in-cyber-security": [
+   "code-ai"
+  ],
+  "ktr-computer-science-and-engineering-w-s-in-gaming-technology": [
+   "code-ai"
+  ],
+  "ktr-computer-science-and-engineering-w-s-in-information-technology": [
+   "code-ai"
+  ],
+  "ktr-computer-science-and-engineering-w-s-in-software-engineering": [
+   "code-ai"
+  ],
+  "ktr-electrical-and-electronics-engineering": [
+   "circuits-power"
+  ],
+  "ktr-electronics-and-communication-engineering": [
+   "circuits-power"
+  ],
+  "ktr-electronics-and-communication-engineering-w-s-in-cyber-physical-systems": [
+   "circuits-power",
+   "robots-automation"
+  ],
+  "ktr-electronic-and-communication-engineering-w-s-in-data-science": [
+   "code-ai",
+   "data-business"
+  ],
+  "ktr-electronics-and-computer-engineering": [
+   "circuits-power",
+   "code-ai"
+  ],
+  "ktr-electronics-and-instrumentation-engineering": [
+   "circuits-power"
+  ],
+  "ktr-electronics-engineering-vlsi-design-and-technology": [
+   "circuits-power"
+  ],
+  "ktr-mathematics-and-computing": [
+   "code-ai",
+   "data-business"
+  ],
+  "ktr-mechanical-engineering": [
+   "machines-vehicles"
+  ],
+  "ktr-mechanical-engineering-automation-and-robotics": [
+   "machines-vehicles",
+   "robots-automation"
+  ],
+  "ktr-mechanical-engineering-w-s-in-artificial-intelligence-and-machine-learning": [
+   "code-ai",
+   "machines-vehicles"
+  ],
+  "ktr-mechatronics-engineering": [
+   "machines-vehicles",
+   "robots-automation"
+  ],
+  "ktr-mechatronics-engineering-w-s-in-robotics": [
+   "machines-vehicles",
+   "robots-automation"
+  ],
+  "ktr-nanotechnology": [
+   "materials"
+  ],
+  "rmp-artificial-intelligence": [
+   "code-ai"
+  ],
+  "rmp-biomedical-engineering-bme": [
+   "health-bio"
+  ],
+  "rmp-biotechnology": [
+   "health-bio"
+  ],
+  "rmp-civil-engineering": [
+   "build-infrastructure"
+  ],
+  "rmp-computer-science-and-business-system-with-tcs-partnership": [
+   "code-ai",
+   "data-business"
+  ],
+  "rmp-computer-science-and-engineering": [
+   "code-ai"
+  ],
+  "rmp-computer-science-and-engineering-w-s-in-artificial-intelligence-and-machine-learning": [
+   "code-ai"
+  ],
+  "rmp-computer-science-and-engineering-w-s-big-data-analytics": [
+   "code-ai",
+   "data-business"
+  ],
+  "rmp-computer-science-and-engineering-w-s-in-cloud-computing": [
+   "code-ai"
+  ],
+  "rmp-computer-science-and-engineering-w-s-in-cyber-security": [
+   "code-ai"
+  ],
+  "rmp-computer-science-and-engineering-data-science": [
+   "code-ai",
+   "data-business"
+  ],
+  "rmp-computer-science-and-engineering-w-s-in-gaming-technology": [
+   "code-ai"
+  ],
+  "rmp-electrical-and-electronics-engineering": [
+   "circuits-power"
+  ],
+  "rmp-electronics-and-communication-engineering": [
+   "circuits-power"
+  ],
+  "rmp-electronics-and-communication-engineering-w-s-in-data-science-full-time": [
+   "circuits-power",
+   "code-ai",
+   "data-business"
+  ],
+  "rmp-information-technology": [
+   "code-ai"
+  ],
+  "rmp-mechanical-engineering": [
+   "machines-vehicles"
+  ],
+  "ncr-automobile-engineering": [
+   "machines-vehicles"
+  ],
+  "ncr-computer-science-and-engineering": [
+   "code-ai"
+  ],
+  "ncr-computer-science-and-engineering-data-science": [
+   "code-ai",
+   "data-business"
+  ],
+  "ncr-computer-science-and-engineering-w-s-in-artificial-intelligence-and-machine-learning": [
+   "code-ai"
+  ],
+  "ncr-computer-science-and-engineering-w-s-in-cloud-computing": [
+   "code-ai"
+  ],
+  "ncr-computer-science-and-engineering-w-s-in-cyber-security": [
+   "code-ai"
+  ],
+  "ncr-electronics-and-communication-engineering": [
+   "circuits-power"
+  ],
+  "ncr-electronics-and-communication-engineering-w-s-in-data-science": [
+   "circuits-power",
+   "code-ai",
+   "data-business"
+  ],
+  "ncr-electronics-engineering-vlsi-design-and-technology": [
+   "circuits-power"
+  ],
+  "ncr-mechanical-engineering": [
+   "machines-vehicles"
+  ],
+  "ncr-mechanical-engineering-with-specialization-in-artificial-intelligence-and-machine-learning": [
+   "code-ai",
+   "machines-vehicles"
+  ],
+  "vdp-artificial-intelligence": [
+   "code-ai"
+  ],
+  "vdp-computer-science-and-engineering": [
+   "code-ai"
+  ],
+  "vdp-computer-science-and-engineering-w-s-in-artificial-intelligence-and-machine-learning": [
+   "code-ai"
+  ],
+  "vdp-computer-science-and-engineering-w-s-in-big-data-analytics": [
+   "code-ai",
+   "data-business"
+  ],
+  "vdp-computer-science-and-engineering-w-s-in-cloud-computing": [
+   "code-ai"
+  ],
+  "vdp-computer-science-and-engineering-w-s-in-cyber-security": [
+   "code-ai"
+  ],
+  "vdp-electronics-and-communication-engineering": [
+   "circuits-power"
+  ],
+  "vdp-electronics-and-communication-engineering-w-s-in-data-science": [
+   "circuits-power",
+   "code-ai",
+   "data-business"
+  ],
+  "vdp-electronics-engineering-vlsi-design-and-technology": [
+   "circuits-power"
+  ],
+  "vdp-mechanical-engineering": [
+   "machines-vehicles"
+  ],
+  "vdp-mechanical-engineering-w-s-in-artificial-intelligence-and-machine-learning": [
+   "code-ai",
+   "machines-vehicles"
+  ],
+  "trichy-artificial-intelligence-future-technologies": [
+   "code-ai"
+  ],
+  "trichy-artificial-intelligence": [
+   "code-ai"
+  ],
+  "trichy-biomedical-engineering": [
+   "health-bio"
+  ],
+  "trichy-biotechnology": [
+   "health-bio"
+  ],
+  "trichy-computer-science-and-business-systems-tcs": [
+   "code-ai",
+   "data-business"
+  ],
+  "trichy-computer-science-and-engineering": [
+   "code-ai"
+  ],
+  "trichy-computer-science-and-engineering-data-science": [
+   "code-ai",
+   "data-business"
+  ],
+  "trichy-computer-science-and-engineering-w-s-in-artificial-intelligence-and-machine-learning": [
+   "code-ai"
+  ],
+  "trichy-computer-science-and-engineering-w-s-in-big-data-analytics": [
+   "code-ai",
+   "data-business"
+  ],
+  "trichy-computer-science-and-engineering-w-s-in-cyber-security": [
+   "code-ai"
+  ],
+  "trichy-computer-science-and-engineering-w-s-in-block-chain-technology": [
+   "code-ai"
+  ],
+  "trichy-computer-science-and-engineering-w-s-in-medical-engineering": [
+   "code-ai",
+   "health-bio"
+  ],
+  "trichy-computer-science-and-engineering-w-s-in-iot": [
+   "code-ai"
+  ],
+  "trichy-electrical-and-electronics-engineering": [
+   "circuits-power"
+  ],
+  "trichy-electronics-and-communication-engineering": [
+   "circuits-power"
+  ],
+  "trichy-electronics-and-communication-engineering-with-specialization-in-data-science": [
+   "circuits-power",
+   "code-ai",
+   "data-business"
+  ],
+  "trichy-information-technology": [
+   "code-ai"
+  ],
+  "trichy-mechanical-engineering": [
+   "machines-vehicles"
+  ],
+  "trichy-software-product-engineering": [
+   "code-ai"
+  ],
+  "bab-computer-science-and-engineering": [
+   "code-ai"
+  ],
+  "bab-electronics-and-communication-engineering": [
+   "circuits-power"
+  ],
+  "ktr-biomedical-engineering-machine-intelligence": [
+   "health-bio"
+  ],
+  "ktr-biotechnology-food-technology": [
+   "health-bio"
+  ],
+  "ktr-computer-science-and-engineering-devsecops": [
+   "code-ai"
+  ],
+  "ktr-computer-science-and-engineering-w-s-in-internet-of-things-iot": [
+   "code-ai"
+  ],
+  "rmp-computer-science-and-engineering-w-s-in-internet-of-things-iot": [
+   "code-ai"
+  ],
+  "trichy-biotechnology-food-technology": [
+   "health-bio"
+  ]
+ }
+}

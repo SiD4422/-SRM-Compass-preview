@@ -4,6 +4,7 @@ import VerifiedFact, { type FactData, type SourceData } from '../components/Veri
 import offeringsData from '../../data/offerings.m1.json';
 import sourcesData from '../../data/sources.json';
 import tagsData from '../../data/tags.json';
+import programmesData from '../../data/programmes.json';
 
 interface OfferingItem {
   id: string;
@@ -49,6 +50,11 @@ const programmeOrder = [
   'Mechatronics Engineering',
   'Biotechnology'
 ];
+
+const programmeSlugMap = new Map<string, string>();
+for (const prog of (programmesData as { programmes: { slug: string; name: string }[] }).programmes) {
+  programmeSlugMap.set(prog.name, prog.slug);
+}
 
 const groupedOfferings = programmeOrder.map((progName) => ({
   programme: progName,
@@ -114,7 +120,11 @@ const groupedOfferings = programmeOrder.map((progName) => ({
 
       {groupedOfferings.map((group) => (
         <section class="grp">
-          <h3>{group.programme}</h3>
+          <h3>
+            <a href={`/programmes/${programmeSlugMap.get(group.programme)}`}>
+              {group.programme}
+            </a>
+          </h3>
           <table>
             <thead>
               <tr>

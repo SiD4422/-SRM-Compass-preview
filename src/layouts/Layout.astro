@@ -4,15 +4,18 @@ import '../styles/tokens.css';
 export interface Props {
   title?: string;
   description?: string;
+  canonical?: string;
 }
 
 const {
   title = 'SRM Compass: find your SRM programme',
-  description = 'Find the SRM programme that fits you. Fees, seats and departments from SRM’s official table, each linked to its source.'
+  description = 'Find the SRM programme that fits you. Fees, seats and departments from SRM’s official table, each linked to its source.',
+  canonical
 } = Astro.props;
 
 // Determine active pathname cleanly
 const pathname = Astro.url.pathname.replace(/\/$/, '') || '/';
+const canonicalUrl = canonical || (Astro.site ? new URL(Astro.url.pathname, Astro.site).href : undefined);
 ---
 
 <!doctype html>
@@ -23,6 +26,8 @@ const pathname = Astro.url.pathname.replace(/\/$/, '') || '/';
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    {canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
+    <slot name="head" />
   </head>
   <body>
     <a class="skip" href="#main-content">Skip to content</a>

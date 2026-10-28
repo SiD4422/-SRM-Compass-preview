@@ -151,7 +151,7 @@ nav[aria-label="Main"] {
   gap: 4px;
 }
 
-nav a {
+nav[aria-label="Main"] a {
   color: #ffffff;
   text-decoration: none;
   display: inline-flex;
@@ -162,11 +162,11 @@ nav a {
   border-radius: 4px;
 }
 
-nav a:hover {
+nav[aria-label="Main"] a:hover {
   text-decoration: underline;
 }
 
-nav a[aria-current="page"] {
+nav[aria-label="Main"] a[aria-current="page"] {
   text-decoration: underline;
   text-underline-offset: 6px;
   font-weight: 700;

@@ -1,0 +1,587 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import VerifiedFact, { type FactData, type SourceData } from '../../components/VerifiedFact.astro';
+import programmesData from '../../../data/programmes.json';
+import offeringsData from '../../../data/offerings.json';
+import sourcesData from '../../../data/sources.json';
+import tagsData from '../../../data/tags.json';
+
+export interface OfferingItem {
+  id: string;
+  programme: string;
+  campus_code: string;
+  campus: string;
+  degree: string;
+  program_type: string;
+  annual_fee: FactData;
+  intake: FactData;
+  duration: FactData;
+  department: FactData | null;
+  eligibility: FactData;
+}
+
+export interface ProgrammeItem {
+  slug: string;
+  name: string;
+  aliases: string[];
+  offering_ids: string[];
+  campuses: string[];
+}
+
+export async function getStaticPaths() {
+  const programmes = (programmesData as { programmes: ProgrammeItem[] }).programmes;
+  return programmes.map((programme) => ({
+    params: { slug: programme.slug },
+    props: { programme }
+  }));
+}
+
+const { programme } = Astro.props as { programme: ProgrammeItem };
+
+const allOfferings = offeringsData as OfferingItem[];
+const allSources = sourcesData as SourceData[];
+const tagsByOffering = (tagsData.by_offering || {}) as Record<string, string[]>;
+const tagLabels = (tagsData.labels || {}) as Record<string, string>;
+
+// Map offerings for this programme
+const offeringsMap = allOfferings.reduce<Record<string, OfferingItem>>((acc, off) => {
+  acc[off.id] = off;
+  return acc;
+}, {});
+
+const progOfferings = programme.offering_ids
+  .map((id) => offeringsMap[id])
+  .filter(Boolean);
+
+// Sources lookup
+const sourcesMap = allSources.reduce<Record<string, SourceData>>((acc, src) => {
+  acc[src.id] = src;
+  return acc;
+}, {});
+
+// Tags associated with this programme (union of tags from all its offerings)
+const progTagKeys = Array.from(
+  new Set(progOfferings.flatMap((o) => tagsByOffering[o.id] || []))
+);
+
+// Fee calculations
+const fees = progOfferings.map((o) => o.annual_fee?.value as number).filter((v) => typeof v === 'number');
+const minFee = fees.length > 0 ? Math.min(...fees) : 0;
+const maxFee = fees.length > 0 ? Math.max(...fees) : 0;
+const campusCount = programme.campuses.length;
+
+function formatInr(val: number): string {
+  const s = val.toString();
+  if (s.length <= 3) return s;
+  const last3 = s.slice(-3);
+  let rest = s.slice(0, -3);
+  const parts: string[] = [];
+  while (rest.length > 2) {
+    parts.unshift(rest.slice(-2));
+    rest = rest.slice(0, -2);
+  }
+  if (rest.length > 0) parts.unshift(rest);
+  return `${parts.join(',')},${last3}`;
+}
+
+const feeSummary = minFee === maxFee
+  ? `Fees are ₹${formatInr(minFee)} per year across ${campusCount} campus${campusCount > 1 ? 'es' : ''}.`
+  : `Fees range from ₹${formatInr(minFee)} to ₹${formatInr(maxFee)} per year across ${campusCount} campuses.`;
+
+// Aliases / alternate spellings
+const spellingWays = Array.from(new Set([programme.name, ...(programme.aliases || [])]));
+const hasAliases = programme.aliases && programme.aliases.length > 0;
+
+// Eligibility & conflict calculations
+const primaryEligibilityRule = progOfferings[0]?.eligibility?.value || 'Min 60% aggregate in qualifying subjects.';
+const conflictOfferings = progOfferings.filter((o) => o.eligibility?.status === 'conflict');
+const conflictCount = conflictOfferings.length;
+const totalOfferingsCount = progOfferings.length;
+
+// Related programmes: up to 4 sharing a tag, sorted by shared tag count desc, then name asc
+const allProgrammes = (programmesData as { programmes: ProgrammeItem[] }).programmes;
+const relatedProgrammes = allProgrammes
+  .filter((p) => p.slug !== programme.slug)
+  .map((p) => {
+    const pTags = new Set(p.offering_ids.flatMap((id) => tagsByOffering[id] || []));
+    const sharedCount = progTagKeys.filter((t) => pTags.has(t)).length;
+    return { ...p, sharedCount };
+  })
+  .filter((p) => p.sharedCount > 0)
+  .sort((a, b) => b.sharedCount - a.sharedCount || a.name.localeCompare(b.name))
+  .slice(0, 4);
+
+// SEO & Schema.org JSON-LD
+const pageTitle = `${programme.name} at SRM: fees, seats, eligibility | SRM Compass`;
+const metaDescription = `${programme.name} B.Tech at SRM Institute of Science and Technology. ${feeSummary} Official seat intake, eligibility rules, and source verification.`;
+const canonicalUrl = `https://srm-compass.spartensid12.workers.dev/programmes/${programme.slug}`;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'EducationalOccupationalProgram',
+  name: programme.name,
+  description: metaDescription,
+  educationalProgramMode: 'full-time',
+  timeToComplete: 'P4Y',
+  provider: {
+    '@type': 'CollegeOrUniversity',
+    name: 'SRM Institute of Science and Technology',
+    url: 'https://www.srmist.edu.in'
+  },
+  offers: progOfferings.map((o) => ({
+    '@type': 'Offer',
+    price: o.annual_fee?.value,
+    priceCurrency: 'INR',
+    category: 'Annual Tuition Fee',
+    description: `${o.campus} campus`
+  }))
+};
+---
+
+<Layout title={pageTitle} description={metaDescription} canonical={canonicalUrl}>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} slot="head" />
+
+  <article class="blk prog-page">
+    <div class="w">
+      <!-- Breadcrumb & Header -->
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="/programmes">← All Programmes</a>
+      </nav>
+
+      <header class="prog-header">
+        <h1>{programme.name}</h1>
+        <p class="prog-campuses-line">
+          Offered at {campusCount} campus{campusCount > 1 ? 'es' : ''} ({programme.campuses.join(', ')})
+        </p>
+
+        {progTagKeys.length > 0 && (
+          <div class="prog-tags-row" aria-label="Field tags">
+            {progTagKeys.map((tagKey) => (
+              <a href={`/programmes?tag=${tagKey}`} class="chip-link">
+                {tagLabels[tagKey] || tagKey}
+              </a>
+            ))}
+          </div>
+        )}
+
+        <!-- In-page Anchors (real fragments, no client JS) -->
+        <nav class="prog-nav" aria-label="Page sections">
+          <a class="prog-nav-link" href="#fees">Fees &amp; Campuses</a>
+          <a class="prog-nav-link" href="#eligibility">Eligibility</a>
+          <a class="prog-nav-link" href="#apply">How to Apply</a>
+          <a class="prog-nav-link" href="#sources">Sources</a>
+        </nav>
+      </header>
+
+      <!-- Section: #fees -->
+      <section id="fees" class="prog-section">
+        <h2>Fees &amp; Campuses</h2>
+        <p class="fee-range-lead">{feeSummary}</p>
+
+        {hasAliases && (
+          <details class="alias-details">
+            <summary>SRM spells this programme {spellingWays.length} ways</summary>
+            <ul>
+              {spellingWays.map((spelling) => (
+                <li>{spelling}</li>
+              ))}
+            </ul>
+          </details>
+        )}
+
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">Campus</th>
+                <th scope="col">Fee per year</th>
+                <th scope="col">Seats</th>
+                <th scope="col">Duration</th>
+                <th scope="col">Department</th>
+                <th scope="col">Source</th>
+              </tr>
+            </thead>
+            <tbody>
+              {progOfferings.map((offering) => {
+                const feeSource = offering.annual_fee?.source_id ? sourcesMap[offering.annual_fee.source_id] : null;
+                const sourceUrl = feeSource ? feeSource.url : '#sources';
+                const deptText = offering.department?.value || "Not confirmed in SRM's table";
+
+                return (
+                  <tr>
+                    <td data-l="Campus">
+                      <strong>{offering.campus}</strong>
+                      <span class="campus-pill">{offering.campus_code}</span>
+                    </td>
+                    <td data-l="Fee per year">
+                      <VerifiedFact
+                        fact={offering.annual_fee}
+                        format="currency"
+                        sourcesMap={sourcesMap}
+                        showDateLink={true}
+                      />
+                    </td>
+                    <td data-l="Seats">
+                      {offering.intake ? (
+                        offering.intake.value.toLocaleString('en-IN')
+                      ) : (
+                        <span class="muted-text">Not listed</span>
+                      )}
+                    </td>
+                    <td data-l="Duration">
+                      {offering.duration ? `${offering.duration.value} years` : '4 years'}
+                    </td>
+                    <td data-l="Department" class={!offering.department ? 'muted-text' : ''}>
+                      {deptText}
+                    </td>
+                    <td data-l="Source">
+                      <a href={sourceUrl} class="source-stamp-link" target="_blank" rel="noopener">
+                        {offering.annual_fee?.source_id || 'S1'} (26 Oct 2026)
+                      </a>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Section: #eligibility -->
+      <section id="eligibility" class="prog-section">
+        <h2>Eligibility</h2>
+        <div class="card">
+          <p class="rule-text">{primaryEligibilityRule}</p>
+
+          {conflictCount > 0 ? (
+            <div class="note" style="margin-top: 16px;">
+              <p>
+                <b>Source conflict.</b> In {conflictCount} of {totalOfferingsCount} offerings of this programme, SRM's table still carries older text that says 50% (<a href="/eligibility">learn about this source conflict</a>).
+              </p>
+            </div>
+          ) : (
+            <p class="elig-verified" style="color: var(--ok); font-size: 0.95rem; margin-top: 12px;">
+              ✓ All {totalOfferingsCount} campus offerings of this programme align with the official 2026–27 60% aggregate rule.
+            </p>
+          )}
+        </div>
+      </section>
+
+      <!-- Section: #apply -->
+      <section id="apply" class="prog-section">
+        <h2>How to Apply</h2>
+        <div class="card">
+          <ol class="st">
+            <li>
+              Check the official 2026-27 eligibility criteria on{' '}
+              <a
+                href="https://www.srmist.edu.in/admission-india/engineering/"
+                rel="noopener"
+                target="_blank"
+              >
+                SRM’s engineering admissions page
+              </a>.
+            </li>
+            <li>
+              Apply once on{' '}
+              <a
+                href="https://applications.srmist.edu.in/btech"
+                rel="noopener"
+                target="_blank"
+              >
+                SRM’s official B.Tech application form
+              </a>.
+            </li>
+            <li>
+              Choose your campus, programme and specialisation at counselling. Note: <strong>campus and programme are chosen at counselling</strong>; the application form collects preference for statistics only.
+            </li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- Section: #sources -->
+      <section id="sources" class="prog-section">
+        <h2>Sources &amp; Audit Trail</h2>
+        <div class="card">
+          <ul class="sources-list">
+            {allSources.map((source) => (
+              <li>
+                <strong>[{source.id}] {source.title}:</strong>{' '}
+                <a href={source.url} target="_blank" rel="noopener">{source.kind}</a>{' '}
+                <span class="muted-text">(Captured on {source.captured_on})</span>.
+                <div class="source-note">{source.note}</div>
+              </li>
+            ))}
+          </ul>
+
+          <details class="locators-details" style="margin-top: 20px;">
+            <summary>Exact table rows from SRM source</summary>
+            <ul class="locators-list">
+              {progOfferings.map((o) => (
+                <li>
+                  <strong>{o.campus}:</strong> <code>{o.annual_fee?.locator}</code>
+                </li>
+              ))}
+            </ul>
+          </details>
+        </div>
+      </section>
+
+      <!-- Related Programmes -->
+      {relatedProgrammes.length > 0 && (
+        <section class="prog-section related-section">
+          <h2>Related Programmes</h2>
+          <div class="related-grid">
+            {relatedProgrammes.map((rel) => (
+              <a href={`/programmes/${rel.slug}`} class="related-card">
+                <h3>{rel.name}</h3>
+                <p class="muted-text">
+                  Offered at {rel.campuses.length} campus{rel.campuses.length > 1 ? 'es' : ''} ({rel.campuses.join(', ')})
+                </p>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+    </div>
+  </article>
+</Layout>
+
+<style>
+  .prog-page {
+    padding-top: 24px;
+    padding-bottom: 64px;
+  }
+
+  .breadcrumb {
+    margin-bottom: 16px;
+    font-size: 0.95rem;
+  }
+
+  .breadcrumb a {
+    color: var(--link);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    font-weight: 500;
+  }
+
+  .breadcrumb a:hover {
+    color: var(--ink);
+  }
+
+  .prog-header {
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 24px;
+    margin-bottom: 36px;
+  }
+
+  .prog-header h1 {
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+    line-height: 1.2;
+    margin-bottom: 8px;
+  }
+
+  .prog-campuses-line {
+    font-size: 1.1rem;
+    color: var(--muted);
+    margin: 0 0 16px 0;
+  }
+
+  .prog-tags-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+
+  .prog-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding-top: 12px;
+    border-top: 1px dashed var(--rule);
+  }
+
+  .prog-nav-link {
+    display: inline-block;
+    padding: 6px 14px;
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-decoration: none;
+    color: var(--ink);
+    transition: border-color 0.15s, background-color 0.15s;
+  }
+
+  .prog-nav-link:hover {
+    border-color: var(--link);
+    background: var(--bg);
+  }
+
+  .prog-section {
+    margin-bottom: 48px;
+    scroll-margin-top: 24px;
+  }
+
+  .prog-section h2 {
+    font-size: 1.5rem;
+    margin-bottom: 16px;
+    border-bottom: 2px solid var(--gold);
+    display: inline-block;
+    padding-bottom: 4px;
+  }
+
+  .fee-range-lead {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 16px;
+  }
+
+  .alias-details {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    padding: 12px 16px;
+    margin-bottom: 20px;
+  }
+
+  .alias-details summary {
+    font-weight: 600;
+    cursor: pointer;
+    color: var(--link);
+  }
+
+  .alias-details ul {
+    margin: 10px 0 0 20px;
+    padding: 0;
+  }
+
+  .table-container {
+    width: 100%;
+    overflow-x: auto;
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+  }
+
+  .campus-pill {
+    display: inline-block;
+    margin-left: 6px;
+    padding: 2px 6px;
+    background: var(--bg);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--muted);
+  }
+
+  .source-stamp-link {
+    font-size: 0.85rem;
+    font-family: monospace;
+  }
+
+  .muted-text {
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+
+  .rule-text {
+    font-size: 1.05rem;
+    line-height: 1.55;
+    margin: 0;
+  }
+
+  .sources-list {
+    margin: 0;
+    padding-left: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .source-note {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  .locators-details summary {
+    font-weight: 600;
+    cursor: pointer;
+    color: var(--link);
+  }
+
+  .locators-list {
+    margin: 12px 0 0 20px;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 0.85rem;
+  }
+
+  .locators-list code {
+    font-size: 0.82rem;
+    background: var(--bg);
+    padding: 2px 6px;
+    border-radius: 4px;
+    word-break: break-all;
+  }
+
+  .related-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+    margin-top: 16px;
+  }
+
+  .related-card {
+    display: block;
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 18px;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s;
+  }
+
+  .related-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--link);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  }
+
+  .related-card h3 {
+    font-size: 1.15rem;
+    margin: 0 0 6px 0;
+    color: var(--link);
+  }
+
+  .related-card p {
+    margin: 0;
+  }
+
+  @media (max-width: 600px) {
+    .prog-header h1 {
+      font-size: 1.6rem;
+    }
+
+    .prog-nav {
+      gap: 8px;
+    }
+
+    .prog-nav-link {
+      padding: 4px 10px;
+      font-size: 0.82rem;
+    }
+
+    .related-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

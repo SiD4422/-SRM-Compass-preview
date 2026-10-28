@@ -5,11 +5,19 @@ import offeringsData from '../../data/offerings.json';
 import sourcesData from '../../data/sources.json';
 import tagsData from '../../data/tags.json';
 import synonymsData from '../../data/synonyms.json';
+import programmesData from '../../data/programmes.json';
 import { type OfferingItem } from '../lib/filter';
 
 const offerings = offeringsData as OfferingItem[];
 const sources = sourcesData as SourceData[];
 const tagsByOffering = tagsData.by_offering as Record<string, string[]>;
+
+const offeringSlugMap = new Map<string, string>();
+for (const prog of (programmesData as { programmes: { slug: string; offering_ids: string[] }[] }).programmes) {
+  for (const oid of prog.offering_ids) {
+    offeringSlugMap.set(oid, prog.slug);
+  }
+}
 
 // Create sources map for fast lookup
 const sourcesMap = sources.reduce<Record<string, SourceData>>((acc, src) => {
@@ -200,7 +208,9 @@ const feeSteps = [
                 data-tags={rowTags.join(' ')}
               >
                 <td data-l="Programme">
-                  <strong>{offering.programme}</strong>
+                  <a href={`/programmes/${offeringSlugMap.get(offering.id)}`}>
+                    <strong>{offering.programme}</strong>
+                  </a>
                   <span class="sr-only"> ({offering.degree})</span>
                 </td>
                 <td data-l="Campus">

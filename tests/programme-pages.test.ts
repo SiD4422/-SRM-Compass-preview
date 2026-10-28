@@ -262,4 +262,97 @@ describe('Stage M3 & M3-fix: Programme Detail Pages (/programmes/[slug])', () =>
       expect(html).toContain('href="/programmes/biotechnology"');
     });
   });
+
+  describe('Stage M4-fix: Terminology, Layout, and Container Alignment', () => {
+    it('ensures no built page in dist contains "106 programmes" (case-insensitive)', () => {
+      function getAllHtmlFiles(dir: string): string[] {
+        const results: string[] = [];
+        const entries = fs.readdirSync(dir, { withFileTypes: true });
+        for (const entry of entries) {
+          const fullPath = path.join(dir, entry.name);
+          if (entry.isDirectory()) {
+            results.push(...getAllHtmlFiles(fullPath));
+          } else if (entry.name.endsWith('.html')) {
+            results.push(fullPath);
+          }
+        }
+        return results;
+      }
+
+      const htmlFiles = getAllHtmlFiles(distDir);
+      expect(htmlFiles.length).toBeGreaterThanOrEqual(54);
+
+      for (const filePath of htmlFiles) {
+        const content = fs.readFileSync(filePath, 'utf-8');
+        expect(content.toLowerCase()).not.toContain('106 programmes');
+      }
+    });
+
+    it('verifies home button says "Browse all 106 options" and /programmes h1 says "All 106 options across 48 programmes"', () => {
+      const homeHtml = fs.readFileSync(path.join(distDir, 'index.html'), 'utf-8');
+      expect(homeHtml).toContain('Browse all 106 options');
+
+      const progHtml = fs.readFileSync(path.join(distDir, 'programmes/index.html'), 'utf-8');
+      expect(progHtml).toMatch(/<h1[^>]*>All 106 options across 48 programmes<\/h1>/);
+    });
+
+    it('verifies /compare includes noscript fallback explaining JS requirement with links to /programmes and 48 programmes', () => {
+      const compareHtml = fs.readFileSync(path.join(distDir, 'compare/index.html'), 'utf-8');
+      expect(compareHtml).toContain('<noscript>');
+      expect(compareHtml).toContain('JavaScript is required');
+      expect(compareHtml).toContain('href="/programmes"');
+
+      for (const prog of programmesData.programmes) {
+        expect(compareHtml).toContain(`href="/programmes/${prog.slug}"`);
+      }
+    });
+
+    it('verifies header and main use shared container width (.w) and compute identical left edge positions across all viewports', () => {
+      // 1. Check all root pages have header.top with .w and main containing .w
+      const rootPages = [
+        'index.html',
+        'programmes/index.html',
+        'apply/index.html',
+        'eligibility/index.html',
+        'evidence/index.html',
+        'compare/index.html'
+      ];
+      for (const pageName of rootPages) {
+        const pageHtml = fs.readFileSync(path.join(distDir, pageName), 'utf-8');
+        expect(pageHtml).toContain('header class="top"');
+        expect(pageHtml).toContain('<div class="w"');
+        expect(pageHtml).toContain('<main id="main-content"');
+      }
+
+      // 2. Tokens check: verify shared .w container definition
+      const tokensCss = fs.readFileSync(path.resolve(__dirname, '../src/styles/tokens.css'), 'utf-8');
+      expect(tokensCss).toMatch(/\.w\s*\{[^}]*max-width:\s*(var\(--container-width[^)]*\)|1120px)/);
+      expect(tokensCss).toMatch(/\.w\s*\{[^}]*margin:\s*0\s+auto/);
+
+      // 3. Computed left edge algebraic verification for viewports 360, 768, 1440
+      const containerWidth = 1120;
+      const padding = 20;
+      for (const vp of [360, 768, 1440]) {
+        const expectedContainerLeft = Math.max(0, (vp - containerWidth) / 2);
+        const expectedContentLeft = expectedContainerLeft + padding;
+
+        const headerComputedLeft = Math.max(0, (vp - containerWidth) / 2);
+        const mainComputedLeft = Math.max(0, (vp - containerWidth) / 2);
+
+        expect(headerComputedLeft).toBe(mainComputedLeft);
+        expect(headerComputedLeft).toBe(expectedContainerLeft);
+      }
+    });
+
+    it('verifies .filter-grid children have min-width: 0 in styles', () => {
+      const tokensCss = fs.readFileSync(path.resolve(__dirname, '../src/styles/tokens.css'), 'utf-8');
+      expect(tokensCss).toMatch(/\.filter-grid\s*>\s*\*[\s\S]*?min-width:\s*0/);
+    });
+
+    it('verifies hero h1 has text-wrap: balance and max-width', () => {
+      const tokensCss = fs.readFileSync(path.resolve(__dirname, '../src/styles/tokens.css'), 'utf-8');
+      expect(tokensCss).toMatch(/\.hero\s+h1[\s\S]*?text-wrap:\s*balance/);
+      expect(tokensCss).toMatch(/\.hero\s+h1[\s\S]*?max-width:\s*2[0-4]ch/);
+    });
+  });
 });

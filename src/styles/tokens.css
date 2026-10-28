@@ -9,6 +9,8 @@
   --ok: #1B7F5C;
   --warn: #8F5200;
   --rule: #C3CFDE;
+  --container-width: 1120px;
+  --container-padding: 20px;
   box-sizing: border-box;
   padding-top: env(safe-area-inset-top, 0px);
   padding-bottom: env(safe-area-inset-bottom, 0px);
@@ -45,12 +47,13 @@
 }
 
 html {
+  box-sizing: border-box;
   scroll-padding-top: env(safe-area-inset-top, 0px);
   scroll-behavior: smooth;
 }
 
 *, *::before, *::after {
-  box-sizing: inherit;
+  box-sizing: border-box;
 }
 
 body {
@@ -107,9 +110,9 @@ a:focus-visible, summary:focus-visible, button:focus-visible {
 }
 
 .w {
-  max-width: 1120px;
+  max-width: var(--container-width, 1120px);
   margin: 0 auto;
-  padding: 0 20px;
+  padding: 0 var(--container-padding, 20px);
   width: 100%;
 }
 
@@ -196,7 +199,13 @@ h1 {
   line-height: 1.1;
   letter-spacing: -0.01em;
   margin-bottom: 16px;
-  max-width: 16ch;
+  max-width: 20ch;
+  text-wrap: balance;
+}
+
+.hero h1 {
+  text-wrap: balance;
+  max-width: 20ch;
 }
 
 .lede {
@@ -657,6 +666,16 @@ input[type="checkbox"]:focus-visible {
   gap: 20px;
 }
 
+.filter-grid > *,
+.filter-grid-2 > *,
+.filter-grid-3 > * {
+  min-width: 0;
+}
+
+.ctrl-group {
+  min-width: 0;
+}
+
 @media (min-width: 800px) {
   .filter-grid-2 {
     display: grid;
@@ -698,7 +717,10 @@ input[type="checkbox"]:focus-visible {
 
 /* Select Inputs */
 select.ctrl-select {
+  box-sizing: border-box;
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
   min-height: 48px;
   padding: 10px 14px;
   font: inherit;

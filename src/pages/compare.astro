@@ -2,9 +2,13 @@
 import Layout from '../layouts/Layout.astro';
 import offeringsData from '../../data/offerings.json';
 import sourcesData from '../../data/sources.json';
+import programmesData from '../../data/programmes.json';
 import { type CompareOffering } from '../lib/compare';
 
 const sourcesMap = Object.fromEntries(sourcesData.map((s) => [s.id, s.url]));
+const allProgrammes = [...(programmesData as { programmes: { slug: string; name: string }[] }).programmes].sort((a, b) =>
+  a.name.localeCompare(b.name)
+);
 
 // Minimal embedded offerings JSON: only the needed fields
 const minimalOfferings: CompareOffering[] = offeringsData.map((o) => ({
@@ -57,16 +61,36 @@ const minimalOfferings: CompareOffering[] = offeringsData.map((o) => ({
         </div>
       </div>
 
+      <!-- Noscript fallback for users without JavaScript -->
+      <noscript>
+        <div class="card noscript-card">
+          <h2>JavaScript is required for comparison</h2>
+          <p>
+            The comparison view requires JavaScript to evaluate selections from your URL and display side-by-side fee, seat, and department comparisons.
+          </p>
+          <p>
+            You can browse all offerings on the <a href="/programmes">programmes page</a> or visit any of the 48 programmes directly:
+          </p>
+          <ul class="noscript-grid">
+            {allProgrammes.map((p) => (
+              <li>
+                <a href={`/programmes/${p.slug}`}>{p.name}</a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </noscript>
+
       <!-- Container where comparison grid/table is mounted -->
       <div id="compare-container"></div>
 
       <!-- Empty state -->
       <div id="compare-empty" class="empty-state" hidden>
         <div class="card empty-card">
-          <h2>No programmes selected for comparison</h2>
-          <p>You can select up to 3 programmes to compare fees, four-year cost estimates, seats, and departments side by side.</p>
+          <h2>No options selected for comparison</h2>
+          <p>You can select up to 3 options to compare fees, four-year cost estimates, seats, and departments side by side.</p>
           <div class="empty-actions">
-            <a href="/programmes" class="btn p">Browse all programmes</a>
+            <a href="/programmes" class="btn p">Browse all 106 options</a>
           </div>
         </div>
       </div>
@@ -394,6 +418,42 @@ const minimalOfferings: CompareOffering[] = offeringsData.map((o) => ({
     color: var(--muted);
     max-width: 500px;
     margin: 0 auto 24px auto;
+  }
+
+  /* Noscript Fallback */
+  .noscript-card {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 24px;
+    margin: 24px 0;
+  }
+
+  .noscript-card h2 {
+    font-size: 1.4rem;
+    margin-bottom: 12px;
+  }
+
+  .noscript-card p {
+    margin-bottom: 12px;
+    color: var(--muted);
+  }
+
+  .noscript-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 8px 16px;
+    margin-top: 16px;
+    padding-left: 20px;
+  }
+
+  .noscript-grid li {
+    margin-bottom: 4px;
+  }
+
+  .noscript-grid a {
+    color: var(--link);
+    text-decoration: underline;
   }
 
   /* Mobile Stack */

@@ -33,11 +33,11 @@ const canonicalUrl = canonical || (Astro.site ? new URL(Astro.url.pathname.endsW
     <a class="skip" href="#main-content">Skip to content</a>
 
     <header class="top">
-      <div class="w">
+      <div class="w header-bar">
         <a class="brand" href="/">
           <i>✦</i>SRM Compass
         </a>
-        <nav aria-label="Main">
+        <nav class="nav-desktop" aria-label="Main">
           <a
             href="/programmes"
             aria-current={pathname === '/programmes' ? 'page' : undefined}
@@ -69,6 +69,45 @@ const canonicalUrl = canonical || (Astro.site ? new URL(Astro.url.pathname.endsW
             Apply
           </a>
         </nav>
+
+        <details class="mobile-nav-details" id="mobile-menu-details">
+          <summary class="mobile-nav-btn" aria-label="Menu" role="button">
+            <span class="menu-text">Menu</span>
+            <span class="menu-icon" aria-hidden="true">☰</span>
+          </summary>
+          <nav class="mobile-nav-panel" aria-label="Mobile Navigation">
+            <a
+              href="/programmes"
+              aria-current={pathname === '/programmes' ? 'page' : undefined}
+            >
+              Programmes
+            </a>
+            <a
+              href="/compare"
+              aria-current={pathname === '/compare' ? 'page' : undefined}
+            >
+              Compare
+            </a>
+            <a
+              href="/eligibility"
+              aria-current={pathname === '/eligibility' ? 'page' : undefined}
+            >
+              Eligibility
+            </a>
+            <a
+              href="/stories"
+              aria-current={pathname.startsWith('/stories') ? 'page' : undefined}
+            >
+              Stories
+            </a>
+            <a
+              href="/apply"
+              aria-current={pathname === '/apply' ? 'page' : undefined}
+            >
+              Apply
+            </a>
+          </nav>
+        </details>
       </div>
     </header>
 
@@ -81,9 +120,11 @@ const canonicalUrl = canonical || (Astro.site ? new URL(Astro.url.pathname.endsW
         <p>
           Independent design entry for the SRM Next-Gen Website Design Challenge 2026 for the 2026-27 cycle; SRM may revise for 2027 entry. Not an official SRM site. Check each source link before relying on a number.
         </p>
-        <p class="footer-links">
-          <a href="/evidence">Primary sources &amp; verification methodology</a>
-        </p>
+        <nav class="footer-links" aria-label="Footer links">
+          <a href="/evidence">Sources &amp; verification methodology</a>
+          <span class="footer-sep" aria-hidden="true">&bull;</span>
+          <a href="/stories">Built at SRM stories</a>
+        </nav>
       </div>
     </footer>
   </body>

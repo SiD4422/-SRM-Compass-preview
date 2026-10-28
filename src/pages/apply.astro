@@ -41,7 +41,7 @@ const applyData = applyRoutesData as {
       <div class="eyebrow">Admissions Guide &amp; Entrance Routes</div>
       <h1>How applying works</h1>
       <p class="lead">
-        A direct, verified guide to SRM’s application process, counselling workflow, and entrance exam routes across all disciplines.
+        A guide built from SRM's published pages and 2026-27 brochure.
       </p>
     </header>
 
@@ -49,7 +49,7 @@ const applyData = applyRoutesData as {
     <section class="steps-section">
       <h2>Apply once, choose later (B.Tech)</h2>
       <p class="section-desc">
-        For B.Tech admission, one application covers all six campuses. You do not lock in your campus or specialisation on the form.
+        For B.Tech admission, one application covers the campuses listed on SRM's form, including these six. You do not lock in your campus or specialisation on the form.
       </p>
       
       <ol class="st-cards">
@@ -87,7 +87,7 @@ const applyData = applyRoutesData as {
           <div class="st-body">
             <h3>Choose campus and branch at counselling</h3>
             <p>
-              After exam ranks are published, you select your campus, programme, and specialisation during online counselling based on seat availability and your rank.
+              After exam ranks are published, you select your campus, programme, and specialisation during counselling.
             </p>
             <a href="/programmes" class="st-link">Explore all 106 campus options &rarr;</a>
           </div>
@@ -335,13 +335,27 @@ const applyData = applyRoutesData as {
     width: 38px;
     height: 38px;
     border-radius: 50%;
-    background: var(--navy);
+    background: #0B2A4A;
     color: #ffffff;
+    border: 2px solid var(--gold);
     display: grid;
     place-content: center;
     font-weight: 700;
-    font-size: 1.1rem;
+    font-size: 1.15rem;
     flex-shrink: 0;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .st-number {
+      background: #E4B316;
+      color: #0B2A4A;
+      border: 2px solid #ffffff;
+    }
+  }
+  :root[data-theme="dark"] .st-number {
+    background: #E4B316;
+    color: #0B2A4A;
+    border: 2px solid #ffffff;
   }
   .st-body {
     flex-grow: 1;

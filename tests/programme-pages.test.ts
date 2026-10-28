@@ -513,4 +513,82 @@ describe('Stage M3 & M3-fix: Programme Detail Pages (/programmes/[slug])', () =>
       expect(homeHtml).toContain('3,75,000');
     });
   });
+
+  describe('Stage M6-fix: Header 360px menu, /apply copy & contrast, seal caption, footer links', () => {
+    it('verifies header includes both desktop nav and mobile details/summary menu with all 5 links', () => {
+      const homeHtml = fs.readFileSync(path.join(distDir, 'index.html'), 'utf-8');
+      
+      // Desktop nav with all 5 links
+      expect(homeHtml).toContain('class="nav-desktop"');
+      
+      // Mobile nav details/summary
+      expect(homeHtml).toContain('class="mobile-nav-details"');
+      expect(homeHtml).toContain('class="mobile-nav-btn"');
+      expect(homeHtml).toContain('aria-label="Menu"');
+      expect(homeHtml).toContain('class="mobile-nav-panel"');
+
+      // Both navs contain all five destinations
+      const expectedLinks = ['/programmes', '/compare', '/eligibility', '/stories', '/apply'];
+      for (const link of expectedLinks) {
+        expect(homeHtml).toContain(`href="${link}"`);
+      }
+    });
+
+    it('verifies /apply copy changes, counselling wording, and step numbers', () => {
+      const applyHtml = fs.readFileSync(path.join(distDir, 'apply/index.html'), 'utf-8');
+
+      // 1. Updated lead
+      expect(applyHtml).toContain("A guide built from SRM's published pages and 2026-27 brochure.");
+      expect(applyHtml).not.toContain('A direct, verified guide to');
+
+      // 2. Updated campuses scope
+      expect(applyHtml).toContain("one application covers the campuses listed on SRM's form, including these six");
+      expect(applyHtml).not.toContain('one application covers all six campuses');
+
+      // 3. Counselling step: removed 'online' and 'based on seat availability and your rank'
+      expect(applyHtml).toContain('select your campus, programme, and specialisation during counselling.');
+      expect(applyHtml).not.toContain('online counselling');
+      expect(applyHtml).not.toContain('based on seat availability and your rank');
+
+      // 4. Step numbers 1, 2, 3 with high contrast class
+      expect(applyHtml).toMatch(/class="st-number"[^>]*>1<\/div>/);
+      expect(applyHtml).toMatch(/class="st-number"[^>]*>2<\/div>/);
+      expect(applyHtml).toMatch(/class="st-number"[^>]*>3<\/div>/);
+    });
+
+    it('verifies seal caption replaced "Source integrity" with "106 options, 6 campuses"', () => {
+      const homeHtml = fs.readFileSync(path.join(distDir, 'index.html'), 'utf-8');
+      expect(homeHtml).toContain('106 options, 6 campuses');
+      expect(homeHtml).not.toContain('Source Integrity');
+      expect(homeHtml).not.toContain('Source integrity');
+    });
+
+    it('verifies footer contains links to /evidence and /stories', () => {
+      const homeHtml = fs.readFileSync(path.join(distDir, 'index.html'), 'utf-8');
+      const applyHtml = fs.readFileSync(path.join(distDir, 'apply/index.html'), 'utf-8');
+
+      for (const html of [homeHtml, applyHtml]) {
+        expect(html).toContain('href="/evidence"');
+        expect(html).toContain('href="/stories"');
+        expect(html).toContain('class="footer-links"');
+      }
+    });
+
+    it('verifies that at 360 px no nav link is clipped or hidden by overflow in mobile styles', () => {
+      const tokensCss = fs.readFileSync(path.resolve(__dirname, '../src/styles/tokens.css'), 'utf-8');
+
+      // Ensure mobile media query styles .mobile-nav-panel cleanly
+      expect(tokensCss).toContain('.mobile-nav-panel');
+      expect(tokensCss).toContain('width: 100%');
+      expect(tokensCss).toContain('.mobile-nav-btn');
+
+      // Ensure no overflow: hidden or clip on mobile-nav-panel
+      const mobileNavPanelMatch = tokensCss.match(/\.mobile-nav-panel\s*\{([^}]+)\}/);
+      expect(mobileNavPanelMatch).not.toBeNull();
+      const body = mobileNavPanelMatch![1];
+      expect(body).not.toContain('overflow: hidden');
+      expect(body).not.toContain('overflow-x: hidden');
+      expect(body).not.toContain('clip:');
+    });
+  });
 });

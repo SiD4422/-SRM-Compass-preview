@@ -15,7 +15,7 @@ const {
 
 // Determine active pathname cleanly
 const pathname = Astro.url.pathname.replace(/\/$/, '') || '/';
-const canonicalUrl = canonical || (Astro.site ? new URL(Astro.url.pathname, Astro.site).href : undefined);
+const canonicalUrl = canonical || (Astro.site ? new URL(Astro.url.pathname.endsWith('/') ? Astro.url.pathname : `${Astro.url.pathname}/`, Astro.site).href : undefined);
 ---
 
 <!doctype html>

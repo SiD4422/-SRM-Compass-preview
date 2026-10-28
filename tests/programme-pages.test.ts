@@ -11,7 +11,7 @@ const offeringsData = JSON.parse(
   fs.readFileSync(path.resolve(__dirname, '../data/offerings.json'), 'utf-8')
 );
 
-describe('Stage M3: Programme Detail Pages (/programmes/[slug])', () => {
+describe('Stage M3 & M3-fix: Programme Detail Pages (/programmes/[slug])', () => {
   it('builds exactly 53 static pages (5 root pages + 48 programme pages)', () => {
     // 5 root pages
     const rootPages = [
@@ -43,6 +43,31 @@ describe('Stage M3: Programme Detail Pages (/programmes/[slug])', () => {
     expect(fs.existsSync(sitemap0Path)).toBe(true);
     const sitemap0Content = fs.readFileSync(sitemap0Path, 'utf-8');
     expect(sitemap0Content).toContain('https://srm-compass.spartensid12.workers.dev/programmes/');
+  });
+
+  it('canonical link matches sitemap URL exactly (including trailing slash) on every page', () => {
+    const sitemap0Path = path.join(distDir, 'sitemap-0.xml');
+    const sitemap0Content = fs.readFileSync(sitemap0Path, 'utf-8');
+    const urls = [...sitemap0Content.matchAll(/<loc>(.*?)<\/loc>/g)].map((m) => m[1]);
+
+    expect(urls).toHaveLength(53);
+
+    for (const url of urls) {
+      const urlPath = new URL(url).pathname;
+      let relPath = urlPath.replace(/^\//, '');
+      if (!relPath || relPath.endsWith('/')) {
+        relPath += 'index.html';
+      } else {
+        relPath += '/index.html';
+      }
+      const fullPath = path.join(distDir, relPath);
+      expect(fs.existsSync(fullPath)).toBe(true);
+
+      const html = fs.readFileSync(fullPath, 'utf-8');
+      const canonicalMatch = html.match(/<link rel="canonical" href="([^"]+)"/);
+      expect(canonicalMatch).not.toBeNull();
+      expect(canonicalMatch![1]).toBe(url);
+    }
   });
 
   it('guarantees ZERO client JavaScript on all 48 programme pages', () => {
@@ -79,7 +104,9 @@ describe('Stage M3: Programme Detail Pages (/programmes/[slug])', () => {
       // Title & Meta
       expect(html).toContain('<title>Computer Science and Engineering at SRM: fees, seats, eligibility | SRM Compass</title>');
       expect(html).toContain('Fees range from ₹2,50,000 to ₹4,75,000 per year across 6 campuses.');
-      expect(html).toContain('<link rel="canonical" href="https://srm-compass.spartensid12.workers.dev/programmes/computer-science-and-engineering"');
+      expect(html).toContain('<meta name="description" content="Computer Science and Engineering B.Tech at SRMIST: fees from ₹2,50,000 to ₹4,75,000 per year across 6 campuses, with seats, eligibility and a source for every number.">');
+      expect(html).not.toContain('Official seat intake');
+      expect(html).toContain('<link rel="canonical" href="https://srm-compass.spartensid12.workers.dev/programmes/computer-science-and-engineering/"');
 
       // Anchors
       expect(html).toContain('href="#fees"');
@@ -87,14 +114,17 @@ describe('Stage M3: Programme Detail Pages (/programmes/[slug])', () => {
       expect(html).toContain('href="#apply"');
       expect(html).toContain('href="#sources"');
 
-      // Headings & Campuses
-      expect(html).toContain('Offered at 6 campuses (KTR, RMP, NCR, VDP, Trichy, BAB)');
+      // Headings & Campus names (not codes)
+      expect(html).toContain('Offered at 6 campuses (Kattankulathur, Ramapuram, Delhi-NCR, Vadapalani, Tiruchirappalli, Baburayanpettai)');
       expect(html).toContain('Kattankulathur');
       expect(html).toContain('Ramapuram');
       expect(html).toContain('Delhi-NCR');
       expect(html).toContain('Vadapalani');
       expect(html).toContain('Tiruchirappalli');
       expect(html).toContain('Baburayanpettai');
+
+      // Fee Table: drop separate Source column
+      expect(html).not.toContain('<th scope="col">Source</th>');
 
       // Eligibility conflict text
       expect(html).toContain("In 5 of 6 offerings of this programme, SRM's table still carries older text that says 50%");
@@ -112,6 +142,10 @@ describe('Stage M3: Programme Detail Pages (/programmes/[slug])', () => {
       expect(jsonLd.offers).toHaveLength(6);
       expect(jsonLd.offers[0].priceCurrency).toBe('INR');
       expect(jsonLd.offers[0].price).toBe(475000); // KTR CSE fee
+      expect(jsonLd.offers[0].category).toBe("Annual fee as listed in SRM's Programs Offered table");
+
+      // Locators with ### note
+      expect(html).toContain('(### appears in SRM\'s table)');
     });
 
     it('verifies Mechanical Engineering page content and schema', () => {
@@ -120,12 +154,14 @@ describe('Stage M3: Programme Detail Pages (/programmes/[slug])', () => {
 
       expect(html).toContain('<title>Mechanical Engineering at SRM: fees, seats, eligibility | SRM Compass</title>');
       expect(html).toContain('Fees range from ₹1,00,000 to ₹2,75,000 per year across 5 campuses.');
-      expect(html).toContain('Offered at 5 campuses (KTR, RMP, NCR, VDP, Trichy)');
+      expect(html).toContain('<meta name="description" content="Mechanical Engineering B.Tech at SRMIST: fees from ₹1,00,000 to ₹2,75,000 per year across 5 campuses, with seats, eligibility and a source for every number.">');
+      expect(html).toContain('Offered at 5 campuses (Kattankulathur, Ramapuram, Delhi-NCR, Vadapalani, Tiruchirappalli)');
       expect(html).toContain("In 4 of 5 offerings of this programme, SRM's table still carries older text that says 50%");
 
       const jsonLdMatch = html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/);
       const jsonLd = JSON.parse(jsonLdMatch![1]);
       expect(jsonLd.offers).toHaveLength(5);
+      expect(jsonLd.offers[0].category).toBe("Annual fee as listed in SRM's Programs Offered table");
     });
 
     it('verifies Chemical Engineering page content and related programmes', () => {
@@ -134,9 +170,10 @@ describe('Stage M3: Programme Detail Pages (/programmes/[slug])', () => {
 
       expect(html).toContain('<title>Chemical Engineering at SRM: fees, seats, eligibility | SRM Compass</title>');
       expect(html).toContain('Fees are ₹2,75,000 per year across 1 campus.');
-      expect(html).toContain('Offered at 1 campus (KTR)');
+      expect(html).toContain('<meta name="description" content="Chemical Engineering B.Tech at SRMIST: fees of ₹2,75,000 per year across 1 campus, with seats, eligibility and a source for every number.">');
+      expect(html).toContain('Offered at 1 campus (Kattankulathur)');
 
-      // Related programme: only Nanotechnology shares 'materials' tag
+      // Related programme: Nanotechnology shares 'materials' tag
       expect(html).toContain('href="/programmes/nanotechnology"');
     });
 
@@ -146,12 +183,27 @@ describe('Stage M3: Programme Detail Pages (/programmes/[slug])', () => {
 
       expect(html).toContain('<title>Aerospace Engineering at SRM: fees, seats, eligibility | SRM Compass</title>');
       expect(html).toContain('Fees are ₹4,00,000 per year across 1 campus.');
+      expect(html).toContain('<meta name="description" content="Aerospace Engineering B.Tech at SRMIST: fees of ₹4,00,000 per year across 1 campus, with seats, eligibility and a source for every number.">');
+      expect(html).toContain('Offered at 1 campus (Kattankulathur)');
 
       // 4 related programmes sharing 'machines-vehicles'
       expect(html).toContain('href="/programmes/aeronautical-engineering"');
       expect(html).toContain('href="/programmes/automobile-engineering"');
       expect(html).toContain('href="/programmes/automobile-engineering-automotive-electronics"');
       expect(html).toContain('href="/programmes/mechanical-engineering"');
+    });
+
+    it('ranks related programmes by shared leading words first, placing CSE specialisations first for CSE', () => {
+      const htmlPath = path.join(distDir, 'programmes/computer-science-and-engineering/index.html');
+      const html = fs.readFileSync(htmlPath, 'utf-8');
+
+      const relatedGridMatch = html.match(/<div class="related-grid"[\s\S]*?<\/div>/);
+      expect(relatedGridMatch).not.toBeNull();
+      const firstCardMatch = relatedGridMatch![0].match(/<a[^>]*class="related-card"[\s\S]*?<\/a>/);
+      expect(firstCardMatch).not.toBeNull();
+      const firstHeadingMatch = firstCardMatch![0].match(/<h3[^>]*>(.*?)<\/h3>/);
+      expect(firstHeadingMatch).not.toBeNull();
+      expect(firstHeadingMatch![1]).toBe('Computer Science and Engineering (Data Science)');
     });
 
     it('verifies spelling aliases details element on programmes with multiple spellings', () => {
@@ -168,6 +220,15 @@ describe('Stage M3: Programme Detail Pages (/programmes/[slug])', () => {
         'utf-8'
       );
       expect(eceDsHtml).toContain('SRM spells this programme 5 ways');
+    });
+
+    it('confirms /eligibility displays 75 conflicts and See programmes button linking to /programmes', () => {
+      const htmlPath = path.join(distDir, 'eligibility/index.html');
+      const html = fs.readFileSync(htmlPath, 'utf-8');
+
+      expect(html).toContain('In 75 of the 106 offerings');
+      expect(html).toContain('See programmes');
+      expect(html).toContain('href="/programmes"');
     });
   });
 

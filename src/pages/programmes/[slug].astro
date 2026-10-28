@@ -69,6 +69,7 @@ const fees = progOfferings.map((o) => o.annual_fee?.value as number).filter((v) 
 const minFee = fees.length > 0 ? Math.min(...fees) : 0;
 const maxFee = fees.length > 0 ? Math.max(...fees) : 0;
 const campusCount = programme.campuses.length;
+const campusNames = Array.from(new Set(progOfferings.map((o) => o.campus).filter(Boolean)));
 
 function formatInr(val: number): string {
   const s = val.toString();
@@ -98,23 +99,44 @@ const conflictOfferings = progOfferings.filter((o) => o.eligibility?.status === 
 const conflictCount = conflictOfferings.length;
 const totalOfferingsCount = progOfferings.length;
 
-// Related programmes: up to 4 sharing a tag, sorted by shared tag count desc, then name asc
+function countSharedLeadingWords(nameA: string, nameB: string): number {
+  const wordsA = nameA.toLowerCase().split(/\s+/);
+  const wordsB = nameB.toLowerCase().split(/\s+/);
+  let count = 0;
+  const minLen = Math.min(wordsA.length, wordsB.length);
+  for (let i = 0; i < minLen; i++) {
+    if (wordsA[i] === wordsB[i]) {
+      count++;
+    } else {
+      break;
+    }
+  }
+  return count;
+}
+
+// Related programmes: rank first by shared leading words, then shared tags, then name asc
 const allProgrammes = (programmesData as { programmes: ProgrammeItem[] }).programmes;
 const relatedProgrammes = allProgrammes
   .filter((p) => p.slug !== programme.slug)
   .map((p) => {
     const pTags = new Set(p.offering_ids.flatMap((id) => tagsByOffering[id] || []));
-    const sharedCount = progTagKeys.filter((t) => pTags.has(t)).length;
-    return { ...p, sharedCount };
+    const sharedTags = progTagKeys.filter((t) => pTags.has(t)).length;
+    const sharedWords = countSharedLeadingWords(programme.name, p.name);
+    const pOfferings = p.offering_ids.map((id) => offeringsMap[id]).filter(Boolean);
+    const relCampusNames = Array.from(new Set(pOfferings.map((o) => o.campus).filter(Boolean)));
+    return { ...p, sharedWords, sharedTags, campusNames: relCampusNames };
   })
-  .filter((p) => p.sharedCount > 0)
-  .sort((a, b) => b.sharedCount - a.sharedCount || a.name.localeCompare(b.name))
+  .filter((p) => p.sharedWords > 0 || p.sharedTags > 0)
+  .sort((a, b) => b.sharedWords - a.sharedWords || b.sharedTags - a.sharedTags || a.name.localeCompare(b.name))
   .slice(0, 4);
 
 // SEO & Schema.org JSON-LD
 const pageTitle = `${programme.name} at SRM: fees, seats, eligibility | SRM Compass`;
-const metaDescription = `${programme.name} B.Tech at SRM Institute of Science and Technology. ${feeSummary} Official seat intake, eligibility rules, and source verification.`;
-const canonicalUrl = `https://srm-compass.spartensid12.workers.dev/programmes/${programme.slug}`;
+const feeDesc = minFee === maxFee
+  ? `fees of ₹${formatInr(minFee)} per year across 1 campus`
+  : `fees from ₹${formatInr(minFee)} to ₹${formatInr(maxFee)} per year across ${campusCount} campuses`;
+const metaDescription = `${programme.name} B.Tech at SRMIST: ${feeDesc}, with seats, eligibility and a source for every number.`;
+const canonicalUrl = `https://srm-compass.spartensid12.workers.dev/programmes/${programme.slug}/`;
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -132,7 +154,7 @@ const jsonLd = {
     '@type': 'Offer',
     price: o.annual_fee?.value,
     priceCurrency: 'INR',
-    category: 'Annual Tuition Fee',
+    category: "Annual fee as listed in SRM's Programs Offered table",
     description: `${o.campus} campus`
   }))
 };
@@ -151,7 +173,7 @@ const jsonLd = {
       <header class="prog-header">
         <h1>{programme.name}</h1>
         <p class="prog-campuses-line">
-          Offered at {campusCount} campus{campusCount > 1 ? 'es' : ''} ({programme.campuses.join(', ')})
+          Offered at {campusCount} campus{campusCount > 1 ? 'es' : ''} ({campusNames.join(', ')})
         </p>
 
         {progTagKeys.length > 0 && (
@@ -198,7 +220,6 @@ const jsonLd = {
                 <th scope="col">Seats</th>
                 <th scope="col">Duration</th>
                 <th scope="col">Department</th>
-                <th scope="col">Source</th>
               </tr>
             </thead>
             <tbody>
@@ -233,11 +254,6 @@ const jsonLd = {
                     </td>
                     <td data-l="Department" class={!offering.department ? 'muted-text' : ''}>
                       {deptText}
-                    </td>
-                    <td data-l="Source">
-                      <a href={sourceUrl} class="source-stamp-link" target="_blank" rel="noopener">
-                        {offering.annual_fee?.source_id || 'S1'} (26 Oct 2026)
-                      </a>
                     </td>
                   </tr>
                 );
@@ -317,11 +333,16 @@ const jsonLd = {
           <details class="locators-details" style="margin-top: 20px;">
             <summary>Exact table rows from SRM source</summary>
             <ul class="locators-list">
-              {progOfferings.map((o) => (
-                <li>
-                  <strong>{o.campus}:</strong> <code>{o.annual_fee?.locator}</code>
-                </li>
-              ))}
+              {progOfferings.map((o) => {
+                const loc = o.annual_fee?.locator || 'Programs Offered table';
+                const hasHash = loc.includes('###');
+                return (
+                  <li>
+                    <strong>{o.campus}:</strong> <code>{loc}</code>
+                    {hasHash && <span class="hash-note"> (### appears in SRM's table)</span>}
+                  </li>
+                );
+              })}
             </ul>
           </details>
         </div>
@@ -336,7 +357,7 @@ const jsonLd = {
               <a href={`/programmes/${rel.slug}`} class="related-card">
                 <h3>{rel.name}</h3>
                 <p class="muted-text">
-                  Offered at {rel.campuses.length} campus{rel.campuses.length > 1 ? 'es' : ''} ({rel.campuses.join(', ')})
+                  Offered at {rel.campuses.length} campus{rel.campuses.length > 1 ? 'es' : ''} ({rel.campusNames.join(', ')})
                 </p>
               </a>
             ))}
@@ -530,6 +551,12 @@ const jsonLd = {
     padding: 2px 6px;
     border-radius: 4px;
     word-break: break-all;
+  }
+
+  .hash-note {
+    font-size: 0.85rem;
+    color: var(--muted);
+    font-style: italic;
   }
 
   .related-grid {

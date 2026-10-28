@@ -54,7 +54,8 @@ const canonicalUrl = canonical || (Astro.site ? new URL(Astro.url.pathname.endsW
             href="/apply"
             aria-current={pathname === '/apply' ? 'page' : undefined}
           >
-            How applying works
+            <span class="nav-long">How applying works</span>
+            <span class="nav-short">Apply</span>
           </a>
           <a
             href="/evidence"

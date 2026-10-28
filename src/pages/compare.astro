@@ -205,43 +205,116 @@ const minimalOfferings: CompareOffering[] = offeringsData.map((o) => ({
     background: var(--bg);
   }
 
-  /* Compare Grid & Cards */
+  /* Compare Grid & Cards (Shared Subgrid Rows for Perfect Column Alignment) */
   :global(.compare-grid) {
     display: grid;
-    gap: 20px;
+    gap: 0 20px;
     align-items: stretch;
   }
 
-  :global(.compare-grid.columns-1) {
-    grid-template-columns: minmax(0, 500px);
+  @media (min-width: 721px) {
+    :global(.compare-grid) {
+      grid-template-rows: auto auto auto auto auto auto auto auto;
+    }
+
+    :global(.compare-grid.columns-1) {
+      grid-template-columns: minmax(0, 500px);
+    }
+
+    :global(.compare-grid.columns-2) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    :global(.compare-grid.columns-3) {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    :global(.compare-card) {
+      display: grid;
+      grid-template-rows: subgrid;
+      grid-row: span 8;
+      background: var(--surface);
+      border: 1px solid var(--rule);
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+      height: 100%;
+    }
+
+    :global(.card-head) {
+      grid-row: 1;
+      padding: 16px;
+      border-bottom: 1px solid var(--rule);
+      background: var(--bg);
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    :global(.card-rows) {
+      display: grid;
+      grid-template-rows: subgrid;
+      grid-row: span 7;
+    }
+
+    :global(.compare-row) {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--rule);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      justify-content: center;
+    }
+
+    :global(.compare-row:last-child) {
+      border-bottom: none;
+    }
   }
 
-  :global(.compare-grid.columns-2) {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
+  @media (max-width: 720px) {
+    :global(.compare-grid) {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
 
-  :global(.compare-grid.columns-3) {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
+    :global(.compare-card) {
+      background: var(--surface);
+      border: 1px solid var(--rule);
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+    }
 
-  :global(.compare-card) {
-    background: var(--surface);
-    border: 1px solid var(--rule);
-    border-radius: 8px;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
-  }
+    :global(.card-head) {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--rule);
+      background: var(--bg);
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
 
-  :global(.card-head) {
-    padding: 16px;
-    border-bottom: 1px solid var(--rule);
-    background: var(--bg);
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 12px;
+    :global(.card-rows) {
+      display: flex;
+      flex-direction: column;
+    }
+
+    :global(.compare-row) {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--rule);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    :global(.compare-row:last-child) {
+      border-bottom: none;
+    }
   }
 
   :global(.card-head-info) {
@@ -289,25 +362,6 @@ const minimalOfferings: CompareOffering[] = offeringsData.map((o) => ({
     background: #FFECEC;
     color: #A01010;
     border-color: #E08080;
-  }
-
-  :global(.card-rows) {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-  }
-
-  :global(.compare-row) {
-    padding: 14px 16px;
-    border-bottom: 1px solid var(--rule);
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-
-  :global(.compare-row:last-child) {
-    border-bottom: none;
-    margin-top: auto;
   }
 
   :global(.row-label) {

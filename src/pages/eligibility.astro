@@ -79,17 +79,11 @@ const conflictCount = offeringsData.filter(
           <div class="form-grid-2">
             <div class="ctrl-group">
               <label for="exam-year" class="ctrl-label">Class 12 exam year <span class="req" aria-hidden="true">*</span></label>
-              <input
-                type="number"
-                id="exam-year"
-                name="examYear"
-                value="2026"
-                min="2020"
-                max="2035"
-                class="ctrl-input"
-                required
-              />
-              <span class="field-hint">Year in which 12th board exam is held</span>
+              <select id="exam-year" name="examYear" class="ctrl-select" required>
+                <option value="2026" selected>2026</option>
+                <option value="2027">2027</option>
+              </select>
+              <span class="field-hint">Choice of 2026 or 2027 admission exam cycle</span>
             </div>
 
             <div class="ctrl-group">
@@ -101,6 +95,7 @@ const conflictCount = offeringsData.filter(
                 class="ctrl-input"
                 required
               />
+              <span id="dob-error" class="field-error-msg" hidden></span>
               <span class="field-hint">Must be at least 16y 6m on 31 July of exam year</span>
             </div>
           </div>
@@ -117,13 +112,16 @@ const conflictCount = offeringsData.filter(
           <!-- 5. Subjects behind Aggregate -->
           <!-- For General Group -->
           <div id="general-subjects-row" class="subjects-card">
-            <span class="ctrl-label">Three qualifying subjects for aggregate calculation</span>
+            <span class="ctrl-label">Mandatory &amp; qualifying subjects</span>
             <p class="subjects-desc">
-              Physics and Mathematics are fixed for General B.Tech programmes.
+              Physics and Mathematics are mandatory for General B.Tech programmes. Unticked means you do not meet minimum criteria.
             </p>
-            <div class="subject-badges">
-              <span class="fixed-pill">✓ Physics (mandatory)</span>
-              <label class="math-checkbox-label">
+            <div class="subject-checkboxes">
+              <label class="subject-checkbox-label">
+                <input type="checkbox" id="has-physics" name="hasPhysics" checked />
+                <span>Physics (mandatory)</span>
+              </label>
+              <label class="subject-checkbox-label">
                 <input type="checkbox" id="has-math" name="hasMath" checked />
                 <span>Mathematics (mandatory)</span>
               </label>
@@ -150,26 +148,27 @@ const conflictCount = offeringsData.filter(
               <option value="PCM">PCM (Physics, Chemistry, Mathematics)</option>
               <option value="PMB">PMB (Physics, Mathematics, Biology / Biotechnology)</option>
               <option value="PCB">PCB (Physics, Chemistry, Biology / Biotechnology) — additional 4-credit course in Mathematics required</option>
-              <option value="Botany and Zoology">Botany and Zoology (Physics, Chemistry, Botany &amp; Zoology) — additional 4-credit course in Mathematics required</option>
+              <option value="Z (Botany or Zoology)">Z (Botany or Zoology) — additional 4-credit course in Mathematics required</option>
             </select>
-            <span class="field-hint">Candidates without 10+2 Mathematics must take a 4-credit Mathematics course in year 1.</span>
+            <span class="field-hint">Candidates without 10+2 Mathematics must take an additional 4-credit course in Mathematics in year 1.</span>
           </div>
 
           <!-- 6. Aggregate Percentage -->
           <div class="ctrl-group">
-            <label for="aggregate" class="ctrl-label">Aggregate percent across the 3 subjects (0 to 100, one decimal) <span class="req" aria-hidden="true">*</span></label>
+            <label for="aggregate" class="ctrl-label">Aggregate percent across the 3 subjects (0 to 100, one decimal at most) <span class="req" aria-hidden="true">*</span></label>
             <input
               type="number"
               id="aggregate"
               name="aggregate"
               min="0"
               max="100"
-              step="0.1"
+              step="any"
               placeholder="e.g. 60.0"
               class="ctrl-input"
               required
             />
-            <span class="field-hint">Published minimum threshold is at least 60.0% aggregate across the 3 subjects.</span>
+            <span id="aggregate-error" class="field-error-msg" hidden></span>
+            <span class="field-hint">Published minimum threshold is at least 60.0% aggregate across the 3 subjects. Evaluated without rounding.</span>
           </div>
 
           <!-- Action buttons -->
@@ -369,6 +368,48 @@ const conflictCount = offeringsData.filter(
     gap: 12px;
   }
 
+  .subject-checkboxes {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .subject-checkbox-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-weight: 600;
+    font-size: 0.88rem;
+    color: var(--ink);
+    cursor: pointer;
+    min-height: 38px;
+  }
+
+  .subject-checkbox-label input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #0c4da2;
+    cursor: pointer;
+  }
+
+  .field-error-msg {
+    color: #c93b2b;
+    font-size: 0.82rem;
+    font-weight: 600;
+    margin-top: 4px;
+    display: block;
+  }
+
+  .input-has-error {
+    border-color: #c93b2b !important;
+    outline: 2px solid rgba(201, 59, 43, 0.25) !important;
+  }
+
   .fixed-pill {
     display: inline-flex;
     align-items: center;
@@ -431,6 +472,32 @@ const conflictCount = offeringsData.filter(
   :global(.result-card.verdict-fails) {
     border-color: #c93b2b;
     background: rgba(201, 59, 43, 0.05);
+  }
+
+  :global(.result-card.verdict-error) {
+    border-color: #c93b2b;
+    background: rgba(201, 59, 43, 0.06);
+  }
+
+  :global(.verdict-error .result-badge) {
+    background: #c93b2b;
+  }
+
+  :global(.error-intro) {
+    font-size: 0.95rem;
+    color: #c93b2b;
+    font-weight: 600;
+    margin: 0 0 10px 0;
+  }
+
+  :global(.error-reasons) {
+    color: #c93b2b;
+  }
+
+  :global(.rule-line) {
+    margin: 4px 0;
+    font-size: 0.88rem;
+    color: var(--text);
   }
 
   :global(.result-card.verdict-refer) {

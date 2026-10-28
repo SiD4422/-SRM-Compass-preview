@@ -251,8 +251,8 @@ export function renderCompareGrid(
                 <div class="compare-row">
                   <span class="row-label">Source check</span>
                   <div class="row-val">
-                    <a href="${escapeHtml(o.source_url)}" target="_blank" rel="noopener" class="source-link">
-                      SRMIST Programs Offered table (${escapeHtml(o.captured_on)})
+                    <a href="${escapeHtml(o.source_url)}" target="_blank" rel="noopener" class="stamp">
+                      Verified ${escapeHtml(o.captured_on)}
                     </a>
                   </div>
                 </div>

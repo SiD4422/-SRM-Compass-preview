@@ -129,7 +129,7 @@ header.top {
 
 header.top .w {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 12px 28px;
   align-items: center;
   justify-content: space-between;
@@ -142,6 +142,8 @@ header.top .w {
   text-decoration: none;
   display: inline-flex;
   align-items: center;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .brand i {
@@ -153,7 +155,7 @@ header.top .w {
 
 nav[aria-label="Main"] {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   align-items: center;
   gap: 4px;
 }
@@ -167,6 +169,52 @@ nav[aria-label="Main"] a {
   min-height: 48px;
   font-weight: 500;
   border-radius: 4px;
+  white-space: nowrap;
+}
+
+.nav-short {
+  display: none;
+}
+
+.nav-long {
+  display: inline;
+}
+
+@media (max-width: 600px) {
+  header.top .w {
+    min-height: 44px;
+    padding: 0 10px;
+    gap: 6px;
+    flex-wrap: nowrap;
+  }
+  .brand {
+    font-size: 1.05rem;
+  }
+  .brand i {
+    font-size: 1rem;
+    margin-right: 0.25rem;
+  }
+  nav[aria-label="Main"] {
+    gap: 2px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    flex-shrink: 1;
+  }
+  nav[aria-label="Main"]::-webkit-scrollbar {
+    display: none;
+  }
+  nav[aria-label="Main"] a {
+    padding: 6px 7px;
+    min-height: 36px;
+    font-size: 0.78rem;
+  }
+  .nav-long {
+    display: none;
+  }
+  .nav-short {
+    display: inline;
+  }
 }
 
 nav[aria-label="Main"] a:hover {

@@ -9,8 +9,8 @@ const conflictCount = offeringsData.filter(
 ---
 
 <Layout
-  title="Eligibility Criteria — SRM Compass"
-  description="Official 2026-27 B.Tech eligibility criteria and transparent documentation of source conflicts on SRM’s portal."
+  title="Eligibility Criteria & Checker — SRM Compass"
+  description="Check your B.Tech admission eligibility against SRM's official 2026-27 rules. 100% private in-browser evaluation with source citations."
 >
   <section class="blk">
     <div class="w">
@@ -19,6 +19,171 @@ const conflictCount = offeringsData.filter(
         Official admission requirements for B.Tech programmes across SRMIST campuses for the 2026–2027 academic cycle.
       </p>
 
+      <!-- Interactive Eligibility Checker Tool (id 'check') -->
+      <section id="check" class="checker-card" aria-labelledby="checker-title">
+        <div class="checker-intro">
+          <h2 id="checker-title">Check your B.Tech eligibility</h2>
+          <p class="checker-desc">
+            Check your marks, age, subjects, and board against SRM’s published 2026–2027 minimum admission criteria.
+          </p>
+          <div class="privacy-note" role="note">
+            <span class="privacy-icon" aria-hidden="true">🔒</span>
+            <span>
+              <strong>Privacy guarantee:</strong> Nothing is sent, stored or put in the URL. All evaluation runs 100% locally in your browser.
+            </span>
+          </div>
+        </div>
+
+        <form id="eligibility-form" class="checker-form" action="#check" method="post" novalidate>
+          <!-- 1. Resident Indian (yes/no) -->
+          <div class="form-row">
+            <fieldset class="ctrl-fieldset">
+              <legend class="ctrl-label">Are you a resident Indian? <span class="req" aria-hidden="true">*</span></legend>
+              <div class="radio-options">
+                <label class="radio-label">
+                  <input type="radio" name="resident" value="yes" checked />
+                  <span>Yes, Resident Indian</span>
+                </label>
+                <label class="radio-label">
+                  <input type="radio" name="resident" value="no" />
+                  <span>No (NRI / International candidate)</span>
+                </label>
+              </div>
+            </fieldset>
+          </div>
+
+          <!-- 2. Qualifying Board & Class 12 Status -->
+          <div class="form-grid-2">
+            <div class="ctrl-group">
+              <label for="board-select" class="ctrl-label">Qualifying board <span class="req" aria-hidden="true">*</span></label>
+              <select id="board-select" name="board" class="ctrl-select" required>
+                <option value="CBSE">CBSE (Central Board of Secondary Education)</option>
+                <option value="ISCE">ISCE / ISC (Council for the Indian School Certificate Examinations)</option>
+                <option value="State board">State board</option>
+                <option value="NIOS">NIOS (National Institute of Open Schooling)</option>
+                <option value="IB">IB (International Baccalaureate)</option>
+                <option value="GCE A-level">GCE A-level</option>
+              </select>
+            </div>
+
+            <div class="ctrl-group">
+              <label for="status-select" class="ctrl-label">Class 12 status <span class="req" aria-hidden="true">*</span></label>
+              <select id="status-select" name="status" class="ctrl-select" required>
+                <option value="passed">Passed Class 12 (10+2 pattern)</option>
+                <option value="appearing">Appearing in the exam year</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- 3. Class 12 Exam Year & Date of Birth -->
+          <div class="form-grid-2">
+            <div class="ctrl-group">
+              <label for="exam-year" class="ctrl-label">Class 12 exam year <span class="req" aria-hidden="true">*</span></label>
+              <input
+                type="number"
+                id="exam-year"
+                name="examYear"
+                value="2026"
+                min="2020"
+                max="2035"
+                class="ctrl-input"
+                required
+              />
+              <span class="field-hint">Year in which 12th board exam is held</span>
+            </div>
+
+            <div class="ctrl-group">
+              <label for="dob" class="ctrl-label">Date of birth <span class="req" aria-hidden="true">*</span></label>
+              <input
+                type="date"
+                id="dob"
+                name="dob"
+                class="ctrl-input"
+                required
+              />
+              <span class="field-hint">Must be at least 16y 6m on 31 July of exam year</span>
+            </div>
+          </div>
+
+          <!-- 4. Programme Group -->
+          <div class="ctrl-group">
+            <label for="group-select" class="ctrl-label">Programme group <span class="req" aria-hidden="true">*</span></label>
+            <select id="group-select" name="programmeGroup" class="ctrl-select" required>
+              <option value="general">General (CSE, EEE, ECE, Mechanical, Civil, Aerospace, AI, etc.)</option>
+              <option value="biotech">Biotechnology, Genetic Engineering or Biomedical</option>
+            </select>
+          </div>
+
+          <!-- 5. Subjects behind Aggregate -->
+          <!-- For General Group -->
+          <div id="general-subjects-row" class="subjects-card">
+            <span class="ctrl-label">Three qualifying subjects for aggregate calculation</span>
+            <p class="subjects-desc">
+              Physics and Mathematics are fixed for General B.Tech programmes.
+            </p>
+            <div class="subject-badges">
+              <span class="fixed-pill">✓ Physics (mandatory)</span>
+              <label class="math-checkbox-label">
+                <input type="checkbox" id="has-math" name="hasMath" checked />
+                <span>Mathematics (mandatory)</span>
+              </label>
+            </div>
+            <div class="ctrl-group" style="margin-top: 14px;">
+              <label for="third-subject" class="ctrl-label">Third qualifying subject</label>
+              <select id="third-subject" name="thirdSubject" class="ctrl-select">
+                <option value="Chemistry">Chemistry</option>
+                <option value="Computer Science">Computer Science</option>
+                <option value="Information Technology">Information Technology</option>
+                <option value="Informatics Practices">Informatics Practices</option>
+                <option value="Biology">Biology</option>
+                <option value="Biotechnology">Biotechnology</option>
+                <option value="Engineering Graphics">Engineering Graphics</option>
+                <option value="Botany and Zoology">Botany and Zoology</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- For Biotech Group -->
+          <div id="biotech-subjects-row" class="subjects-card" hidden>
+            <label for="biotech-combo" class="ctrl-label">Three subjects combination <span class="req" aria-hidden="true">*</span></label>
+            <select id="biotech-combo" name="biotechCombo" class="ctrl-select">
+              <option value="PCM">PCM (Physics, Chemistry, Mathematics)</option>
+              <option value="PMB">PMB (Physics, Mathematics, Biology / Biotechnology)</option>
+              <option value="PCB">PCB (Physics, Chemistry, Biology / Biotechnology) — Math bridge required</option>
+              <option value="Botany and Zoology">Botany and Zoology (Physics, Chemistry, Botany &amp; Zoology) — Math bridge required</option>
+            </select>
+            <span class="field-hint">Candidates without 10+2 Mathematics must take a 4-credit Mathematics course in year 1.</span>
+          </div>
+
+          <!-- 6. Aggregate Percentage -->
+          <div class="ctrl-group">
+            <label for="aggregate" class="ctrl-label">Aggregate percent across the 3 subjects (0 to 100, one decimal) <span class="req" aria-hidden="true">*</span></label>
+            <input
+              type="number"
+              id="aggregate"
+              name="aggregate"
+              min="0"
+              max="100"
+              step="0.1"
+              placeholder="e.g. 60.0"
+              class="ctrl-input"
+              required
+            />
+            <span class="field-hint">Published minimum threshold is at least 60.0% aggregate across the 3 subjects.</span>
+          </div>
+
+          <!-- Action buttons -->
+          <div class="checker-actions">
+            <button type="submit" class="btn p">Check eligibility</button>
+            <button type="button" id="checker-reset-btn" class="btn s">Reset</button>
+          </div>
+        </form>
+
+        <!-- Result Mount Container -->
+        <div id="checker-result" class="checker-result-wrapper" role="region" aria-live="polite" hidden></div>
+      </section>
+
+      <!-- Source Conflict Note -->
       <div class="note">
         <p>
           <b>Source conflict.</b> We show SRM’s 2026-27 rule: at least 60% aggregate in Physics, Mathematics and one more qualifying subject. Biotechnology and biomedical programmes need 60% in PCM, PMB, PCB or similar combinations. In {conflictCount} of the {totalOfferings} offerings in SRM’s fee table, older text still says 50% and cites SRMJEEE (UG) 2022.
@@ -39,6 +204,7 @@ const conflictCount = offeringsData.filter(
         </details>
       </div>
 
+      <!-- 2026-2027 Rule Breakdown Card -->
       <div class="card">
         <h2>2026–2027 Rule Breakdown</h2>
         <ol class="st">
@@ -63,4 +229,357 @@ const conflictCount = offeringsData.filter(
       </div>
     </div>
   </section>
+
+  <!-- Client runner importing all logic from src/lib/eligibility -->
+  <script>
+    import { initEligibilityChecker } from '../lib/eligibility';
+    initEligibilityChecker();
+  </script>
 </Layout>
+
+<style>
+  .checker-card {
+    background: var(--surface);
+    border: 2px solid var(--rule);
+    border-radius: 8px;
+    padding: 32px 24px;
+    margin: 24px 0 36px 0;
+  }
+
+  .checker-intro {
+    margin-bottom: 24px;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 20px;
+  }
+
+  .checker-intro h2 {
+    font-size: clamp(1.6rem, 3.5vw, 2.1rem);
+    margin-bottom: 8px;
+  }
+
+  .checker-desc {
+    color: var(--muted);
+    font-size: 1.05rem;
+    margin-bottom: 16px;
+  }
+
+  .privacy-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    background: rgba(12, 77, 162, 0.08);
+    border: 1px solid rgba(12, 77, 162, 0.25);
+    color: var(--ink);
+    padding: 10px 14px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    line-height: 1.4;
+  }
+
+  .privacy-icon {
+    font-size: 1.1rem;
+    flex-shrink: 0;
+  }
+
+  .checker-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .form-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  @media (min-width: 680px) {
+    .form-grid-2 {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .ctrl-fieldset {
+    border: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .ctrl-label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: var(--ink);
+    font-size: 0.95rem;
+  }
+
+  .req {
+    color: #c93b2b;
+    font-weight: bold;
+  }
+
+  .field-hint {
+    display: block;
+    font-size: 0.82rem;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+
+  .radio-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 6px;
+  }
+
+  .radio-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.95rem;
+    cursor: pointer;
+    min-height: 48px;
+    padding: 4px 8px;
+  }
+
+  .radio-label input[type="radio"] {
+    width: 20px;
+    height: 20px;
+    accent-color: #0c4da2;
+    cursor: pointer;
+  }
+
+  .subjects-card {
+    background: rgba(0, 0, 0, 0.02);
+    border: 1px dashed var(--rule);
+    border-radius: 6px;
+    padding: 16px 20px;
+  }
+
+  .subjects-desc {
+    font-size: 0.9rem;
+    color: var(--muted);
+    margin: 4px 0 10px 0;
+  }
+
+  .subject-badges {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .fixed-pill {
+    display: inline-flex;
+    align-items: center;
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-weight: 600;
+    font-size: 0.88rem;
+    color: var(--ink);
+    min-height: 38px;
+  }
+
+  .math-checkbox-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-weight: 600;
+    font-size: 0.88rem;
+    color: var(--ink);
+    cursor: pointer;
+    min-height: 38px;
+  }
+
+  .math-checkbox-label input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #0c4da2;
+    cursor: pointer;
+  }
+
+  .checker-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 8px;
+  }
+
+  /* Result Box Styles */
+  .checker-result-wrapper {
+    margin-top: 28px;
+  }
+
+  :global(.result-card) {
+    border-radius: 8px;
+    padding: 24px;
+    border: 2px solid;
+    background: var(--surface);
+  }
+
+  :global(.result-card.verdict-meets) {
+    border-color: var(--ok);
+    background: rgba(27, 127, 92, 0.05);
+  }
+
+  :global(.result-card.verdict-fails) {
+    border-color: #c93b2b;
+    background: rgba(201, 59, 43, 0.05);
+  }
+
+  :global(.result-card.verdict-refer) {
+    border-color: var(--gold);
+    background: #FFF8E6;
+  }
+
+  :global(.result-header) {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+
+  :global(.result-badge) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    font-weight: bold;
+    font-size: 1.1rem;
+    color: #ffffff;
+    flex-shrink: 0;
+  }
+
+  :global(.verdict-meets .result-badge) {
+    background: var(--ok);
+  }
+
+  :global(.verdict-fails .result-badge) {
+    background: #c93b2b;
+  }
+
+  :global(.verdict-refer .result-badge) {
+    background: var(--gold);
+    color: #5C3800;
+  }
+
+  :global(.result-headline) {
+    font-size: 1.35rem;
+    margin: 0;
+    color: var(--ink);
+  }
+
+  :global(.result-reasons) {
+    margin: 0 0 16px 0;
+    padding-left: 24px;
+    line-height: 1.5;
+  }
+
+  :global(.result-reasons li) {
+    margin-bottom: 6px;
+    font-size: 0.95rem;
+  }
+
+  :global(.result-math-note) {
+    background: rgba(228, 179, 22, 0.15);
+    border-left: 4px solid var(--gold);
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    border-radius: 0 6px 6px 0;
+    font-size: 0.95rem;
+  }
+
+  :global(.result-math-note strong) {
+    display: block;
+    margin-bottom: 4px;
+    color: #5C3800;
+  }
+
+  :global(.result-math-note p) {
+    margin: 0;
+  }
+
+  :global(.result-rule) {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    padding: 14px 18px;
+    border-radius: 6px;
+    margin-bottom: 14px;
+  }
+
+  :global(.result-rule h4) {
+    margin: 0 0 6px 0;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--muted);
+  }
+
+  :global(.rule-quote) {
+    font-style: italic;
+    font-size: 0.9rem;
+    line-height: 1.45;
+    margin: 0 0 10px 0;
+    color: var(--text);
+  }
+
+  :global(.result-source-row) {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+  }
+
+  :global(.source-link) {
+    font-size: 0.88rem;
+    color: var(--link);
+    text-decoration: underline;
+  }
+
+  :global(.result-disclaimer) {
+    font-size: 0.88rem;
+    color: var(--muted);
+    border-top: 1px solid var(--rule);
+    padding-top: 12px;
+    margin-bottom: 8px;
+    line-height: 1.4;
+  }
+
+  :global(.result-privacy) {
+    font-size: 0.82rem;
+    color: var(--muted);
+  }
+
+  /* Dark mode overrides */
+  @media (prefers-color-scheme: dark) {
+    :global(:root:not([data-theme="light"])) :global(.result-card.verdict-refer) {
+      background: #242014;
+      border-color: #E4B316;
+    }
+    :global(:root:not([data-theme="light"])) :global(.result-math-note) {
+      background: rgba(228, 179, 22, 0.12);
+    }
+    :global(:root:not([data-theme="light"])) :global(.result-math-note strong) {
+      color: #F2B766;
+    }
+  }
+
+  :global(:root[data-theme="dark"]) :global(.result-card.verdict-refer) {
+    background: #242014;
+    border-color: #E4B316;
+  }
+  :global(:root[data-theme="dark"]) :global(.result-math-note) {
+    background: rgba(228, 179, 22, 0.12);
+  }
+  :global(:root[data-theme="dark"]) :global(.result-math-note strong) {
+    color: #F2B766;
+  }
+</style>

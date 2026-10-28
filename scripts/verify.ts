@@ -53,6 +53,173 @@ export interface VerificationResult {
 export const ALLOWED_STATUSES = new Set(['verified', 'conflict', 'unverified']);
 export const FACT_FIELDS = ['annual_fee', 'intake', 'duration', 'department', 'eligibility'] as const;
 
+export interface StoryFact {
+  text: string;
+  source_id: string;
+  captured_on: string;
+  tier: 'sourced' | 'verified';
+}
+
+export interface StorySource {
+  id: string;
+  title: string;
+  url: string;
+  kind?: string;
+  captured_on?: string;
+  note?: string;
+}
+
+export interface Story {
+  id: string;
+  title: string;
+  kind: string;
+  programme_slugs: string[];
+  link_basis: string;
+  facts: StoryFact[];
+}
+
+export interface StoriesData {
+  note?: string;
+  sources: StorySource[];
+  stories: Story[];
+}
+
+export interface ProgrammeEntry {
+  slug: string;
+  name: string;
+  [key: string]: unknown;
+}
+
+/**
+ * Pure verification function that validates stories against stories.json sources and programmes.json slugs.
+ */
+export function verifyStories(storiesData: unknown, programmesData: unknown): VerificationResult {
+  const errors: ValidationError[] = [];
+
+  if (!storiesData || typeof storiesData !== 'object') {
+    return {
+      valid: false,
+      errors: [{ id: 'ROOT', field: 'storiesData', message: 'stories data is not an object' }]
+    };
+  }
+
+  const sData = storiesData as Partial<StoriesData>;
+  if (!Array.isArray(sData.sources)) {
+    return {
+      valid: false,
+      errors: [{ id: 'ROOT', field: 'sources', message: 'stories sources must be an array' }]
+    };
+  }
+
+  if (!Array.isArray(sData.stories)) {
+    return {
+      valid: false,
+      errors: [{ id: 'ROOT', field: 'stories', message: 'stories list must be an array' }]
+    };
+  }
+
+  let progList: unknown[] = [];
+  if (Array.isArray(programmesData)) {
+    progList = programmesData;
+  } else if (programmesData && typeof programmesData === 'object' && Array.isArray((programmesData as { programmes?: unknown[] }).programmes)) {
+    progList = (programmesData as { programmes: unknown[] }).programmes;
+  } else {
+    return {
+      valid: false,
+      errors: [{ id: 'ROOT', field: 'programmesData', message: 'programmes data must be an array or contain a programmes array' }]
+    };
+  }
+
+  const validSourceIds = new Set<string>();
+  for (const src of sData.sources) {
+    if (src && typeof src === 'object' && typeof src.id === 'string' && src.id.trim() !== '') {
+      validSourceIds.add(src.id);
+    }
+  }
+
+  const validProgrammeSlugs = new Set<string>();
+  for (const prog of progList) {
+    if (prog && typeof prog === 'object' && 'slug' in prog && typeof (prog as ProgrammeEntry).slug === 'string') {
+      validProgrammeSlugs.add((prog as ProgrammeEntry).slug);
+    }
+  }
+
+  const seenStoryIds = new Set<string>();
+
+  for (const storyItem of sData.stories) {
+    if (!storyItem || typeof storyItem !== 'object') {
+      errors.push({ id: 'UNKNOWN', field: 'story', message: 'Story entry must be an object' });
+      continue;
+    }
+
+    const story = storyItem as Partial<Story>;
+    const storyId = typeof story.id === 'string' && story.id.trim() !== '' ? story.id : 'UNKNOWN_STORY_ID';
+
+    if (seenStoryIds.has(storyId)) {
+      errors.push({ id: storyId, field: 'id', message: `Duplicate story id: '${storyId}'` });
+    } else {
+      seenStoryIds.add(storyId);
+    }
+
+    // Check programme_slugs: every programme_slug must exist in programmes.json
+    if (!Array.isArray(story.programme_slugs)) {
+      errors.push({ id: storyId, field: 'programme_slugs', message: 'programme_slugs must be an array' });
+    } else {
+      for (const slug of story.programme_slugs) {
+        if (!validProgrammeSlugs.has(slug)) {
+          errors.push({
+            id: storyId,
+            field: 'programme_slugs',
+            message: `Story programme_slug '${slug}' does not exist in programmes.json`
+          });
+        }
+      }
+    }
+
+    // Check facts
+    if (!Array.isArray(story.facts)) {
+      errors.push({ id: storyId, field: 'facts', message: 'facts must be an array' });
+    } else {
+      story.facts.forEach((fact, idx) => {
+        const factField = `facts[${idx}]`;
+        if (!fact || typeof fact !== 'object') {
+          errors.push({ id: storyId, field: factField, message: 'fact must be an object' });
+          return;
+        }
+
+        // Rule 1: every story fact has a source_id found in stories.json sources and a captured_on
+        if (!fact.source_id || typeof fact.source_id !== 'string' || fact.source_id.trim() === '') {
+          errors.push({ id: storyId, field: `${factField}.source_id`, message: 'Story fact has no source_id' });
+        } else if (!validSourceIds.has(fact.source_id)) {
+          errors.push({
+            id: storyId,
+            field: `${factField}.source_id`,
+            message: `Story fact references unknown source_id '${fact.source_id}' not found in stories.json sources`
+          });
+        }
+
+        if (!fact.captured_on || typeof fact.captured_on !== 'string' || fact.captured_on.trim() === '') {
+          errors.push({ id: storyId, field: `${factField}.captured_on`, message: 'Story fact has no captured_on' });
+        }
+
+        // Rule 2: tier must be 'sourced' or 'verified'
+        if (fact.tier !== 'sourced' && fact.tier !== 'verified') {
+          errors.push({
+            id: storyId,
+            field: `${factField}.tier`,
+            message: `Story fact has invalid tier '${fact.tier}'. Tier must be 'sourced' or 'verified'`
+          });
+        }
+      });
+    }
+  }
+
+  return {
+    valid: errors.length === 0,
+    errors
+  };
+}
+
 /**
  * Pure verification function that validates offerings against verification rules.
  */
@@ -293,6 +460,33 @@ export function runCli(customOfferingsPath?: string, customSourcesPath?: string)
       totalErrors += result.errors.length;
     } else {
       console.log(`\n✅ VERIFICATION PASSED for ${relPath}: All ${offerings.length} offerings verified successfully against ${(sources as unknown[]).length} sources.`);
+    }
+  }
+
+  // Also verify stories.json if present
+  const storiesPath = path.resolve(baseDir, 'data', 'stories.json');
+  const programmesPath = path.resolve(baseDir, 'data', 'programmes.json');
+  if (fs.existsSync(storiesPath) && fs.existsSync(programmesPath)) {
+    try {
+      const storiesData = JSON.parse(fs.readFileSync(storiesPath, 'utf-8'));
+      const programmesData = JSON.parse(fs.readFileSync(programmesPath, 'utf-8'));
+      const storiesResult = verifyStories(storiesData, programmesData);
+      const relStoriesPath = path.relative(baseDir, storiesPath);
+
+      if (!storiesResult.valid) {
+        console.error(`\n❌ VERIFICATION FAILED for ${relStoriesPath}: Found ${storiesResult.errors.length} error(s):\n`);
+        for (const err of storiesResult.errors) {
+          console.error(`  - Offending Story: "${err.id}" | Offending Field: "${err.field}" | Reason: ${err.message}`);
+        }
+        console.error('');
+        totalErrors += storiesResult.errors.length;
+      } else {
+        const progCount = Array.isArray(programmesData) ? programmesData.length : ((programmesData as { programmes: unknown[] }).programmes?.length ?? 0);
+        console.log(`\n✅ VERIFICATION PASSED for ${relStoriesPath}: All ${(storiesData as { stories: unknown[] }).stories?.length} stories verified successfully against ${(storiesData as { sources: unknown[] }).sources?.length} sources and ${progCount} programmes.`);
+      }
+    } catch (e) {
+      console.error(`[VERIFY ERROR] Failed to parse stories or programmes JSON:`, e);
+      totalErrors++;
     }
   }
 

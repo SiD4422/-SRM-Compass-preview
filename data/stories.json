@@ -1,0 +1,265 @@
+{
+ "note": "Facts are as published by the named source. Tier sourced means not independently checked by SRM Compass.",
+ "sources": [
+  {
+   "id": "B1",
+   "title": "SRMIST Admission Brochure 2026-2027, Start-ups in campus section",
+   "url": "https://webstor.srmist.edu.in/web_assets/downloads/2026/srm-admission-brochure-2026-2027.pdf",
+   "kind": "official brochure",
+   "captured_on": "2026-10-28",
+   "note": "Founder and company facts are as published by SRM. Not independently checked."
+  },
+  {
+   "id": "B2",
+   "title": "SRMIST Admission Brochure 2026-2027, accreditation section",
+   "url": "https://webstor.srmist.edu.in/web_assets/downloads/2026/srm-admission-brochure-2026-2027.pdf",
+   "kind": "official brochure",
+   "captured_on": "2026-10-28",
+   "note": "Text layout is garbled in extraction; confirm against the page image before use."
+  },
+  {
+   "id": "C1",
+   "title": "Formula Bharat 2026 news, Evo India",
+   "url": "https://www.evoindia.com/motorsport/motorsport-news/formula-bharat-2026-news-587338",
+   "kind": "news",
+   "captured_on": "2026-10-28",
+   "note": "Reports the Combustion category result."
+  },
+  {
+   "id": "C2",
+   "title": "SRMIST Department of Automobile Engineering, awards and accolades",
+   "url": "https://newsitepreview.srmist.edu.in/department/department-of-automobile-engineering/awards-accolades/",
+   "kind": "official page (staging)",
+   "captured_on": "2026-10-28",
+   "note": "Staging subdomain of srmist.edu.in; confirm on the live SRM site."
+  },
+  {
+   "id": "C3",
+   "title": "Formula Student Germany team page for Camber Racing",
+   "url": "https://www.formulastudent.de/teams/fsc/details/tid/552",
+   "kind": "third-party page",
+   "captured_on": "2026-10-28",
+   "note": "Team description only."
+  }
+ ],
+ "stories": [
+  {
+   "id": "abhinava-rizel",
+   "title": "Abhinava Rizel: EV motors",
+   "kind": "startup",
+   "programme_slugs": [
+    "mechanical-engineering",
+    "automobile-engineering"
+   ],
+   "link_basis": "Brochure says the founders are alumni of the Mechanical and Automotive departments.",
+   "facts": [
+    {
+     "text": "Developed electric-vehicle motors using a hybrid radial-flux design between synchronous reluctance (SynRM) and permanent-magnet synchronous (PMSM) motors.",
+     "source_id": "B1",
+     "captured_on": "2026-10-28",
+     "tier": "sourced"
+    },
+    {
+     "text": "Reports 8 patents filed and another 10 under filing for EV motor and powertrain technology.",
+     "source_id": "B1",
+     "captured_on": "2026-10-28",
+     "tier": "sourced"
+    },
+    {
+     "text": "Secured an investment from MM Forgings Ltd.",
+     "source_id": "B1",
+     "captured_on": "2026-10-28",
+     "tier": "sourced"
+    },
+    {
+     "text": "Founded by alumni of the Mechanical and Automotive departments.",
+     "source_id": "B1",
+     "captured_on": "2026-10-28",
+     "tier": "sourced"
+    }
+   ]
+  },
+  {
+   "id": "torus-robotics",
+   "title": "Torus Robotics: defence ground vehicles",
+   "kind": "startup",
+   "programme_slugs": [
+    "mechatronics-engineering"
+   ],
+   "link_basis": "Brochure says the founders are alumni of the Mechatronics department.",
+   "facts": [
+    {
+     "text": "Designs and delivers fully electric unmanned ground vehicles with a 6-degree-of-freedom robotic arm for Indian defence services.",
+     "source_id": "B1",
+     "captured_on": "2026-10-28",
+     "tier": "sourced"
+    },
+    {
+     "text": "Recognised by IDEX-DIO as a Pioneer Defence Innovator.",
+     "source_id": "B1",
+     "captured_on": "2026-10-28",
+     "tier": "sourced"
+    },
+    {
+     "text": "Signed an MOU with BEML at the Aero India 2021 expo to develop an AI-based unmanned ground vehicle (2021).",
+     "source_id": "B1",
+     "captured_on": "2026-10-28",
+     "tier": "sourced"
+    },
+    {
+     "text": "Founded by alumni of the Mechatronics department.",
+     "source_id": "B1",
+     "captured_on": "2026-10-28",
+     "tier": "sourced"
+    }
+   ]
+  },
+  {
+   "id": "neur-industries",
+   "title": "Neur Industries: AR/VR, motors and actuators",
+   "kind": "startup",
+   "programme_slugs": [
+    "mechatronics-engineering"
+   ],
+   "link_basis": "Brochure says the founders are alumni of the Mechatronics department.",
+   "facts": [
+    {
+     "text": "Works on AR/VR, motors and actuators; its Neur XR Studios builds enterprise XR solutions.",
+     "source_id": "B1",
+     "captured_on": "2026-10-28",
+     "tier": "sourced"
+    },
+    {
+     "text": "Grew from three founders to a team of 20 and is bootstrapped, per the brochure.",
+     "source_id": "B1",
+     "captured_on": "2026-10-28",
+     "tier": "sourced"
+    },
+    {
+     "text": "Reports over 100 enterprise solutions deployed.",
+     "source_id": "B1",
+     "captured_on": "2026-10-28",
+     "tier": "sourced"
+    },
+    {
+     "text": "Founded by alumni of the Mechatronics department.",
+     "source_id": "B1",
+     "captured_on": "2026-10-28",
+     "tier": "sourced"
+    }
+   ]
+  },
+  {
+   "id": "weezy-streetwear",
+   "title": "Weezy Streetwear: fast fashion",
+   "kind": "startup",
+   "programme_slugs": [
+    "electronics-and-communication-engineering"
+   ],
+   "link_basis": "Brochure says the founder was a student of the ECE department.",
+   "facts": [
+    {
+     "text": "A fast-fashion label reporting a customer cohort of 12,000+.",
+     "source_id": "B1",
+     "captured_on": "2026-10-28",
+     "tier": "sourced"
+    },
+    {
+     "text": "Reports raising Rs 70 lakh through an angel pre-seed round and the Startup India Seed Fund Scheme.",
+     "source_id": "B1",
+     "captured_on": "2026-10-28",
+     "tier": "sourced"
+    },
+    {
+     "text": "Founded by a student of the ECE department.",
+     "source_id": "B1",
+     "captured_on": "2026-10-28",
+     "tier": "sourced"
+    }
+   ]
+  },
+  {
+   "id": "paperplane",
+   "title": "Paperplane: digital clinics on WhatsApp",
+   "kind": "startup",
+   "programme_slugs": [],
+   "link_basis": "Brochure names the School of Computing, not a programme.",
+   "facts": [
+    {
+     "text": "Lets doctors and hospitals run digital clinics on WhatsApp, automating appointments, prescriptions and follow-ups.",
+     "source_id": "B1",
+     "captured_on": "2026-10-28",
+     "tier": "sourced"
+    },
+    {
+     "text": "Reports raising Rs 3 crore in a round led by Cornerstone Venture Partners Fund.",
+     "source_id": "B1",
+     "captured_on": "2026-10-28",
+     "tier": "sourced"
+    },
+    {
+     "text": "Founded by students of the School of Computing.",
+     "source_id": "B1",
+     "captured_on": "2026-10-28",
+     "tier": "sourced"
+    }
+   ]
+  },
+  {
+   "id": "surelocal",
+   "title": "SureLocal: pharmacy supply chain",
+   "kind": "startup",
+   "programme_slugs": [],
+   "link_basis": "Founder studied at the School of Pharmacy, outside the B.Tech programmes.",
+   "facts": [
+    {
+     "text": "A B2B commerce company helping pharma retailers with technology and supply chain, focused on tier 2 and tier 3 cities.",
+     "source_id": "B1",
+     "captured_on": "2026-10-28",
+     "tier": "sourced"
+    },
+    {
+     "text": "Reports raising USD 1 million from an angel investor.",
+     "source_id": "B1",
+     "captured_on": "2026-10-28",
+     "tier": "sourced"
+    },
+    {
+     "text": "Founded by a student of the School of Pharmacy.",
+     "source_id": "B1",
+     "captured_on": "2026-10-28",
+     "tier": "sourced"
+    }
+   ]
+  },
+  {
+   "id": "camber-racing",
+   "title": "Team Camber Racing: Formula Student",
+   "kind": "team",
+   "programme_slugs": [
+    "automobile-engineering"
+   ],
+   "link_basis": "SRM page places the team in the Department of Automobile Engineering. Other departments are NOT confirmed.",
+   "facts": [
+    {
+     "text": "Won the Combustion category at Formula Bharat 2026, per Evo India.",
+     "source_id": "C1",
+     "captured_on": "2026-10-28",
+     "tier": "sourced"
+    },
+    {
+     "text": "Team Camber Racing is listed under the Department of Automobile Engineering.",
+     "source_id": "C2",
+     "captured_on": "2026-10-28",
+     "tier": "sourced"
+    },
+    {
+     "text": "Formula Student Germany describes the team as undergraduates from a range of engineering disciplines (departments not named).",
+     "source_id": "C3",
+     "captured_on": "2026-10-28",
+     "tier": "sourced"
+    }
+   ]
+  }
+ ]
+}

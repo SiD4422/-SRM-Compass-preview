@@ -1,10 +1,12 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import VerifiedFact, { type FactData, type SourceData } from '../components/VerifiedFact.astro';
-import offeringsData from '../../data/offerings.m1.json';
+import offeringsM1Data from '../../data/offerings.m1.json';
+import fullOfferingsData from '../../data/offerings.json';
 import sourcesData from '../../data/sources.json';
 import tagsData from '../../data/tags.json';
 import programmesData from '../../data/programmes.json';
+import { getAllStories } from '../lib/stories';
 
 interface OfferingItem {
   id: string;
@@ -20,7 +22,8 @@ interface OfferingItem {
   eligibility: FactData;
 }
 
-const offerings = offeringsData as OfferingItem[];
+const offerings = offeringsM1Data as OfferingItem[];
+const allOfferings = fullOfferingsData as OfferingItem[];
 const sources = sourcesData as SourceData[];
 
 // Create sources map for fast lookup
@@ -28,6 +31,10 @@ const sourcesMap = sources.reduce<Record<string, SourceData>>((acc, src) => {
   acc[src.id] = src;
   return acc;
 }, {});
+
+function formatInr(num: number): string {
+  return new Intl.NumberFormat('en-IN').format(num);
+}
 
 function formatDate(dateStr?: string): string {
   if (!dateStr) return '';
@@ -42,7 +49,7 @@ function formatDate(dateStr?: string): string {
   return dateStr;
 }
 
-// Group offerings by programme in the exact display order
+// 1. Group offerings for example offerings table
 const programmeOrder = [
   'Electrical and Electronics Engineering',
   'Computer Science and Engineering',
@@ -60,15 +67,72 @@ const groupedOfferings = programmeOrder.map((progName) => ({
   programme: progName,
   items: offerings.filter((o) => o.programme === progName)
 }));
+
+// 2. Compute Campus Row from data (all 6 campuses)
+interface CampusSummary {
+  code: string;
+  name: string;
+  optionCount: number;
+  minFee: number;
+  maxFee: number;
+  feeRangeText: string;
+  link: string;
+}
+
+const campusOrder = ['KTR', 'RMP', 'Trichy', 'VDP', 'NCR', 'BAB'];
+const campusDataMap = new Map<string, { name: string; fees: number[]; count: number }>();
+
+for (const off of allOfferings) {
+  const code = off.campus_code;
+  if (!campusDataMap.has(code)) {
+    campusDataMap.set(code, {
+      name: off.campus,
+      fees: [],
+      count: 0
+    });
+  }
+  const entry = campusDataMap.get(code)!;
+  entry.count++;
+  if (off.annual_fee?.value) {
+    entry.fees.push(off.annual_fee.value);
+  }
+}
+
+const campusCards: CampusSummary[] = Array.from(campusDataMap.entries())
+  .map(([code, data]) => {
+    const minFee = Math.min(...data.fees);
+    const maxFee = Math.max(...data.fees);
+    const feeRangeText = minFee === maxFee
+      ? `₹${formatInr(minFee)} / yr`
+      : `₹${formatInr(minFee)} – ₹${formatInr(maxFee)}`;
+    return {
+      code,
+      name: data.name,
+      optionCount: data.count,
+      minFee,
+      maxFee,
+      feeRangeText,
+      link: `/programmes?campus=${code}`
+    };
+  })
+  .sort((a, b) => {
+    const idxA = campusOrder.indexOf(a.code);
+    const idxB = campusOrder.indexOf(b.code);
+    return (idxA !== -1 ? idxA : 99) - (idxB !== -1 ? idxB : 99);
+  });
+
+// 3. Built at SRM: 3 stories
+const featuredStories = getAllStories().slice(0, 3);
 ---
 
 <Layout
   title="SRM Compass: find your SRM programme"
   description="Find the SRM programme that fits you. Fees, seats and departments from SRM’s official table, each linked to its source."
 >
+  <!-- 1. HERO -->
   <section class="hero">
-    <div class="w">
-      <div>
+    <div class="w hero-grid-wrapper">
+      <div class="hero-main-content">
         <h1>Find the SRM programme that fits you.</h1>
         <p class="lede">
           Fees, seats and departments for B.Tech at six SRMIST campuses, copied from SRM’s official Programs Offered table on 26 Oct 2026 for the 2026-27 cycle; SRM may revise for 2027 entry. Every row links to its source.
@@ -105,13 +169,161 @@ const groupedOfferings = programmeOrder.map((progName) => ({
           <a class="btn s" href="/eligibility#check">Can I apply?</a>
         </div>
       </div>
-      <div class="seal" role="img" aria-label="Verified 26 October 2026">
-        <b>✓</b>
-        <span>Verified<br />26 Oct 2026</span>
+
+      <div class="hero-seal-wrapper">
+        <div class="seal" role="img" aria-label="Verified 26 October 2026">
+          <b>✓</b>
+          <span>Verified<br />26 Oct 2026</span>
+        </div>
+        <div class="seal-meta-box">
+          <span class="seal-meta-title">Source Integrity</span>
+          <span class="seal-meta-text">106 options across 6 campuses</span>
+        </div>
       </div>
     </div>
   </section>
 
+  <!-- 2. CAN I APPLY? CARD -->
+  <section class="blk can-i-apply-section">
+    <div class="w">
+      <div class="can-i-apply-card">
+        <div class="can-i-apply-header">
+          <span class="badge-subtle">Instant Checker</span>
+          <h2>Can I apply?</h2>
+        </div>
+        <p class="can-i-apply-desc">
+          Check if your Class 12 marks, subjects, and date of birth satisfy SRM’s published minimum criteria for 2026-27 admission. Evaluated instantly in your browser with zero data sent or stored.
+        </p>
+        <div class="can-i-apply-points">
+          <div class="point-item">
+            <strong>60% aggregate</strong> in Physics, Mathematics &amp; 1 qualifying subject
+          </div>
+          <div class="point-item">
+            <strong>Age 16y 6m cutoff</strong> on 31 July of examination year
+          </div>
+          <div class="point-item">
+            <strong>Admission via SRMJEEE (UG)</strong>; SRM decides final selection
+          </div>
+        </div>
+        <div class="can-i-apply-action-row">
+          <a class="btn p" href="/eligibility#check">Check your eligibility &rarr;</a>
+          <a class="btn s" href="/eligibility">View all criteria &amp; source conflicts</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. BUILT AT SRM (3 Stories) -->
+  <section class="blk built-at-srm-home">
+    <div class="w">
+      <div class="section-title-row">
+        <div>
+          <h2>Built at SRM</h2>
+          <p class="section-subtitle">
+            Start-ups, engineering teams, and projects created by alumni and students of SRM.
+          </p>
+        </div>
+        <a href="/stories" class="view-all-link">Browse all 7 stories &rarr;</a>
+      </div>
+
+      <div class="stories-home-grid">
+        {featuredStories.map((story) => (
+          <article class="story-home-card">
+            <div class="story-home-top">
+              <span class="story-home-kind">{story.kind}</span>
+              <span class="story-home-facts-count">{story.facts.length} facts</span>
+            </div>
+            <h3>
+              <a href={`/stories/${story.id}`}>{story.title}</a>
+            </h3>
+            <p class="story-home-basis">{story.link_basis}</p>
+            <p class="story-home-fact-quote">
+              &ldquo;{story.facts[0]?.text}&rdquo;
+            </p>
+            <div class="story-home-footer">
+              <a href={`/stories/${story.id}`} class="story-read-link">
+                Read story &amp; primary sources &rarr;
+              </a>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. CAMPUS ROW (6 Cards computed from data) -->
+  <section class="blk campus-row-section">
+    <div class="w">
+      <div class="section-title-row">
+        <div>
+          <h2>Six campuses, one entrance form</h2>
+          <p class="section-subtitle">
+            All 106 B.Tech options across SRMIST’s six campuses with official fee ranges.
+          </p>
+        </div>
+        <a href="/programmes" class="view-all-link">Filter all 106 options &rarr;</a>
+      </div>
+
+      <div class="campus-cards-grid">
+        {campusCards.map((campus) => (
+          <a href={campus.link} class="campus-card">
+            <div class="campus-card-header">
+              <span class="campus-code-tag">{campus.code}</span>
+              <span class="campus-opt-count">{campus.optionCount} option{campus.optionCount > 1 ? 's' : ''}</span>
+            </div>
+            <h3 class="campus-name">{campus.name}</h3>
+            <div class="campus-fee-wrap">
+              <span class="campus-fee-label">Annual fee range</span>
+              <span class="campus-fee-value">{campus.feeRangeText}</span>
+            </div>
+            <span class="campus-action-link">View campus options &rarr;</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. APPLY ONCE, CHOOSE LATER STEPS -->
+  <section class="blk apply-steps-section">
+    <div class="w">
+      <h2>Apply once, choose later</h2>
+      <p class="section-subtitle">
+        How the official SRM B.Tech admission process works.
+      </p>
+
+      <div class="steps-three-grid">
+        <div class="home-step-card">
+          <div class="home-step-badge">Step 1</div>
+          <h3>Check minimum criteria</h3>
+          <p>
+            Confirm at least 60% aggregate across PCM/qualifying subjects and minimum age 16y 6m.
+          </p>
+        </div>
+
+        <div class="home-step-card">
+          <div class="home-step-badge">Step 2</div>
+          <h3>Single entrance application</h3>
+          <p>
+            Register for SRMJEEE (B.Tech); one application covers all 6 campuses. Branch preferences are for statistics only.
+          </p>
+        </div>
+
+        <div class="home-step-card">
+          <div class="home-step-badge">Step 3</div>
+          <h3>Select at counselling</h3>
+          <p>
+            Campus, branch, and specialisation are selected at online counselling after ranks are announced.
+          </p>
+        </div>
+      </div>
+
+      <div class="apply-steps-cta">
+        <a href="/apply" class="btn s">Read complete application &amp; entrance routes guide &rarr;</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. EXAMPLE OFFERINGS (Examples you can check yourself) -->
   <section class="blk" id="programmes">
     <div class="w">
       <h2>Examples you can check yourself</h2>
@@ -191,3 +403,345 @@ const groupedOfferings = programmeOrder.map((progName) => ({
     </div>
   </section>
 </Layout>
+
+<style>
+  /* Hero wrapper tightening */
+  .hero-grid-wrapper {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 28px;
+    align-items: center;
+  }
+  @media (min-width: 860px) {
+    .hero-grid-wrapper {
+      grid-template-columns: 1fr auto;
+      gap: 36px;
+    }
+  }
+
+  .hero-seal-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    justify-self: center;
+  }
+  @media (min-width: 860px) {
+    .hero-seal-wrapper {
+      justify-self: end;
+    }
+  }
+  .seal-meta-box {
+    text-align: center;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+  }
+  .seal-meta-title {
+    display: block;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: 0.72rem;
+    color: var(--navy);
+  }
+
+  /* Can I Apply Card */
+  .can-i-apply-section {
+    padding: 24px 0 36px;
+  }
+  .can-i-apply-card {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    padding: 30px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+  }
+  .can-i-apply-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+  .badge-subtle {
+    background: var(--surface-alt);
+    color: var(--navy);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 3px 8px;
+    border-radius: 4px;
+    border: 1px solid var(--rule);
+  }
+  .can-i-apply-card h2 {
+    font-size: 1.6rem;
+    color: var(--navy);
+    font-family: Charter, "Iowan Old Style", Georgia, serif;
+    margin: 0;
+  }
+  .can-i-apply-desc {
+    font-size: 1.05rem;
+    line-height: 1.5;
+    color: var(--text);
+    max-width: 78ch;
+    margin: 0 0 20px 0;
+  }
+  .can-i-apply-points {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .point-item {
+    background: var(--surface-alt);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    padding: 12px 16px;
+    font-size: 0.92rem;
+    line-height: 1.45;
+  }
+  .can-i-apply-action-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 14px;
+  }
+
+  /* Built at SRM Home Section */
+  .built-at-srm-home {
+    padding: 36px 0;
+    border-top: 1px solid var(--rule);
+  }
+  .section-title-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .section-title-row h2 {
+    font-size: 1.7rem;
+    color: var(--navy);
+    font-family: Charter, "Iowan Old Style", Georgia, serif;
+    margin: 0 0 6px 0;
+  }
+  .section-subtitle {
+    font-size: 1rem;
+    color: var(--text-muted);
+    margin: 0;
+  }
+  .view-all-link {
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: var(--link);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .view-all-link:hover {
+    text-decoration: underline;
+  }
+
+  .stories-home-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+  }
+  .story-home-card {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+  }
+  .story-home-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  .story-home-kind {
+    background: var(--surface-alt);
+    color: var(--navy);
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 2px 7px;
+    border-radius: 4px;
+    border: 1px solid var(--rule);
+  }
+  .story-home-facts-count {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+  }
+  .story-home-card h3 {
+    font-size: 1.25rem;
+    line-height: 1.3;
+    margin: 0 0 8px 0;
+    font-family: Charter, "Iowan Old Style", Georgia, serif;
+  }
+  .story-home-card h3 a {
+    color: var(--navy);
+    text-decoration: none;
+  }
+  .story-home-card h3 a:hover {
+    color: var(--link);
+    text-decoration: underline;
+  }
+  .story-home-basis {
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    margin: 0 0 12px 0;
+    line-height: 1.45;
+  }
+  .story-home-fact-quote {
+    font-size: 0.9rem;
+    line-height: 1.45;
+    font-style: italic;
+    color: var(--text);
+    background: var(--surface-alt);
+    padding: 10px 12px;
+    border-radius: 6px;
+    margin: 0 0 16px 0;
+    flex-grow: 1;
+  }
+  .story-home-footer {
+    border-top: 1px solid var(--rule);
+    padding-top: 12px;
+  }
+  .story-read-link {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--link);
+    text-decoration: none;
+  }
+  .story-read-link:hover {
+    text-decoration: underline;
+  }
+
+  /* Campus Row Section */
+  .campus-row-section {
+    padding: 36px 0;
+    border-top: 1px solid var(--rule);
+  }
+  .campus-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    gap: 16px;
+  }
+  .campus-card {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 18px 16px;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  .campus-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--link);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  }
+  .campus-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+  .campus-code-tag {
+    font-size: 0.75rem;
+    font-weight: 700;
+    background: var(--surface-alt);
+    color: var(--navy);
+    padding: 2px 6px;
+    border-radius: 4px;
+    border: 1px solid var(--rule);
+  }
+  .campus-opt-count {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+  }
+  .campus-name {
+    font-size: 1.15rem;
+    line-height: 1.3;
+    color: var(--navy);
+    font-family: Charter, "Iowan Old Style", Georgia, serif;
+    margin: 0 0 12px 0;
+  }
+  .campus-fee-wrap {
+    margin-bottom: 12px;
+    flex-grow: 1;
+  }
+  .campus-fee-label {
+    display: block;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-muted);
+  }
+  .campus-fee-value {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .campus-action-link {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--link);
+  }
+
+  /* Apply Steps Section */
+  .apply-steps-section {
+    padding: 36px 0;
+    border-top: 1px solid var(--rule);
+  }
+  .apply-steps-section h2 {
+    font-size: 1.7rem;
+    color: var(--navy);
+    font-family: Charter, "Iowan Old Style", Georgia, serif;
+    margin: 0 0 6px 0;
+  }
+  .steps-three-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px;
+    margin: 24px 0 20px 0;
+  }
+  .home-step-card {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 20px;
+  }
+  .home-step-badge {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    background: var(--navy);
+    color: #ffffff;
+    padding: 3px 8px;
+    border-radius: 4px;
+    margin-bottom: 12px;
+  }
+  .home-step-card h3 {
+    font-size: 1.15rem;
+    color: var(--navy);
+    font-family: Charter, "Iowan Old Style", Georgia, serif;
+    margin: 0 0 8px 0;
+  }
+  .home-step-card p {
+    font-size: 0.92rem;
+    line-height: 1.5;
+    color: var(--text);
+    margin: 0;
+  }
+  .apply-steps-cta {
+    margin-top: 16px;
+  }
+</style>

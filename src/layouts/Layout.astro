@@ -45,23 +45,28 @@ const canonicalUrl = canonical || (Astro.site ? new URL(Astro.url.pathname.endsW
             Programmes
           </a>
           <a
+            href="/compare"
+            aria-current={pathname === '/compare' ? 'page' : undefined}
+          >
+            Compare
+          </a>
+          <a
             href="/eligibility"
             aria-current={pathname === '/eligibility' ? 'page' : undefined}
           >
             Eligibility
           </a>
           <a
+            href="/stories"
+            aria-current={pathname.startsWith('/stories') ? 'page' : undefined}
+          >
+            Stories
+          </a>
+          <a
             href="/apply"
             aria-current={pathname === '/apply' ? 'page' : undefined}
           >
-            <span class="nav-long">How applying works</span>
-            <span class="nav-short">Apply</span>
-          </a>
-          <a
-            href="/evidence"
-            aria-current={pathname === '/evidence' ? 'page' : undefined}
-          >
-            Sources
+            Apply
           </a>
         </nav>
       </div>
@@ -75,6 +80,9 @@ const canonicalUrl = canonical || (Astro.site ? new URL(Astro.url.pathname.endsW
       <div class="w">
         <p>
           Independent design entry for the SRM Next-Gen Website Design Challenge 2026 for the 2026-27 cycle; SRM may revise for 2027 entry. Not an official SRM site. Check each source link before relying on a number.
+        </p>
+        <p class="footer-links">
+          <a href="/evidence">Primary sources &amp; verification methodology</a>
         </p>
       </div>
     </footer>

@@ -1,50 +1,567 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import applyRoutesData from '../../data/apply_routes.json';
+
+interface RouteItem {
+  id: string;
+  label: string;
+  exam: string;
+  steps: string;
+  link: string;
+}
+
+const applyData = applyRoutesData as {
+  note: string;
+  source: {
+    id: string;
+    title: string;
+    url: string;
+    captured_on: string;
+  };
+  portal: string;
+  helpline: string;
+  helpline_hours: string;
+  email: string;
+  routes: RouteItem[];
+};
 ---
 
 <Layout
-  title="How applying works — SRM Compass"
-  description="Three clear, verified steps to navigate the SRM admissions process with official portal links."
+  title="How applying works: entrance routes & application guide — SRM Compass"
+  description="Verified entrance examination routes, counselling steps, helpline contacts, and official application portals for SRMIST admissions."
 >
-  <section class="blk">
-    <div class="w">
-      <h1>How applying works</h1>
-      <p class="lede">
-        A direct three-step guide to the official SRM B.Tech application procedure with links to official portals.
-      </p>
+  <div class="w page-container">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="/">Home</a>
+      <span aria-hidden="true">&rsaquo;</span>
+      <span aria-current="page">Apply</span>
+    </nav>
 
-      <ol class="st">
-        <li>
-          Check the official 2026-27 eligibility criteria on{' '}
-          <a
-            href="https://www.srmist.edu.in/admission-india/engineering/"
-            rel="noopener"
-            target="_blank"
-          >
-            SRM’s engineering admissions page
-          </a>
-          .
+    <header class="apply-header">
+      <div class="eyebrow">Admissions Guide &amp; Entrance Routes</div>
+      <h1>How applying works</h1>
+      <p class="lead">
+        A direct, verified guide to SRM’s application process, counselling workflow, and entrance exam routes across all disciplines.
+      </p>
+    </header>
+
+    <!-- 1. B.Tech Three-Step Overview -->
+    <section class="steps-section">
+      <h2>Apply once, choose later (B.Tech)</h2>
+      <p class="section-desc">
+        For B.Tech admission, one application covers all six campuses. You do not lock in your campus or specialisation on the form.
+      </p>
+      
+      <ol class="st-cards">
+        <li class="st-card">
+          <div class="st-number">1</div>
+          <div class="st-body">
+            <h3>Check minimum criteria</h3>
+            <p>
+              Verify that you meet the 60% aggregate threshold across Physics, Mathematics, and one qualifying subject, and the age requirement (16y 6m by 31 July).
+            </p>
+            <a href="/eligibility#check" class="st-link">Check eligibility instantly &rarr;</a>
+          </div>
         </li>
-        <li>
-          Apply once on{' '}
-          <a
-            href="https://applications.srmist.edu.in/btech"
-            rel="noopener"
-            target="_blank"
-          >
-            SRM’s official B.Tech application form
-          </a>
-          .
+
+        <li class="st-card">
+          <div class="st-number">2</div>
+          <div class="st-body">
+            <h3>Apply once for SRMJEEE (B.Tech)</h3>
+            <p>
+              Register for SRMJEEE (B.Tech) on SRM’s official portal. The branch preference collected on the application form is used for statistics only.
+            </p>
+            <a
+              href="https://applications.srmist.edu.in/btech"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="st-link"
+            >
+              Open official B.Tech portal &#x2197;
+            </a>
+          </div>
         </li>
-        <li>
-          Choose your campus, programme and specialisation at counselling. The form says your preference is collected for statistics only.
+
+        <li class="st-card">
+          <div class="st-number">3</div>
+          <div class="st-body">
+            <h3>Choose campus and branch at counselling</h3>
+            <p>
+              After exam ranks are published, you select your campus, programme, and specialisation during online counselling based on seat availability and your rank.
+            </p>
+            <a href="/programmes" class="st-link">Explore all 106 campus options &rarr;</a>
+          </div>
         </li>
       </ol>
+    </section>
 
-      <div class="btn-row" style="margin-top: 32px;">
-        <a class="btn p" href="/#programmes">See programmes</a>
-        <a class="btn s" href="/eligibility">View eligibility rules</a>
+    <!-- 2. Which route fits you? (Progressive Enhancement) -->
+    <section class="routes-section" id="routes">
+      <div class="routes-header">
+        <h2>Which route fits you?</h2>
+        <p class="routes-intro">
+          Select your discipline below to check the entrance exam, application steps, helpline contact, and direct portal link as published in the SRM 2026-27 admission brochure.
+        </p>
       </div>
+
+      <!-- Interactive Switcher (Client JS enabled) -->
+      <div class="route-switcher-wrap" id="route-switcher-container">
+        <label for="route-select" class="route-select-label">
+          <strong>Select discipline / programme level:</strong>
+        </label>
+        <select id="route-select" class="ctrl-select">
+          {applyData.routes.map((route, idx) => (
+            <option value={route.id} selected={idx === 0}>
+              {route.label}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <!-- Route Cards Container: details elements rendered for no-JS fallback -->
+      <div class="routes-cards-list" id="routes-list">
+        {applyData.routes.map((route, idx) => (
+          <details
+            class="route-details-item"
+            id={`route-card-${route.id}`}
+            open={idx === 0}
+          >
+            <summary class="route-summary">
+              <span class="route-summary-title">{route.label}</span>
+              <span class="route-summary-exam">Exam: {route.exam}</span>
+            </summary>
+
+            <div class="route-card-content">
+              <div class="route-grid">
+                <div class="route-info-col">
+                  <div class="route-field">
+                    <span class="field-label">Discipline / Scope:</span>
+                    <p class="field-value">{route.label}</p>
+                  </div>
+
+                  <div class="route-field">
+                    <span class="field-label">Required Entrance Examination:</span>
+                    <p class="field-value exam-highlight">{route.exam}</p>
+                  </div>
+
+                  <div class="route-field">
+                    <span class="field-label">Admission Procedure &amp; Steps:</span>
+                    <p class="field-value">{route.steps}</p>
+                  </div>
+                </div>
+
+                <div class="route-contact-col">
+                  <div class="contact-box">
+                    <h4>Direct Application &amp; Support</h4>
+                    
+                    <a
+                      href={route.link}
+                      class="btn p btn-apply-portal"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Apply on Official Portal &#x2197;
+                    </a>
+
+                    <div class="support-item">
+                      <span class="support-label">Helpline:</span>
+                      <a href={`tel:${applyData.helpline.replace(/\s+/g, '')}`} class="support-val">
+                        {applyData.helpline}
+                      </a>
+                      <span class="support-hours">{applyData.helpline_hours}</span>
+                    </div>
+
+                    <div class="support-item">
+                      <span class="support-label">Admissions Email:</span>
+                      <a href={`mailto:${applyData.email}`} class="support-val">
+                        {applyData.email}
+                      </a>
+                    </div>
+
+                    <div class="support-source-stamp">
+                      <span>Source [{applyData.source.id}]: </span>
+                      <a href={applyData.source.url} target="_blank" rel="noopener noreferrer">
+                        {applyData.source.title}
+                      </a>
+                      <span class="stamp-date"> (Captured {applyData.source.captured_on})</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </details>
+        ))}
+      </div>
+
+      <!-- No-JS Explanatory note -->
+      <noscript>
+        <p class="noscript-note">
+          All 8 entrance routes are listed above in expandable sections.
+        </p>
+      </noscript>
+    </section>
+
+    <!-- Bottom Actions -->
+    <div class="apply-bottom-actions">
+      <a class="btn p" href="/programmes">Browse all 106 B.Tech options</a>
+      <a class="btn s" href="/eligibility#check">Test minimum eligibility</a>
+      <a class="btn s" href="/stories">See what students built at SRM</a>
     </div>
-  </section>
+  </div>
 </Layout>
+
+<script>
+  // Progressive enhancement for route switcher
+  const selectElem = document.getElementById('route-select') as HTMLSelectElement | null;
+  const routeItems = document.querySelectorAll<HTMLDetailsElement>('.route-details-item');
+
+  if (selectElem && routeItems.length > 0) {
+    function updateActiveRoute(activeId: string) {
+      routeItems.forEach((item) => {
+        const isMatch = item.id === `route-card-${activeId}`;
+        item.open = isMatch;
+        if (isMatch) {
+          item.classList.add('is-active-route');
+          // Ensure smooth focus without jarring scroll
+          item.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        } else {
+          item.classList.remove('is-active-route');
+        }
+      });
+    }
+
+    selectElem.addEventListener('change', () => {
+      updateActiveRoute(selectElem.value);
+    });
+
+    // Also synchronize if user clicks any details summary directly
+    routeItems.forEach((item) => {
+      item.addEventListener('toggle', () => {
+        if (item.open) {
+          const id = item.id.replace('route-card-', '');
+          if (selectElem.value !== id) {
+            selectElem.value = id;
+          }
+          // Close others for clean single-route view when JS is active
+          routeItems.forEach((other) => {
+            if (other !== item) other.open = false;
+          });
+        }
+      });
+    });
+  }
+</script>
+
+<style>
+  .page-container {
+    padding-top: 28px;
+    padding-bottom: 60px;
+  }
+  .breadcrumb {
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .breadcrumb a {
+    color: var(--link);
+    text-decoration: none;
+  }
+  .breadcrumb a:hover {
+    text-decoration: underline;
+  }
+  .apply-header {
+    margin-bottom: 36px;
+  }
+  .eyebrow {
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--navy);
+    margin-bottom: 8px;
+  }
+  .apply-header h1 {
+    font-size: 2.3rem;
+    line-height: 1.2;
+    margin: 0 0 14px 0;
+    color: var(--navy);
+    font-family: Charter, "Iowan Old Style", Georgia, serif;
+    font-weight: 700;
+  }
+  .lead {
+    font-size: 1.15rem;
+    line-height: 1.5;
+    color: var(--text-muted);
+    max-width: 75ch;
+  }
+
+  /* Three-Step Overview Cards */
+  .steps-section {
+    margin-bottom: 48px;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 40px;
+  }
+  .steps-section h2 {
+    font-size: 1.6rem;
+    color: var(--navy);
+    font-family: Charter, "Iowan Old Style", Georgia, serif;
+    margin: 0 0 8px 0;
+  }
+  .section-desc {
+    font-size: 1rem;
+    color: var(--text-muted);
+    margin: 0 0 24px 0;
+  }
+  .st-cards {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+  }
+  .st-card {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 24px;
+    display: flex;
+    gap: 16px;
+  }
+  .st-number {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: var(--navy);
+    color: #ffffff;
+    display: grid;
+    place-content: center;
+    font-weight: 700;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+  }
+  .st-body {
+    flex-grow: 1;
+  }
+  .st-body h3 {
+    font-size: 1.2rem;
+    margin: 0 0 8px 0;
+    color: var(--navy);
+    font-family: Charter, "Iowan Old Style", Georgia, serif;
+  }
+  .st-body p {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: var(--text);
+    margin: 0 0 12px 0;
+  }
+  .st-link {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--link);
+    text-decoration: none;
+  }
+  .st-link:hover {
+    text-decoration: underline;
+  }
+
+  /* Which route fits you section */
+  .routes-section {
+    margin-bottom: 48px;
+  }
+  .routes-header h2 {
+    font-size: 1.8rem;
+    color: var(--navy);
+    font-family: Charter, "Iowan Old Style", Georgia, serif;
+    margin: 0 0 8px 0;
+  }
+  .routes-intro {
+    font-size: 1.05rem;
+    color: var(--text-muted);
+    max-width: 75ch;
+    margin: 0 0 24px 0;
+  }
+
+  .route-switcher-wrap {
+    background: var(--surface-alt);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-bottom: 24px;
+    max-width: 680px;
+  }
+  .route-select-label {
+    display: block;
+    font-size: 0.95rem;
+    color: var(--navy);
+    margin-bottom: 8px;
+  }
+  .ctrl-select {
+    width: 100%;
+    padding: 10px 14px;
+    font-size: 1rem;
+    border-radius: 6px;
+    border: 1px solid var(--rule);
+    background: var(--surface);
+    color: var(--text);
+  }
+
+  .routes-cards-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .route-details-item {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  .route-details-item[open] {
+    border-color: var(--navy);
+    box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+  }
+  .route-summary {
+    padding: 16px 20px;
+    cursor: pointer;
+    background: var(--surface);
+    font-size: 1.1rem;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px 16px;
+    user-select: none;
+  }
+  .route-summary:hover {
+    background: var(--surface-alt);
+  }
+  .route-summary-title {
+    font-weight: 700;
+    color: var(--navy);
+    font-family: Charter, "Iowan Old Style", Georgia, serif;
+  }
+  .route-summary-exam {
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    background: var(--surface-alt);
+    border: 1px solid var(--rule);
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-weight: 600;
+  }
+
+  .route-card-content {
+    border-top: 1px solid var(--rule);
+    padding: 24px 20px;
+    background: var(--surface);
+  }
+  .route-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  @media (min-width: 760px) {
+    .route-grid {
+      grid-template-columns: 1.2fr 0.8fr;
+    }
+  }
+
+  .route-field {
+    margin-bottom: 16px;
+  }
+  .field-label {
+    display: block;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .field-value {
+    font-size: 1.05rem;
+    line-height: 1.5;
+    color: var(--text);
+    margin: 0;
+  }
+  .exam-highlight {
+    font-weight: 700;
+    color: var(--navy);
+  }
+
+  .contact-box {
+    background: var(--surface-alt);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 20px;
+  }
+  .contact-box h4 {
+    font-size: 1.05rem;
+    margin: 0 0 14px 0;
+    color: var(--navy);
+    font-family: Charter, "Iowan Old Style", Georgia, serif;
+  }
+  .btn-apply-portal {
+    width: 100%;
+    margin-bottom: 16px;
+    text-align: center;
+  }
+  .support-item {
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .support-label {
+    font-weight: 600;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+  }
+  .support-val {
+    color: var(--link);
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .support-val:hover {
+    text-decoration: underline;
+  }
+  .support-hours {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+  }
+  .support-source-stamp {
+    border-top: 1px solid var(--rule);
+    padding-top: 10px;
+    margin-top: 14px;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    line-height: 1.4;
+  }
+  .support-source-stamp a {
+    color: var(--link);
+    text-decoration: none;
+  }
+  .support-source-stamp a:hover {
+    text-decoration: underline;
+  }
+
+  .noscript-note {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-top: 12px;
+  }
+
+  .apply-bottom-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    border-top: 1px solid var(--rule);
+    padding-top: 24px;
+  }
+</style>

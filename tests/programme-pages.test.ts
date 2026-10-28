@@ -12,15 +12,16 @@ const offeringsData = JSON.parse(
 );
 
 describe('Stage M3 & M3-fix: Programme Detail Pages (/programmes/[slug])', () => {
-  it('builds exactly 54 static pages (6 root pages + 48 programme pages)', () => {
-    // 6 root pages
+  it('builds all static pages (7 root pages + 48 programme pages + 7 story pages = 62 pages)', () => {
+    // 7 root pages
     const rootPages = [
       'index.html',
       'apply/index.html',
       'compare/index.html',
       'eligibility/index.html',
       'evidence/index.html',
-      'programmes/index.html'
+      'programmes/index.html',
+      'stories/index.html'
     ];
     for (const p of rootPages) {
       expect(fs.existsSync(path.join(distDir, p))).toBe(true);
@@ -31,6 +32,14 @@ describe('Stage M3 & M3-fix: Programme Detail Pages (/programmes/[slug])', () =>
     for (const prog of programmesData.programmes) {
       const pagePath = path.join(distDir, `programmes/${prog.slug}/index.html`);
       expect(fs.existsSync(pagePath)).toBe(true);
+    }
+
+    // 7 story pages
+    const storiesData = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../data/stories.json'), 'utf-8'));
+    expect(storiesData.stories).toHaveLength(7);
+    for (const story of storiesData.stories) {
+      const storyPagePath = path.join(distDir, `stories/${story.id}/index.html`);
+      expect(fs.existsSync(storyPagePath)).toBe(true);
     }
   });
 
@@ -51,7 +60,7 @@ describe('Stage M3 & M3-fix: Programme Detail Pages (/programmes/[slug])', () =>
     const sitemap0Content = fs.readFileSync(sitemap0Path, 'utf-8');
     const urls = [...sitemap0Content.matchAll(/<loc>(.*?)<\/loc>/g)].map((m) => m[1]);
 
-    expect(urls).toHaveLength(54);
+    expect(urls).toHaveLength(62);
 
     for (const url of urls) {
       const urlPath = new URL(url).pathname;
@@ -376,6 +385,132 @@ describe('Stage M3 & M3-fix: Programme Detail Pages (/programmes/[slug])', () =>
       const compareHtml = fs.readFileSync(path.join(distDir, 'compare/index.html'), 'utf-8');
       expect(compareHtml).toContain('id="compare-toolbar" class="compare-toolbar" hidden style="display: none;"');
       expect(compareHtml).toContain('id="copy-fallback" class="copy-fallback" hidden style="display: none;"');
+    });
+  });
+
+  describe('Stage M6: Stories, Built at SRM, Campus Row, Apply Routes & Navigation', () => {
+    it('verifies Main Navigation has Programmes, Compare, Eligibility, Stories, Apply in exact order', () => {
+      const homeHtml = fs.readFileSync(path.join(distDir, 'index.html'), 'utf-8');
+      const navMatch = homeHtml.match(/<nav[^>]*aria-label="Main"[^>]*>([\s\S]*?)<\/nav>/);
+      expect(navMatch).not.toBeNull();
+      const navContent = navMatch![1];
+
+      const expectedLinks = [
+        { href: '/programmes', text: 'Programmes' },
+        { href: '/compare', text: 'Compare' },
+        { href: '/eligibility', text: 'Eligibility' },
+        { href: '/stories', text: 'Stories' },
+        { href: '/apply', text: 'Apply' }
+      ];
+
+      let lastIndex = 0;
+      for (const item of expectedLinks) {
+        const itemIdx = navContent.indexOf(`href="${item.href}"`);
+        expect(itemIdx).toBeGreaterThan(lastIndex);
+        expect(navContent).toContain(item.text);
+        lastIndex = itemIdx;
+      }
+    });
+
+    it('verifies Programme Pages: "Built at SRM" appears only on linked programmes, omitted on others', () => {
+      const linkedSlugs = [
+        'mechanical-engineering',
+        'automobile-engineering',
+        'mechatronics-engineering',
+        'electronics-and-communication-engineering'
+      ];
+      for (const slug of linkedSlugs) {
+        const html = fs.readFileSync(path.join(distDir, `programmes/${slug}/index.html`), 'utf-8');
+        expect(html).toMatch(/<h2[^>]*>Built at SRM<\/h2>/);
+        expect(html).toContain('built-at-srm-section');
+      }
+
+      const unlinkedSlugs = [
+        'aerospace-engineering',
+        'computer-science-and-engineering',
+        'biotechnology',
+        'chemical-engineering'
+      ];
+      for (const slug of unlinkedSlugs) {
+        const html = fs.readFileSync(path.join(distDir, `programmes/${slug}/index.html`), 'utf-8');
+        expect(html).not.toContain('built-at-srm-section');
+      }
+    });
+
+    it('verifies /stories index page lists all 7 stories', () => {
+      const storiesHtml = fs.readFileSync(path.join(distDir, 'stories/index.html'), 'utf-8');
+      const storiesData = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../data/stories.json'), 'utf-8'));
+      for (const story of storiesData.stories) {
+        expect(storiesHtml).toContain(story.title);
+        expect(storiesHtml).toContain(`/stories/${story.id}`);
+      }
+    });
+
+    it('verifies /stories/[slug] shows pills, source links, capture dates, and unlinked handling', () => {
+      // 1. Linked story: abhinava-rizel
+      const arHtml = fs.readFileSync(path.join(distDir, 'stories/abhinava-rizel/index.html'), 'utf-8');
+      expect(arHtml).toContain('Abhinava Rizel: EV motors');
+      expect(arHtml).toContain('class="pill-sourced"');
+      expect(arHtml).toContain('Sourced from SRM brochure');
+      expect(arHtml).toContain('Captured on');
+      expect(arHtml).toContain('/programmes/mechanical-engineering');
+      expect(arHtml).toContain('/programmes/automobile-engineering');
+
+      // 2. Unlinked story: paperplane
+      const ppHtml = fs.readFileSync(path.join(distDir, 'stories/paperplane/index.html'), 'utf-8');
+      expect(ppHtml).toContain('Paperplane: digital clinics on WhatsApp');
+      expect(ppHtml).toContain('Not tied to a B.Tech programme');
+      expect(ppHtml).toContain('Brochure names the School of Computing, not a programme.');
+
+      // 3. Unlinked story: surelocal
+      const slHtml = fs.readFileSync(path.join(distDir, 'stories/surelocal/index.html'), 'utf-8');
+      expect(slHtml).toContain('SureLocal: pharmacy supply chain');
+      expect(slHtml).toContain('Not tied to a B.Tech programme');
+      expect(slHtml).toContain('Founder studied at the School of Pharmacy, outside the B.Tech programmes.');
+    });
+
+    it('verifies /apply page has "Which route fits you?" selector and lists all routes in details elements', () => {
+      const applyHtml = fs.readFileSync(path.join(distDir, 'apply/index.html'), 'utf-8');
+      expect(applyHtml).toContain('Which route fits you?');
+      expect(applyHtml).toContain('id="route-select"');
+
+      const applyData = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../data/apply_routes.json'), 'utf-8'));
+      expect(applyData.routes).toHaveLength(8);
+
+      for (const route of applyData.routes) {
+        expect(applyHtml).toContain(`id="route-card-${route.id}"`);
+        expect(applyHtml).toContain(route.label);
+        expect(applyHtml).toContain(route.exam);
+      }
+      expect(applyHtml).toContain(applyData.helpline);
+      expect(applyHtml).toContain(applyData.email);
+    });
+
+    it('verifies Home page structure order: hero, Can I apply?, Built at SRM, campus row with 6 cards, Apply once, choose later, example offerings', () => {
+      const homeHtml = fs.readFileSync(path.join(distDir, 'index.html'), 'utf-8');
+
+      const heroPos = homeHtml.indexOf('class="hero"');
+      const canIApplyPos = homeHtml.indexOf('can-i-apply-section');
+      const builtAtSrmPos = homeHtml.indexOf('built-at-srm-home');
+      const campusRowPos = homeHtml.indexOf('campus-row-section');
+      const applyStepsPos = homeHtml.indexOf('apply-steps-section');
+      const examplesPos = homeHtml.indexOf('id="programmes"');
+
+      expect(heroPos).toBeGreaterThan(-1);
+      expect(canIApplyPos).toBeGreaterThan(heroPos);
+      expect(builtAtSrmPos).toBeGreaterThan(canIApplyPos);
+      expect(campusRowPos).toBeGreaterThan(builtAtSrmPos);
+      expect(applyStepsPos).toBeGreaterThan(campusRowPos);
+      expect(examplesPos).toBeGreaterThan(applyStepsPos);
+
+      // Verify all 6 campuses appear in the campus row
+      for (const code of ['KTR', 'RMP', 'Trichy', 'VDP', 'NCR', 'BAB']) {
+        expect(homeHtml).toContain(`/programmes?campus=${code}`);
+      }
+      // Verify Baburayanpettai fee range
+      expect(homeHtml).toContain('Baburayanpettai');
+      expect(homeHtml).toContain('2,75,000');
+      expect(homeHtml).toContain('3,75,000');
     });
   });
 });

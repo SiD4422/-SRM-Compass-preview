@@ -5,6 +5,7 @@ import programmesData from '../../../data/programmes.json';
 import offeringsData from '../../../data/offerings.json';
 import sourcesData from '../../../data/sources.json';
 import tagsData from '../../../data/tags.json';
+import { getStoriesForProgramme } from '../../lib/stories';
 
 export interface OfferingItem {
   id: string;
@@ -163,6 +164,8 @@ const jsonLd = {
     description: `${o.campus} campus`
   }))
 };
+
+const linkedStories = getStoriesForProgramme(programme.slug);
 ---
 
 <Layout title={pageTitle} description={metaDescription} canonical={canonicalUrl}>
@@ -209,6 +212,9 @@ const jsonLd = {
           <a class="prog-nav-link" href="#fees">Fees &amp; Campuses</a>
           <a class="prog-nav-link" href="#eligibility">Eligibility</a>
           <a class="prog-nav-link" href="#apply">How to Apply</a>
+          {linkedStories.length > 0 && (
+            <a class="prog-nav-link" href="#built-at-srm">Built at SRM</a>
+          )}
           <a class="prog-nav-link" href="#sources">Sources</a>
         </nav>
       </header>
@@ -332,6 +338,42 @@ const jsonLd = {
           </ol>
         </div>
       </section>
+
+      <!-- Section: #built-at-srm (Omit when none) -->
+      {linkedStories.length > 0 && (
+        <section id="built-at-srm" class="prog-section built-at-srm-section">
+          <h2>Built at SRM</h2>
+          <p class="section-intro-text">
+            Start-ups, engineering teams, and projects created by alumni and students of this programme:
+          </p>
+          <div class="linked-stories-grid">
+            {linkedStories.map((story) => (
+              <div class="card linked-story-card">
+                <div class="linked-story-meta">
+                  <span class="story-kind-tag">{story.kind}</span>
+                  <span class="story-facts-count">{story.facts.length} documented facts</span>
+                </div>
+                <h3 class="linked-story-title">
+                  <a href={`/stories/${story.id}`}>{story.title}</a>
+                </h3>
+                <p class="linked-story-basis">
+                  <strong>Linkage:</strong> {story.link_basis}
+                </p>
+                <ul class="linked-story-facts">
+                  {story.facts.map((f) => (
+                    <li>{f.text}</li>
+                  ))}
+                </ul>
+                <div class="linked-story-footer">
+                  <a href={`/stories/${story.id}`} class="btn-read-story">
+                    Read story &amp; source evidence &rarr;
+                  </a>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
       <!-- Section: #sources -->
       <section id="sources" class="prog-section">
@@ -615,6 +657,105 @@ const jsonLd = {
     grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
     gap: 16px;
     margin-top: 16px;
+  }
+
+  /* Built at SRM section styling */
+  .section-intro-text {
+    font-size: 0.95rem;
+    color: var(--muted);
+    margin: 0 0 16px 0;
+  }
+
+  .linked-stories-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 20px;
+  }
+
+  .linked-story-card {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid var(--rule);
+    background: var(--surface);
+  }
+
+  .linked-story-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+
+  .story-kind-tag {
+    background: var(--surface-alt);
+    color: var(--navy);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 3px 8px;
+    border-radius: 4px;
+    border: 1px solid var(--rule);
+  }
+
+  .story-facts-count {
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+
+  .linked-story-title {
+    font-size: 1.25rem;
+    line-height: 1.3;
+    margin: 0 0 8px 0;
+    font-family: Charter, "Iowan Old Style", Georgia, serif;
+  }
+
+  .linked-story-title a {
+    color: var(--navy);
+    text-decoration: none;
+  }
+
+  .linked-story-title a:hover {
+    color: var(--link);
+    text-decoration: underline;
+  }
+
+  .linked-story-basis {
+    font-size: 0.9rem;
+    line-height: 1.45;
+    color: var(--muted);
+    margin: 0 0 14px 0;
+  }
+
+  .linked-story-facts {
+    margin: 0 0 16px 0;
+    padding-left: 20px;
+    font-size: 0.92rem;
+    line-height: 1.5;
+    color: var(--text);
+    flex-grow: 1;
+  }
+
+  .linked-story-facts li {
+    margin-bottom: 6px;
+  }
+
+  .linked-story-footer {
+    border-top: 1px solid var(--rule);
+    padding-top: 12px;
+  }
+
+  .btn-read-story {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--link);
+    text-decoration: none;
+  }
+
+  .btn-read-story:hover {
+    text-decoration: underline;
   }
 
   .related-card {

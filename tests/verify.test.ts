@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
-import { verifyData, type Offering, type Source } from '../scripts/verify';
+import { verifyData, verifyStories, type Offering, type Source, type StoriesData } from '../scripts/verify';
 
 // Load the pristine real data
 const realOfferings: Offering[] = JSON.parse(
@@ -261,6 +261,8 @@ describe('Data File Integrity Suite (data/HASHES.json)', () => {
       'synonyms.json',
       'tags.json',
       'programmes.json',
+      'stories.json',
+      'apply_routes.json',
       'source/programs_offered_table_all_254_rows.csv'
     ];
 
@@ -390,6 +392,115 @@ describe('Raw Source Table Audit (data/source/programs_offered_table_all_254_row
 
     expect(conflicts).toBe(75);
     expect(verified).toBe(31);
+  });
+});
+
+describe('M6 Stories Verification Suite (stories.json & programmes.json)', () => {
+  const storiesPath = path.resolve(__dirname, '../data/stories.json');
+  const programmesPath = path.resolve(__dirname, '../data/programmes.json');
+
+  const realStoriesData: StoriesData = JSON.parse(fs.readFileSync(storiesPath, 'utf-8'));
+  const realProgrammesData = JSON.parse(fs.readFileSync(programmesPath, 'utf-8'));
+
+  function cloneStoriesData(): StoriesData {
+    return JSON.parse(JSON.stringify(realStoriesData));
+  }
+
+  it('verifies that pristine real stories.json passes verification with zero errors', () => {
+    const result = verifyStories(realStoriesData, realProgrammesData);
+    expect(result.valid).toBe(true);
+    expect(result.errors).toHaveLength(0);
+  });
+
+  it('contains exactly 7 stories in stories.json', () => {
+    expect(realStoriesData.stories).toHaveLength(7);
+  });
+
+  it('verifies programmes with stories are exactly mechanical-engineering, automobile-engineering, mechatronics-engineering, electronics-and-communication-engineering', () => {
+    const tiedSlugs = new Set<string>();
+    for (const story of realStoriesData.stories) {
+      for (const slug of story.programme_slugs) {
+        tiedSlugs.add(slug);
+      }
+    }
+    const expected = [
+      'mechanical-engineering',
+      'automobile-engineering',
+      'mechatronics-engineering',
+      'electronics-and-communication-engineering'
+    ];
+    expect(Array.from(tiedSlugs).sort()).toEqual(expected.sort());
+  });
+
+  it('fails when a story fact has no source_id', () => {
+    const cloned = cloneStoriesData();
+    // @ts-expect-error test mutation
+    cloned.stories[0].facts[0].source_id = '';
+    const result = verifyStories(cloned, realProgrammesData);
+    expect(result.valid).toBe(false);
+    expect(result.errors.some((e) => e.field.includes('source_id'))).toBe(true);
+  });
+
+  it('fails when a story fact references a source_id not found in stories.json sources', () => {
+    const cloned = cloneStoriesData();
+    cloned.stories[0].facts[0].source_id = 'NON_EXISTENT_SOURCE';
+    const result = verifyStories(cloned, realProgrammesData);
+    expect(result.valid).toBe(false);
+    expect(result.errors.some((e) => e.field.includes('source_id') && e.message.includes('NON_EXISTENT_SOURCE'))).toBe(true);
+  });
+
+  it('fails when a story fact has no captured_on', () => {
+    const cloned = cloneStoriesData();
+    cloned.stories[0].facts[0].captured_on = '';
+    const result = verifyStories(cloned, realProgrammesData);
+    expect(result.valid).toBe(false);
+    expect(result.errors.some((e) => e.field.includes('captured_on'))).toBe(true);
+  });
+
+  it('fails when a story programme_slug does not exist in programmes.json', () => {
+    const cloned = cloneStoriesData();
+    cloned.stories[0].programme_slugs.push('non-existent-programme-slug');
+    const result = verifyStories(cloned, realProgrammesData);
+    expect(result.valid).toBe(false);
+    expect(result.errors.some((e) => e.field === 'programme_slugs' && e.message.includes('non-existent-programme-slug'))).toBe(true);
+  });
+
+  it('fails when a story fact tier is neither sourced nor verified', () => {
+    const cloned = cloneStoriesData();
+    // @ts-expect-error test mutation
+    cloned.stories[0].facts[0].tier = 'unverified';
+    const result = verifyStories(cloned, realProgrammesData);
+    expect(result.valid).toBe(false);
+    expect(result.errors.some((e) => e.field.includes('tier'))).toBe(true);
+  });
+});
+
+describe('M6 Campus Fee Ranges Computation Suite', () => {
+  it('computes fee ranges across all campuses from offerings.json and asserts Baburayanpettai is 2,75,000 to 3,75,000', () => {
+    const offeringsPath = path.resolve(__dirname, '../data/offerings.json');
+    const offerings: Offering[] = JSON.parse(fs.readFileSync(offeringsPath, 'utf-8'));
+
+    const campusFees = new Map<string, number[]>();
+    for (const off of offerings) {
+      const c = off.campus || off.campus_code;
+      if (!campusFees.has(c)) {
+        campusFees.set(c, []);
+      }
+      campusFees.get(c)!.push(off.annual_fee.value);
+    }
+
+    // Find Baburayanpettai entry (campus code BPR or campus name containing Baburayanpettai)
+    const bprOfferings = offerings.filter(
+      (o) => o.campus_code === 'BPR' || o.campus.toLowerCase().includes('baburayanpettai')
+    );
+    expect(bprOfferings.length).toBeGreaterThan(0);
+
+    const bprFees = bprOfferings.map((o) => o.annual_fee.value);
+    const minBprFee = Math.min(...bprFees);
+    const maxBprFee = Math.max(...bprFees);
+
+    expect(minBprFee).toBe(275000);
+    expect(maxBprFee).toBe(375000);
   });
 });
 

@@ -1,0 +1,71 @@
+{
+ "note": "Entrance routes as stated in the SRM 2026-27 admission brochure. Programs offered may vary across campuses.",
+ "source": {
+  "id": "B3",
+  "title": "SRMIST Admission Brochure 2026-2027",
+  "url": "https://webstor.srmist.edu.in/web_assets/downloads/2026/srm-admission-brochure-2026-2027.pdf",
+  "captured_on": "2026-10-28"
+ },
+ "portal": "https://applications.srmist.edu.in",
+ "helpline": "080 6908 7000",
+ "helpline_hours": "Monday to Saturday, 9:00 AM to 5:00 PM (except public holidays)",
+ "email": "admissions.india@srmist.edu.in",
+ "routes": [
+  {
+   "id": "btech",
+   "label": "Engineering and Technology: B.Tech, integrated M.Tech",
+   "exam": "SRMJEEE (B.Tech)",
+   "steps": "Take SRMJEEE B.Tech, then apply on the B.Tech form.",
+   "link": "https://applications.srmist.edu.in/btech"
+  },
+  {
+   "id": "mtech",
+   "label": "Engineering and Technology: M.Tech",
+   "exam": "SRMJEEE (M.Tech)",
+   "steps": "Take SRMJEEE M.Tech.",
+   "link": "https://applications.srmist.edu.in"
+  },
+  {
+   "id": "architecture",
+   "label": "Architecture: B.Arch, M.Arch",
+   "exam": "NATA (B.Arch); PGETA (M.Arch)",
+   "steps": "B.Arch uses NATA and M.Arch uses PGETA, per the brochure.",
+   "link": "https://applications.srmist.edu.in"
+  },
+  {
+   "id": "law",
+   "label": "Law: 5-year and 3-year programmes",
+   "exam": "SRMJEEL (Law)",
+   "steps": "SRMJEEL followed by a personal interview. CLAT scores are considered directly for the interview.",
+   "link": "https://applications.srmist.edu.in"
+  },
+  {
+   "id": "mba",
+   "label": "Management: MBA",
+   "exam": "SRMJEEM (MBA)",
+   "steps": "SRMJEEM followed by a personal interview. Scores in CAT, XAT, MAT, GMAT, NMAT, CMAT or TANCET are considered directly for the interview.",
+   "link": "https://applications.srmist.edu.in"
+  },
+  {
+   "id": "medicine",
+   "label": "Medicine and Dentistry: MBBS, BDS and postgraduate",
+   "exam": "NEET",
+   "steps": "Admission only through NEET eligibility and counselling by MCC of DGHS, Government of India.",
+   "link": "https://applications.srmist.edu.in"
+  },
+  {
+   "id": "health",
+   "label": "Health Sciences: allied health, pharmacy, occupational therapy, physiotherapy, nursing, public health",
+   "exam": "SRMJEEH (Health Science UG, PG or Post PG)",
+   "steps": "Take SRMJEEH for your level. Some programmes are merit-based on Physics, Chemistry and Biology marks.",
+   "link": "https://applications.srmist.edu.in"
+  },
+  {
+   "id": "other",
+   "label": "Science and Humanities, Agricultural Sciences, Hotel and Catering Management",
+   "exam": "Not stated in the brochure",
+   "steps": "The brochure does not state an entrance exam for these. Check SRM's website.",
+   "link": "https://www.srmist.edu.in/admission-india/"
+  }
+ ]
+}

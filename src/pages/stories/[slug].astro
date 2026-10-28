@@ -1,0 +1,415 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getAllStories, type EnrichedStory } from '../../lib/stories';
+
+export async function getStaticPaths() {
+  const stories = getAllStories();
+  return stories.map((story) => ({
+    params: { slug: story.id },
+    props: { story }
+  }));
+}
+
+const { story } = Astro.props as { story: EnrichedStory };
+
+function getPillLabel(fact: { source?: { kind?: string } }) {
+  if (fact.source?.kind === 'official brochure') {
+    return 'Sourced from SRM brochure';
+  }
+  if (fact.source?.kind) {
+    return `Sourced from ${fact.source.kind}`;
+  }
+  return 'Sourced from SRM brochure';
+}
+---
+
+<Layout
+  title={`${story.title} — Built at SRM — SRM Compass`}
+  description={`Documented facts and primary sources for ${story.title}, founded by SRM students or alumni.`}
+>
+  <div class="w story-detail-container">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="/">Home</a>
+      <span aria-hidden="true">&rsaquo;</span>
+      <a href="/stories">Stories</a>
+      <span aria-hidden="true">&rsaquo;</span>
+      <span aria-current="page">{story.title}</span>
+    </nav>
+
+    <article class="story-article">
+      <header class="story-header">
+        <div class="story-meta-top">
+          <span class="story-kind-badge">{story.kind}</span>
+          <span class="story-fact-total">{story.facts.length} facts documented</span>
+        </div>
+        <h1 class="story-title">{story.title}</h1>
+        <p class="story-link-basis-lead">
+          <strong>Context &amp; Linkage:</strong> {story.link_basis}
+        </p>
+      </header>
+
+      <!-- Facts List (Only published facts from data/stories.json; never add facts) -->
+      <section class="story-facts-section">
+        <h2>Documented Facts &amp; Primary Sources</h2>
+        <p class="section-subtext">
+          Every statement below is recorded directly from the cited source. Figures and claims are as published by SRM or third-party reports.
+        </p>
+
+        <ol class="facts-list">
+          {story.facts.map((fact, index) => {
+            const pillText = getPillLabel(fact);
+            return (
+              <li class="fact-item" id={`fact-${index + 1}`}>
+                <div class="fact-content">
+                  <p class="fact-statement">{fact.text}</p>
+                  
+                  <div class="fact-metadata-row">
+                    <span class="pill-sourced">{pillText}</span>
+
+                    {fact.source && (
+                      <a
+                        href={fact.source.url}
+                        class="source-link"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <span class="source-id-tag">[{fact.source.id}]</span>
+                        <span class="source-title-text">{fact.source.title}</span>
+                        <span class="ext-icon" aria-hidden="true">&#x2197;</span>
+                      </a>
+                    )}
+
+                    <span class="capture-date-stamp">
+                      Captured on <time datetime={fact.captured_on}>{fact.captured_on}</time>
+                    </span>
+                  </div>
+
+                  {fact.source?.note && (
+                    <div class="source-note">
+                      <strong>Source note:</strong> {fact.source.note}
+                    </div>
+                  )}
+                </div>
+              </li>
+            );
+          })}
+        </ol>
+      </section>
+
+      <!-- Programme Linkage Section -->
+      <section class="story-programme-linkage">
+        <h2>Related B.Tech Programmes</h2>
+        
+        {story.programmes.length > 0 ? (
+          <div>
+            <p class="link-basis-explanation">
+              <strong>Basis of link:</strong> {story.link_basis}
+            </p>
+            <div class="related-programmes-list">
+              {story.programmes.map((prog) => (
+                <div class="prog-link-card">
+                  <div>
+                    <span class="prog-card-label">B.Tech Programme</span>
+                    <h3 class="prog-card-title">{prog.name}</h3>
+                  </div>
+                  <a href={`/programmes/${prog.slug}`} class="btn-view-prog">
+                    View programme details &amp; offerings &rarr;
+                  </a>
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : (
+          <div class="unlinked-programme-box">
+            <p class="unlinked-status">
+              <strong>Not tied to a B.Tech programme</strong>
+            </p>
+            <p class="unlinked-basis">
+              <strong>Link basis:</strong> {story.link_basis}
+            </p>
+            <p class="unlinked-guidance">
+              This startup or project was created by alumni/students of a non-B.Tech department (e.g. School of Pharmacy or general School of Computing without specific branch attribution).
+            </p>
+          </div>
+        )}
+      </section>
+
+      <div class="story-article-bottom">
+        <div class="footer-actions">
+          <a href="/stories" class="back-link">&larr; Back to all Built at SRM stories</a>
+          <a href="/programmes" class="browse-link">Browse all 106 B.Tech options &rarr;</a>
+        </div>
+      </div>
+    </article>
+  </div>
+</Layout>
+
+<style>
+  .story-detail-container {
+    padding-top: 28px;
+    padding-bottom: 60px;
+  }
+  .breadcrumb {
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .breadcrumb a {
+    color: var(--link);
+    text-decoration: none;
+  }
+  .breadcrumb a:hover {
+    text-decoration: underline;
+  }
+  .story-article {
+    max-width: 820px;
+  }
+  .story-header {
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 24px;
+    margin-bottom: 32px;
+  }
+  .story-meta-top {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+  .story-kind-badge {
+    background: var(--surface-alt);
+    color: var(--navy);
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 3px 10px;
+    border-radius: 4px;
+    border: 1px solid var(--rule);
+  }
+  .story-fact-total {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+  .story-title {
+    font-size: 2.2rem;
+    line-height: 1.25;
+    color: var(--navy);
+    font-family: Charter, "Iowan Old Style", Georgia, serif;
+    font-weight: 700;
+    margin: 0 0 16px 0;
+  }
+  .story-link-basis-lead {
+    font-size: 1.05rem;
+    line-height: 1.5;
+    color: var(--text);
+    background: var(--surface);
+    padding: 14px 18px;
+    border-radius: 6px;
+    border-left: 4px solid var(--navy);
+    margin: 0;
+  }
+  .story-facts-section {
+    margin-bottom: 40px;
+  }
+  .story-facts-section h2 {
+    font-size: 1.5rem;
+    color: var(--navy);
+    font-family: Charter, "Iowan Old Style", Georgia, serif;
+    margin: 0 0 6px 0;
+  }
+  .section-subtext {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    margin: 0 0 24px 0;
+  }
+  .facts-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .fact-item {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 20px;
+  }
+  .fact-statement {
+    font-size: 1.08rem;
+    line-height: 1.55;
+    color: var(--text);
+    margin: 0 0 16px 0;
+    font-weight: 500;
+  }
+  .fact-metadata-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px 16px;
+    font-size: 0.85rem;
+  }
+  
+  /* Pill Sourced: Distinct from green verified stamp */
+  .pill-sourced {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #1e3a5f;
+    background: #e8f0fe;
+    border: 1px solid #c2d7fa;
+    border-radius: 999px;
+    padding: 3px 12px;
+    text-transform: none;
+    letter-spacing: 0.02em;
+  }
+  :root[data-theme="dark"] .pill-sourced {
+    color: #adc6ff;
+    background: #142848;
+    border-color: #2a4b7c;
+  }
+
+  .source-link {
+    color: var(--link);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-weight: 500;
+    max-width: 45ch;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .source-link:hover {
+    text-decoration: underline;
+  }
+  .source-id-tag {
+    font-weight: 700;
+    color: var(--text-muted);
+  }
+  .ext-icon {
+    font-size: 0.85rem;
+  }
+  .capture-date-stamp {
+    color: var(--text-muted);
+    font-size: 0.82rem;
+  }
+  .source-note {
+    margin-top: 10px;
+    font-size: 0.85rem;
+    line-height: 1.45;
+    color: var(--text-muted);
+    background: var(--surface-alt);
+    padding: 8px 12px;
+    border-radius: 4px;
+  }
+
+  .story-programme-linkage {
+    border-top: 1px solid var(--rule);
+    padding-top: 32px;
+    margin-bottom: 40px;
+  }
+  .story-programme-linkage h2 {
+    font-size: 1.4rem;
+    color: var(--navy);
+    font-family: Charter, "Iowan Old Style", Georgia, serif;
+    margin: 0 0 12px 0;
+  }
+  .link-basis-explanation {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    margin: 0 0 18px 0;
+  }
+  .related-programmes-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+  }
+  .prog-link-card {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .prog-card-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    font-weight: 600;
+  }
+  .prog-card-title {
+    font-size: 1.2rem;
+    line-height: 1.3;
+    margin: 4px 0 0 0;
+    color: var(--navy);
+    font-family: Charter, "Iowan Old Style", Georgia, serif;
+  }
+  .btn-view-prog {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--link);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+  }
+  .btn-view-prog:hover {
+    text-decoration: underline;
+  }
+
+  .unlinked-programme-box {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 20px;
+  }
+  .unlinked-status {
+    font-size: 1.05rem;
+    color: var(--navy);
+    margin: 0 0 8px 0;
+  }
+  .unlinked-basis {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: var(--text);
+    margin: 0 0 10px 0;
+  }
+  .unlinked-guidance {
+    font-size: 0.88rem;
+    line-height: 1.45;
+    color: var(--text-muted);
+    margin: 0;
+  }
+
+  .story-article-bottom {
+    border-top: 1px solid var(--rule);
+    padding-top: 24px;
+    background: transparent;
+  }
+  .footer-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .back-link, .browse-link {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--link);
+    text-decoration: none;
+  }
+  .back-link:hover, .browse-link:hover {
+    text-decoration: underline;
+  }
+</style>

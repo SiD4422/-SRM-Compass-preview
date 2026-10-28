@@ -98,7 +98,7 @@ describe('Stage M5: B.Tech Eligibility Evaluation Engine (src/lib/eligibility.ts
   });
 
   // Hand-written Test 6: biotech group with PMB at 60 = meets
-  it('6. biotech group with PMB at 60 = meets (no math bridge needed)', () => {
+  it('6. biotech group with PMB at 60 = meets (no additional mathematics course needed)', () => {
     const result = checkEligibility({
       ...baseInput,
       programmeGroup: 'biotech',
@@ -112,7 +112,7 @@ describe('Stage M5: B.Tech Eligibility Evaluation Engine (src/lib/eligibility.ts
   });
 
   // Hand-written Test 7: biotech group with PCB at 60 = meets plus the Mathematics note
-  it('7. biotech group with PCB at 60 = meets plus the 4-credit Mathematics note', () => {
+  it('7. biotech group with PCB at 60 = meets plus the additional 4-credit course in Mathematics note', () => {
     const result = checkEligibility({
       ...baseInput,
       programmeGroup: 'biotech',
@@ -128,7 +128,7 @@ describe('Stage M5: B.Tech Eligibility Evaluation Engine (src/lib/eligibility.ts
   });
 
   // Hand-written Test 8: IB = Check SRM's page
-  it('8. IB = Check SRM\'s page', () => {
+  it('8. IB = Check SRM\'s page without AIU/Cambridge/Pearson', () => {
     const result = checkEligibility({
       ...baseInput,
       qualifyingBoard: 'IB'
@@ -136,7 +136,10 @@ describe('Stage M5: B.Tech Eligibility Evaluation Engine (src/lib/eligibility.ts
 
     expect(result.status).toBe('check_srm_page');
     expect(result.headline).toBe("Check SRM's page");
-    expect(result.reasons.some((r) => r.includes('IB') || r.includes('International Baccalaureate'))).toBe(true);
+    expect(result.reasons.some((r) => r.includes("Check SRM's page") && r.includes('https://www.srmist.edu.in/admission-india/engineering/'))).toBe(true);
+    // Explicitly verify no mention of AIU, Cambridge, or Pearson
+    const allReasons = result.reasons.join(' ');
+    expect(allReasons).not.toMatch(/AIU|Cambridge|Pearson/i);
     expect(result.sourceStamp.url).toBe(OFFICIAL_SOURCE.url);
   });
 
@@ -149,7 +152,9 @@ describe('Stage M5: B.Tech Eligibility Evaluation Engine (src/lib/eligibility.ts
 
     expect(result.status).toBe('check_srm_page');
     expect(result.headline).toBe("Check SRM's page");
-    expect(result.reasons.some((r) => r.includes('International') || r.includes('NRI'))).toBe(true);
+    expect(result.reasons.some((r) => r.includes("Check SRM's page") && r.includes('https://www.srmist.edu.in/admission-india/engineering/'))).toBe(true);
+    const allReasons = result.reasons.join(' ');
+    expect(allReasons).not.toMatch(/AIU|Cambridge|Pearson/i);
     expect(result.sourceStamp.url).toBe(OFFICIAL_SOURCE.url);
   });
 

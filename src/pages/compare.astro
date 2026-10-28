@@ -49,13 +49,13 @@ const minimalOfferings: CompareOffering[] = offeringsData.map((o) => ({
       <!-- Notification for ignored / rejected IDs -->
       <div id="compare-notice" class="compare-notice" hidden></div>
 
-      <!-- Action bar with Copy Link -->
-      <div id="compare-toolbar" class="compare-toolbar" hidden>
+      <!-- Action bar with Copy Link (hidden when JS off or < 1 option selected) -->
+      <div id="compare-toolbar" class="compare-toolbar" hidden style="display: none;">
         <div class="toolbar-left">
           <button type="button" id="copy-link-btn" class="btn s">Copy comparison link</button>
           <span id="copy-status" class="copy-status" role="status" aria-live="polite"></span>
         </div>
-        <div id="copy-fallback" class="copy-fallback" hidden>
+        <div id="copy-fallback" class="copy-fallback" hidden style="display: none;">
           <label for="copy-fallback-input" class="copy-fallback-label">Share link:</label>
           <input type="text" id="copy-fallback-input" class="copy-fallback-input" readonly />
         </div>
@@ -63,6 +63,11 @@ const minimalOfferings: CompareOffering[] = offeringsData.map((o) => ({
 
       <!-- Noscript fallback for users without JavaScript -->
       <noscript>
+        <style>
+          #compare-toolbar, .compare-toolbar, #copy-fallback, .copy-fallback {
+            display: none !important;
+          }
+        </style>
         <div class="card noscript-card">
           <h2>JavaScript is required for comparison</h2>
           <p>
@@ -403,21 +408,43 @@ const minimalOfferings: CompareOffering[] = offeringsData.map((o) => ({
     font-size: 0.9rem;
   }
 
-  /* Empty state */
+  /* Empty state (centred card, full width inside container on desktop) */
+  .empty-state {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin: 24px 0;
+  }
+
   .empty-card {
     text-align: center;
-    padding: 48px 24px;
+    padding: 56px 32px;
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
   }
 
   .empty-card h2 {
     font-size: 1.6rem;
     margin-bottom: 12px;
+    text-align: center;
   }
 
   .empty-card p {
     color: var(--muted);
-    max-width: 500px;
+    max-width: 580px;
     margin: 0 auto 24px auto;
+    text-align: center;
+  }
+
+  .empty-actions {
+    display: flex;
+    justify-content: center;
   }
 
   /* Noscript Fallback */

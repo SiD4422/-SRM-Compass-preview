@@ -89,8 +89,10 @@ export const RULE_TEXT_GENERAL =
 export const RULE_TEXT_BIOTECH =
   'Minimum 60% aggregate in PCM / PMB / PCB / PCB or Z (Botany and Zoology). Students who have not studied Mathematics in 10+2 must undertake an additional 4-credit course in Mathematics during the first year. Resident Indian. Age: at least 16 years and 6 months on 31st July of the exam year.';
 
-export const MATH_BRIDGE_NOTE =
+export const ADDITIONAL_MATH_COURSE_NOTE =
   'Students who have not studied Mathematics in 10+2 must undertake an additional 4-credit course in Mathematics during the first year.';
+
+export const MATH_BRIDGE_NOTE = ADDITIONAL_MATH_COURSE_NOTE;
 
 export const MANDATORY_DISCLAIMER =
   'This checks minimum marks and age only; admission is through SRMJEEE (UG); SRM decides.';
@@ -139,7 +141,7 @@ export function checkEligibility(input: EligibilityInput): EligibilityResult {
       status: 'check_srm_page',
       headline: "Check SRM's page",
       reasons: [
-        "Non-Resident Indian (NRI), PIO, OCI, and international applicants follow SRM's International Admissions criteria and fee structures rather than domestic criteria."
+        "Check SRM's page: Non-Resident Indian (NRI), PIO, OCI, and international candidates should consult SRM's international admissions section on https://www.srmist.edu.in/admission-india/engineering/."
       ],
       ruleText,
       sourceStamp: OFFICIAL_SOURCE,
@@ -155,7 +157,7 @@ export function checkEligibility(input: EligibilityInput): EligibilityResult {
       status: 'check_srm_page',
       headline: "Check SRM's page",
       reasons: [
-        `Applicants qualifying via ${normalizedBoard} must consult SRM's official admissions office for specialized subject conversions, grade equivalences, and Association of Indian Universities (AIU) certificates.`
+        `Check SRM's page: Candidates qualifying from ${normalizedBoard} should consult SRM's own sections on https://www.srmist.edu.in/admission-india/engineering/ for admission requirements and subject equivalences.`
       ],
       ruleText,
       sourceStamp: OFFICIAL_SOURCE,
@@ -294,8 +296,8 @@ export function renderEligibilityResult(result: EligibilityResult): string {
   const mathNoteBlock =
     result.hasMathNote && result.mathNote
       ? `
-    <div class="result-math-note" role="note" aria-label="Mathematics Requirement Note">
-      <strong>4-Credit Mathematics Requirement:</strong>
+    <div class="result-math-note" role="note" aria-label="Additional Mathematics Requirement Note">
+      <strong>Additional 4-Credit Course in Mathematics:</strong>
       <p>${escapeHtml(result.mathNote)}</p>
     </div>`
       : '';

@@ -56,6 +56,10 @@ html {
   box-sizing: border-box;
 }
 
+[hidden] {
+  display: none !important;
+}
+
 body {
   margin: 0;
   background: var(--bg);
@@ -411,7 +415,7 @@ th {
   text-decoration: underline;
 }
 
-/* Responsive Table Stack on Phones */
+/* Responsive Offering Cards on Phones (360px target height under 190px) */
 @media (max-width: 720px) {
   thead {
     position: absolute;
@@ -419,30 +423,124 @@ th {
     top: -9999px;
   }
   
-  table, tbody, tr, td {
+  table, tbody {
     display: block;
     width: 100%;
   }
   
   tr {
-    border-bottom: 2px solid var(--rule);
-    padding: 10px 0;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: baseline;
+    gap: 2px 8px;
+    padding: 8px 10px;
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    margin-bottom: 8px;
+    box-sizing: border-box;
   }
   
   td {
+    display: block;
+    padding: 0;
     border: 0;
-    padding: 8px 16px;
+    font-size: 0.85rem;
+    min-width: 0;
   }
   
-  td::before {
-    content: attr(data-l);
-    display: block;
-    font-size: 0.8rem;
+  /* Line 0: Programme Link & Compare Toggle (if present on /programmes) */
+  td[data-l="Programme"] {
+    grid-column: 1;
+    grid-row: 1;
+    font-weight: 700;
+    font-size: 0.88rem;
+    line-height: 1.15;
+  }
+  
+  td[data-l="Compare"] {
+    grid-column: 2;
+    grid-row: 1;
+    text-align: right;
+  }
+
+  .compare-toggle-btn {
+    padding: 2px 6px;
+    font-size: 0.75rem;
+  }
+  
+  /* Line 1: Campus on left, Fee on right */
+  td[data-l="Campus"] {
+    grid-column: 1;
     font-weight: 600;
+    color: var(--ink);
+    font-size: 0.85rem;
+    line-height: 1.2;
+  }
+  
+  td[data-l="Fee per year"] {
+    grid-column: 2;
+    text-align: right;
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--ink);
+    line-height: 1.2;
+  }
+  
+  /* Line 2: Seats on left, Department on right */
+  td[data-l="Seats"] {
+    grid-column: 1;
+    font-size: 0.80rem;
     color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    margin-bottom: 2px;
+    line-height: 1.2;
+  }
+  
+  td[data-l="Seats"]::before {
+    content: "Seats: ";
+    font-weight: 500;
+    color: var(--muted);
+  }
+  
+  td[data-l="Department"] {
+    grid-column: 2;
+    text-align: right;
+    font-size: 0.80rem;
+    color: var(--muted);
+    line-height: 1.2;
+    max-width: 170px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  /* Line 3: Stamp & Source check */
+  td[data-l="Source check"] {
+    grid-column: 1 / -1;
+    margin-top: 2px;
+    padding-top: 4px;
+    border-top: 1px dashed var(--rule);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    font-size: 0.78rem;
+  }
+
+  .stamp {
+    font-size: 0.78rem;
+    padding: 2px 8px 2px 6px;
+  }
+
+  .flag {
+    font-size: 0.78rem;
+    margin-top: 0;
+  }
+
+  td[data-l="Duration"] {
+    grid-column: 1 / -1;
+    font-size: 0.80rem;
+    color: var(--muted);
+    line-height: 1.2;
   }
 }
 

@@ -318,19 +318,39 @@ export function initComparePage(): void {
       }
     }
 
-    if (selected.length === 0) {
-      if (toolbar) toolbar.hidden = true;
+    if (selected.length < 1) {
+      if (toolbar) {
+        toolbar.hidden = true;
+        toolbar.style.display = 'none';
+      }
+      if (copyFallback) {
+        copyFallback.hidden = true;
+        copyFallback.style.display = 'none';
+      }
       if (container) {
         container.innerHTML = '';
         container.hidden = true;
+        container.style.display = 'none';
       }
-      if (emptyState) emptyState.hidden = false;
+      if (emptyState) {
+        emptyState.hidden = false;
+        emptyState.style.display = 'flex';
+      }
       return;
     }
 
-    if (emptyState) emptyState.hidden = true;
-    if (toolbar) toolbar.hidden = false;
-    if (container) container.hidden = false;
+    if (emptyState) {
+      emptyState.hidden = true;
+      emptyState.style.display = 'none';
+    }
+    if (toolbar) {
+      toolbar.hidden = false;
+      toolbar.style.display = 'flex';
+    }
+    if (container) {
+      container.hidden = false;
+      container.style.display = 'block';
+    }
 
     const summary = getComparisonSummary(selected);
 

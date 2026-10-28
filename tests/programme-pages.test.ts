@@ -355,4 +355,27 @@ describe('Stage M3 & M3-fix: Programme Detail Pages (/programmes/[slug])', () =>
       expect(tokensCss).toMatch(/\.hero\s+h1[\s\S]*?max-width:\s*2[0-4]ch/);
     });
   });
+
+  describe('Stage M4-fix-2: Copy, Cycle Disclaimers, and Offering Cards', () => {
+    it('verifies home page does not contain the word "preview" and renames section to "Examples you can check yourself"', () => {
+      const homeHtml = fs.readFileSync(path.join(distDir, 'index.html'), 'utf-8');
+      expect(homeHtml.toLowerCase()).not.toContain('preview');
+      expect(homeHtml).toContain('Examples you can check yourself');
+      expect(homeHtml).toContain('Each row links to the exact SRM page it came from.');
+    });
+
+    it('verifies "for the 2026-27 cycle; SRM may revise for 2027 entry" appears in hero, footer, and /eligibility', () => {
+      const homeHtml = fs.readFileSync(path.join(distDir, 'index.html'), 'utf-8');
+      expect(homeHtml).toContain('for the 2026-27 cycle; SRM may revise for 2027 entry');
+
+      const eligHtml = fs.readFileSync(path.join(distDir, 'eligibility/index.html'), 'utf-8');
+      expect(eligHtml).toContain('for the 2026-27 cycle; SRM may revise for 2027 entry');
+    });
+
+    it('verifies /compare copy-link panel and share field are hidden statically', () => {
+      const compareHtml = fs.readFileSync(path.join(distDir, 'compare/index.html'), 'utf-8');
+      expect(compareHtml).toContain('id="compare-toolbar" class="compare-toolbar" hidden style="display: none;"');
+      expect(compareHtml).toContain('id="copy-fallback" class="copy-fallback" hidden style="display: none;"');
+    });
+  });
 });

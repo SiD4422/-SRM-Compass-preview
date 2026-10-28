@@ -18,7 +18,9 @@
    "electronics and computer",
    "vlsi",
    "electronics engineering",
-   "cyber physical"
+   "cyber physical",
+   "electronic and communication",
+   "automotive electronics"
   ],
   "code-ai": [
    "computer science",
@@ -91,6 +93,7 @@
    "machines-vehicles"
   ],
   "ktr-automobile-engineering-w-s-in-automotive-electronics": [
+   "circuits-power",
    "machines-vehicles"
   ],
   "ktr-biomedical-engineering-bme": [
@@ -168,6 +171,7 @@
    "robots-automation"
   ],
   "ktr-electronic-and-communication-engineering-w-s-in-data-science": [
+   "circuits-power",
    "code-ai",
    "data-business"
   ],

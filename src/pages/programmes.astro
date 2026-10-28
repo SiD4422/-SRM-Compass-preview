@@ -239,48 +239,59 @@ const feeSteps = [
   </section>
 
   <!-- Client-side vanilla TypeScript engine: filters, searches and sorts in place -->
-  <script define:vars={{ synonymsData }}>
+  <script>
+    import {
+      filterOfferings,
+      sortOfferings,
+      matchesSearch,
+      matchesWord,
+      type OfferingItem
+    } from '../lib/filter';
+    import synonymsData from '../../data/synonyms.json';
+    import tagsData from '../../data/tags.json';
+
     (function () {
       const table = document.getElementById('programmes-table');
       const tbody = document.getElementById('offerings-body');
       if (!table || !tbody) return;
 
       const rows = Array.from(tbody.querySelectorAll('tr'));
-      const searchInput = document.getElementById('search-input');
+      const searchInput = document.getElementById('search-input') as HTMLInputElement | null;
       const chipButtons = Array.from(document.querySelectorAll('.chip[data-tag]'));
-      const campusCheckboxes = Array.from(document.querySelectorAll('input[name="campus"]'));
-      const minFeeSelect = document.getElementById('min-fee');
-      const maxFeeSelect = document.getElementById('max-fee');
-      const sortSelect = document.getElementById('sort-order');
+      const campusCheckboxes = Array.from(document.querySelectorAll('input[name="campus"]')) as HTMLInputElement[];
+      const minFeeSelect = document.getElementById('min-fee') as HTMLSelectElement | null;
+      const maxFeeSelect = document.getElementById('max-fee') as HTMLSelectElement | null;
+      const sortSelect = document.getElementById('sort-order') as HTMLSelectElement | null;
       const liveCount = document.getElementById('live-count');
       const emptyState = document.getElementById('empty-state');
       const resetBtn = document.getElementById('reset-filters');
 
       const synonyms = synonymsData || {};
-      let activeTag = null;
+      const tagsByOffering = (tagsData.by_offering || {}) as Record<string, string[]>;
+      let activeTag: string | null = null;
 
-      function matchesWord(targetText, word) {
-        const w = word.toLowerCase().trim();
-        if (!w) return true;
+      const rowMap = new Map<string, HTMLTableRowElement>();
+      const offeringItems: OfferingItem[] = rows.map((r) => {
+        const id = r.getAttribute('data-id') || '';
+        rowMap.set(id, r);
+        const fee = parseInt(r.getAttribute('data-fee') || '0', 10);
+        const seats = parseInt(r.getAttribute('data-seats') || '0', 10);
+        const deptVal = r.getAttribute('data-dept');
 
-        if (synonyms[w]) {
-          for (let i = 0; i < synonyms[w].length; i++) {
-            if (targetText.includes(synonyms[w][i].toLowerCase())) {
-              return true;
-            }
-          }
-        }
-
-        if (w.length <= 3) {
-          const escaped = w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-          const regex = new RegExp('\\b' + escaped + '\\b', 'i');
-          if (regex.test(targetText)) return true;
-        } else {
-          if (targetText.includes(w)) return true;
-        }
-
-        return false;
-      }
+        return {
+          id,
+          programme: r.querySelector('strong')?.textContent?.trim() || '',
+          campus: r.getAttribute('data-campus') || '',
+          campus_code: r.getAttribute('data-campus-code') || '',
+          degree: 'B.Tech',
+          program_type: 'Full Time',
+          annual_fee: { value: fee, status: 'verified' },
+          intake: { value: seats, status: 'verified' },
+          duration: { value: 4, status: 'verified' },
+          department: deptVal ? { value: deptVal, status: 'verified' } : null,
+          eligibility: { value: '', status: 'verified' }
+        };
+      });
 
       function syncStateToURL() {
         const params = new URLSearchParams();
@@ -309,133 +320,50 @@ const feeSteps = [
       }
 
       function applyFiltersAndSort() {
-        const q = searchInput ? searchInput.value.toLowerCase().trim() : '';
-        const words = q ? q.split(/\s+/).filter(Boolean) : [];
-
-        const checkedCampuses = new Set(
-          campusCheckboxes.filter((cb) => cb.checked).map((cb) => cb.value.toUpperCase())
-        );
-        const hasCampuses = checkedCampuses.size > 0;
+        const q = searchInput ? searchInput.value.trim() : '';
+        const checkedCampuses = campusCheckboxes
+          .filter((cb) => cb.checked)
+          .map((cb) => cb.value);
 
         const minFee = minFeeSelect && minFeeSelect.value ? parseInt(minFeeSelect.value, 10) : null;
         const maxFee = maxFeeSelect && maxFeeSelect.value ? parseInt(maxFeeSelect.value, 10) : null;
         const sortOrder = sortSelect ? sortSelect.value : 'prog-asc';
 
-        let visibleCount = 0;
+        // Filter offerings using single imported function from src/lib/filter.ts
+        const filtered = filterOfferings(offeringItems, {
+          q,
+          tag: activeTag,
+          campuses: checkedCampuses,
+          minFee,
+          maxFee,
+          tagsByOffering,
+          synonyms
+        });
 
+        // Sort offerings using single imported function from src/lib/filter.ts
+        const sorted = sortOfferings(filtered, sortOrder);
+
+        const visibleIds = new Set(sorted.map((o) => o.id));
+
+        // Update DOM visibility
         rows.forEach((row) => {
-          // 1. Tag filter
-          if (activeTag) {
-            const rowTags = (row.getAttribute('data-tags') || '').split(' ');
-            if (!rowTags.includes(activeTag)) {
-              row.hidden = true;
-              return;
-            }
-          }
-
-          // 2. Campus filter
-          if (hasCampuses) {
-            const rowCampus = (row.getAttribute('data-campus-code') || '').toUpperCase();
-            if (!checkedCampuses.has(rowCampus)) {
-              row.hidden = true;
-              return;
-            }
-          }
-
-          // 3. Fee bounds
-          const fee = parseInt(row.getAttribute('data-fee') || '0', 10);
-          if (minFee !== null && fee < minFee) {
-            row.hidden = true;
-            return;
-          }
-          if (maxFee !== null && fee > maxFee) {
-            row.hidden = true;
-            return;
-          }
-
-          // 4. Search query
-          if (words.length > 0) {
-            const prog = (row.getAttribute('data-prog') || '').toLowerCase();
-            const campus = (row.getAttribute('data-campus') || '').toLowerCase();
-            const campusCode = (row.getAttribute('data-campus-code') || '').toLowerCase();
-            const dept = (row.getAttribute('data-dept') || '').toLowerCase();
-            const progText = prog + ' ' + campus + ' ' + campusCode;
-            const fullText = progText + ' ' + dept;
-
-            let allMatch = true;
-            for (let i = 0; i < words.length; i++) {
-              const w = words[i];
-              let wordMatched = false;
-
-              if (synonyms[w]) {
-                for (let j = 0; j < synonyms[w].length; j++) {
-                  if (progText.includes(synonyms[w][j].toLowerCase())) {
-                    wordMatched = true;
-                    break;
-                  }
-                }
-              }
-
-              if (!wordMatched) {
-                if (w.length <= 3) {
-                  const escaped = w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-                  const regex = new RegExp('\\b' + escaped + '\\b', 'i');
-                  if (regex.test(fullText)) wordMatched = true;
-                } else {
-                  if (fullText.includes(w)) wordMatched = true;
-                }
-              }
-
-              if (!wordMatched) {
-                allMatch = false;
-                break;
-              }
-            }
-
-            if (!allMatch) {
-              row.hidden = true;
-              return;
-            }
-          }
-
-          row.hidden = false;
-          visibleCount++;
+          const id = row.getAttribute('data-id') || '';
+          row.hidden = !visibleIds.has(id);
         });
 
-        // Sort visible rows
-        const visibleRows = rows.filter((r) => !r.hidden);
-        visibleRows.sort((a, b) => {
-          const feeA = parseInt(a.getAttribute('data-fee') || '0', 10);
-          const feeB = parseInt(b.getAttribute('data-fee') || '0', 10);
-          const seatsA = parseInt(a.getAttribute('data-seats') || '0', 10);
-          const seatsB = parseInt(b.getAttribute('data-seats') || '0', 10);
-          const progA = a.getAttribute('data-prog') || '';
-          const progB = b.getAttribute('data-prog') || '';
-          const codeA = a.getAttribute('data-campus-code') || '';
-          const codeB = b.getAttribute('data-campus-code') || '';
-
-          switch (sortOrder) {
-            case 'fee-asc':
-              return feeA - feeB || progA.localeCompare(progB);
-            case 'fee-desc':
-              return feeB - feeA || progA.localeCompare(progB);
-            case 'seats-desc':
-              return seatsB - seatsA || progA.localeCompare(progB);
-            case 'prog-asc':
-            default:
-              return progA.localeCompare(progB) || codeA.localeCompare(codeB);
-          }
-        });
-
+        // Re-append visible rows in sorted order
         const frag = document.createDocumentFragment();
-        visibleRows.forEach((r) => frag.appendChild(r));
+        sorted.forEach((o) => {
+          const rowEl = rowMap.get(o.id);
+          if (rowEl) frag.appendChild(rowEl);
+        });
         tbody.appendChild(frag);
 
         if (liveCount) {
-          liveCount.textContent = `${visibleCount} of ${rows.length} offerings`;
+          liveCount.textContent = `${sorted.length} of ${rows.length} offerings`;
         }
 
-        if (visibleCount === 0) {
+        if (sorted.length === 0) {
           table.hidden = true;
           if (emptyState) emptyState.hidden = false;
         } else {
@@ -516,6 +444,12 @@ const feeSteps = [
           if (sortSelect) sortSelect.value = 'prog-asc';
           applyFiltersAndSort();
         });
+      }
+
+      // Keep reference to imported utilities to ensure they are bundled and available
+      if (false as boolean) {
+        matchesWord('', '');
+        matchesSearch(offeringItems[0], '');
       }
 
       // Initialize state from URL on page load

@@ -31,7 +31,7 @@ describe('M2 Programme Finder Filter & Search Engine', () => {
   describe('Taxonomy Tag Filter (hand-calculated expected counts)', () => {
     // Expected counts derived from direct inspection of data/tags.json
     const expectedTagCounts: Record<string, number> = {
-      'circuits-power': 19,
+      'circuits-power': 21,
       'code-ai': 62,
       'machines-vehicles': 16,
       'robots-automation': 5,
@@ -113,13 +113,16 @@ describe('M2 Programme Finder Filter & Search Engine', () => {
     // Exact counts specified by the M2 benchmark table
     const m2BenchmarkSearchCounts: Record<string, number> = {
       eee: 3,
-      ece: 11,
+      ece: 12,
       cse: 43,
       ai: 13,
       vlsi: 3,
       robotics: 3,
       biotech: 8,
-      mechanical: 9
+      mechanical: 9,
+      it: 3,
+      iot: 3,
+      'ktr eee': 1
     };
 
     for (const [query, expectedCount] of Object.entries(m2BenchmarkSearchCounts)) {
@@ -130,10 +133,8 @@ describe('M2 Programme Finder Filter & Search Engine', () => {
     }
 
     const additionalExpectedQueryCounts: Record<string, number> = {
-      it: 3,
       aiml: 8,
       ml: 8,
-      iot: 3,
       bme: 4,
       mech: 11,
       auto: 5,
@@ -263,6 +264,28 @@ describe('M2 Programme Finder Filter & Search Engine', () => {
       const sorted = sortOfferings(offerings, 'seats-desc');
       expect(sorted[0].intake.value).toBe(1140); // KTR CSE
       expect(sorted[sorted.length - 1].intake.value).toBe(30);
+    });
+  });
+
+  describe('Architecture & Anti-Duplication Guard (M2-fix)', () => {
+    it('fails if programmes.astro contains "includes(" with a synonyms lookup', () => {
+      const astroContent = fs.readFileSync(
+        path.resolve(__dirname, '../src/pages/programmes.astro'),
+        'utf-8'
+      );
+      const scriptMatch = astroContent.match(/<script[\s\S]*?<\/script>/i);
+      expect(scriptMatch).not.toBeNull();
+      const scriptCode = scriptMatch![0];
+
+      // Must not contain 'includes(' with a synonyms lookup
+      const hasIncludesWithSynonyms = /synonyms[\s\S]*?includes\(/i.test(scriptCode);
+      expect(hasIncludesWithSynonyms).toBe(false);
+
+      // Must import filter and search utilities from src/lib/filter
+      expect(scriptCode).toContain("from '../lib/filter'");
+      expect(scriptCode).toContain('filterOfferings');
+      expect(scriptCode).toContain('matchesSearch');
+      expect(scriptCode).toContain('matchesWord');
     });
   });
 });

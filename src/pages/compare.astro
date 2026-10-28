@@ -1,0 +1,410 @@
+---
+import Layout from '../layouts/Layout.astro';
+import offeringsData from '../../data/offerings.json';
+import sourcesData from '../../data/sources.json';
+import { type CompareOffering } from '../lib/compare';
+
+const sourcesMap = Object.fromEntries(sourcesData.map((s) => [s.id, s.url]));
+
+// Minimal embedded offerings JSON: only the needed fields
+const minimalOfferings: CompareOffering[] = offeringsData.map((o) => ({
+  id: o.id,
+  programme: o.programme,
+  campus: o.campus,
+  campus_code: o.campus_code,
+  fee: o.annual_fee?.value ?? 0,
+  seats: o.intake?.value ?? null,
+  duration: o.duration?.value ?? 4,
+  department: o.department?.value ?? null,
+  eligibility_status: o.eligibility?.status ?? 'verified',
+  source_id: o.annual_fee?.source_id ?? 'S1',
+  captured_on: o.annual_fee?.captured_on ?? '2026-10-26',
+  source_url: sourcesMap[o.annual_fee?.source_id ?? 'S1'] || 'https://www.srmist.edu.in/admission-india/engineering/'
+}));
+---
+
+<Layout
+  title="Compare Programmes | SRM Compass"
+  description="Compare up to 3 SRM B.Tech offerings side by side. Annual fees, 4-year totals, seats, departments, and eligibility criteria."
+>
+  <section class="blk compare-page">
+    <div class="w">
+      <div class="compare-header">
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <a href="/programmes">← All Programmes</a>
+        </nav>
+        <h1>Compare Programmes</h1>
+        <p class="lede">
+          Side-by-side comparison of up to 3 SRMIST offerings. All numbers grounded in official 2026 sources.
+        </p>
+      </div>
+
+      <!-- Live region for accessibility announcements -->
+      <div id="compare-live-region" class="sr-only" role="status" aria-live="polite"></div>
+
+      <!-- Notification for ignored / rejected IDs -->
+      <div id="compare-notice" class="compare-notice" hidden></div>
+
+      <!-- Action bar with Copy Link -->
+      <div id="compare-toolbar" class="compare-toolbar" hidden>
+        <div class="toolbar-left">
+          <button type="button" id="copy-link-btn" class="btn s">Copy comparison link</button>
+          <span id="copy-status" class="copy-status" role="status" aria-live="polite"></span>
+        </div>
+        <div id="copy-fallback" class="copy-fallback" hidden>
+          <label for="copy-fallback-input" class="copy-fallback-label">Share link:</label>
+          <input type="text" id="copy-fallback-input" class="copy-fallback-input" readonly />
+        </div>
+      </div>
+
+      <!-- Container where comparison grid/table is mounted -->
+      <div id="compare-container"></div>
+
+      <!-- Empty state -->
+      <div id="compare-empty" class="empty-state" hidden>
+        <div class="card empty-card">
+          <h2>No programmes selected for comparison</h2>
+          <p>You can select up to 3 programmes to compare fees, four-year cost estimates, seats, and departments side by side.</p>
+          <div class="empty-actions">
+            <a href="/programmes" class="btn p">Browse all programmes</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Embed minimal JSON -->
+  <script id="compare-data" type="application/json" set:html={JSON.stringify(minimalOfferings)} />
+
+  <!-- Client runner importing all logic from src/lib -->
+  <script>
+    import { initComparePage } from '../lib/compare';
+    initComparePage();
+  </script>
+</Layout>
+
+<style>
+  .compare-page {
+    padding-top: 24px;
+    padding-bottom: 64px;
+  }
+
+  .breadcrumb {
+    margin-bottom: 16px;
+    font-size: 0.95rem;
+  }
+
+  .breadcrumb a {
+    color: var(--link);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    font-weight: 500;
+  }
+
+  .breadcrumb a:hover {
+    color: var(--ink);
+  }
+
+  .compare-header {
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 24px;
+    margin-bottom: 28px;
+  }
+
+  .compare-header h1 {
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+    line-height: 1.2;
+    margin-bottom: 8px;
+  }
+
+  .compare-notice {
+    background: #FFF8E6;
+    border: 1px solid var(--gold);
+    color: #5C3800;
+    padding: 12px 16px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    font-size: 0.95rem;
+    font-weight: 500;
+  }
+
+  .compare-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 24px;
+    padding: 12px 16px;
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+  }
+
+  .toolbar-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .copy-status {
+    font-size: 0.9rem;
+    color: var(--ok);
+    font-weight: 600;
+  }
+
+  .copy-fallback {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    margin-top: 8px;
+  }
+
+  .copy-fallback-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+
+  .copy-fallback-input {
+    flex: 1;
+    font-size: 0.85rem;
+    padding: 6px 10px;
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    background: var(--bg);
+  }
+
+  /* Compare Grid & Cards */
+  :global(.compare-grid) {
+    display: grid;
+    gap: 20px;
+    align-items: stretch;
+  }
+
+  :global(.compare-grid.columns-1) {
+    grid-template-columns: minmax(0, 500px);
+  }
+
+  :global(.compare-grid.columns-2) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  :global(.compare-grid.columns-3) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  :global(.compare-card) {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  }
+
+  :global(.card-head) {
+    padding: 16px;
+    border-bottom: 1px solid var(--rule);
+    background: var(--bg);
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  :global(.card-head-info) {
+    flex: 1;
+  }
+
+  :global(.card-programme) {
+    font-size: 1.15rem;
+    margin: 0 0 6px 0;
+    line-height: 1.3;
+    color: var(--ink);
+  }
+
+  :global(.card-campus) {
+    font-size: 0.95rem;
+    color: var(--text);
+  }
+
+  :global(.campus-pill) {
+    display: inline-block;
+    margin-left: 4px;
+    padding: 2px 6px;
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--muted);
+  }
+
+  :global(.btn-remove-offering) {
+    background: transparent;
+    border: 1px solid var(--rule);
+    color: var(--muted);
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.15s, color 0.15s, border-color 0.15s;
+    white-space: nowrap;
+  }
+
+  :global(.btn-remove-offering:hover) {
+    background: #FFECEC;
+    color: #A01010;
+    border-color: #E08080;
+  }
+
+  :global(.card-rows) {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  :global(.compare-row) {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--rule);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  :global(.compare-row:last-child) {
+    border-bottom: none;
+    margin-top: auto;
+  }
+
+  :global(.row-label) {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--muted);
+    font-weight: 700;
+  }
+
+  :global(.val-main) {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  :global(.fee-highlight) {
+    color: var(--ink);
+    font-size: 1.25rem;
+    font-family: Charter, Georgia, serif;
+    font-variant-numeric: lining-nums tabular-nums;
+  }
+
+  :global(.val-sub) {
+    font-size: 0.85rem;
+    font-weight: normal;
+    color: var(--muted);
+  }
+
+  :global(.total-highlight) {
+    font-size: 1.2rem;
+    font-family: Charter, Georgia, serif;
+    color: var(--ink);
+  }
+
+  :global(.estimate-note) {
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin: 4px 0 0 0;
+    line-height: 1.4;
+    font-style: italic;
+  }
+
+  :global(.badge-extreme) {
+    display: inline-block;
+    margin-top: 4px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+
+  :global(.badge-lowest) {
+    background: #E6F6EE;
+    color: #10633B;
+    border: 1px solid #73C998;
+  }
+
+  :global(.badge-highest) {
+    background: #E9F1FC;
+    color: #0C4DA2;
+    border: 1px solid #8DB8FF;
+  }
+
+  :global(.source-stamp) {
+    margin-top: 6px;
+    font-size: 0.82rem;
+    font-family: monospace;
+  }
+
+  :global(.source-link) {
+    font-size: 0.85rem;
+  }
+
+  :global(.elig-rule) {
+    margin: 0 0 4px 0;
+    font-size: 0.9rem;
+    line-height: 1.4;
+  }
+
+  :global(.conflict-note) {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--warn);
+    line-height: 1.35;
+  }
+
+  :global(.verified-note) {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--ok);
+  }
+
+  :global(.muted-text) {
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+
+  /* Empty state */
+  .empty-card {
+    text-align: center;
+    padding: 48px 24px;
+  }
+
+  .empty-card h2 {
+    font-size: 1.6rem;
+    margin-bottom: 12px;
+  }
+
+  .empty-card p {
+    color: var(--muted);
+    max-width: 500px;
+    margin: 0 auto 24px auto;
+  }
+
+  /* Mobile Stack */
+  @media (max-width: 768px) {
+    :global(.compare-grid.columns-2),
+    :global(.compare-grid.columns-3) {
+      grid-template-columns: 1fr;
+    }
+
+    .compare-header h1 {
+      font-size: 1.7rem;
+    }
+  }
+</style>

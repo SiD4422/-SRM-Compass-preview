@@ -12,11 +12,12 @@ const offeringsData = JSON.parse(
 );
 
 describe('Stage M3 & M3-fix: Programme Detail Pages (/programmes/[slug])', () => {
-  it('builds exactly 53 static pages (5 root pages + 48 programme pages)', () => {
-    // 5 root pages
+  it('builds exactly 54 static pages (6 root pages + 48 programme pages)', () => {
+    // 6 root pages
     const rootPages = [
       'index.html',
       'apply/index.html',
+      'compare/index.html',
       'eligibility/index.html',
       'evidence/index.html',
       'programmes/index.html'
@@ -50,7 +51,7 @@ describe('Stage M3 & M3-fix: Programme Detail Pages (/programmes/[slug])', () =>
     const sitemap0Content = fs.readFileSync(sitemap0Path, 'utf-8');
     const urls = [...sitemap0Content.matchAll(/<loc>(.*?)<\/loc>/g)].map((m) => m[1]);
 
-    expect(urls).toHaveLength(53);
+    expect(urls).toHaveLength(54);
 
     for (const url of urls) {
       const urlPath = new URL(url).pathname;
@@ -114,6 +115,11 @@ describe('Stage M3 & M3-fix: Programme Detail Pages (/programmes/[slug])', () =>
       expect(html).toContain('href="#apply"');
       expect(html).toContain('href="#sources"');
 
+      // Compare these campuses link
+      expect(html).toContain('Compare these campuses');
+      expect(html).toContain('Showing the 3 lowest fees of 6');
+      expect(html).toContain('href="/compare?ids=');
+
       // Headings & Campus names (not codes)
       expect(html).toContain('Offered at 6 campuses (Kattankulathur, Ramapuram, Delhi-NCR, Vadapalani, Tiruchirappalli, Baburayanpettai)');
       expect(html).toContain('Kattankulathur');
@@ -172,6 +178,7 @@ describe('Stage M3 & M3-fix: Programme Detail Pages (/programmes/[slug])', () =>
       expect(html).toContain('Fees are ₹2,75,000 per year across 1 campus.');
       expect(html).toContain('<meta name="description" content="Chemical Engineering B.Tech at SRMIST: fees of ₹2,75,000 per year across 1 campus, with seats, eligibility and a source for every number.">');
       expect(html).toContain('Offered at 1 campus (Kattankulathur)');
+      expect(html).not.toContain('Compare these campuses');
 
       // Related programme: Nanotechnology shares 'materials' tag
       expect(html).toContain('href="/programmes/nanotechnology"');
@@ -185,6 +192,7 @@ describe('Stage M3 & M3-fix: Programme Detail Pages (/programmes/[slug])', () =>
       expect(html).toContain('Fees are ₹4,00,000 per year across 1 campus.');
       expect(html).toContain('<meta name="description" content="Aerospace Engineering B.Tech at SRMIST: fees of ₹4,00,000 per year across 1 campus, with seats, eligibility and a source for every number.">');
       expect(html).toContain('Offered at 1 campus (Kattankulathur)');
+      expect(html).not.toContain('Compare these campuses');
 
       // 4 related programmes sharing 'machines-vehicles'
       expect(html).toContain('href="/programmes/aeronautical-engineering"');

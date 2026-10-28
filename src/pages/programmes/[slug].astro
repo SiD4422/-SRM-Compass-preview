@@ -71,6 +71,11 @@ const maxFee = fees.length > 0 ? Math.max(...fees) : 0;
 const campusCount = programme.campuses.length;
 const campusNames = Array.from(new Set(progOfferings.map((o) => o.campus).filter(Boolean)));
 
+const lowestFeeOfferings = [...progOfferings]
+  .sort((a, b) => ((a.annual_fee?.value as number) || 0) - ((b.annual_fee?.value as number) || 0))
+  .slice(0, 3);
+const compareCampusesUrl = `/compare?ids=${lowestFeeOfferings.map((o) => o.id).join(',')}`;
+
 function formatInr(val: number): string {
   const s = val.toString();
   if (s.length <= 3) return s;
@@ -175,6 +180,19 @@ const jsonLd = {
         <p class="prog-campuses-line">
           Offered at {campusCount} campus{campusCount > 1 ? 'es' : ''} ({campusNames.join(', ')})
         </p>
+
+        {campusCount > 1 && (
+          <div class="compare-campuses-wrap">
+            <a href={compareCampusesUrl} class="compare-campuses-link">
+              Compare these campuses
+            </a>
+            {campusCount > 3 && (
+              <span class="compare-campuses-note">
+                Showing the 3 lowest fees of {campusCount}
+              </span>
+            )}
+          </div>
+        )}
 
         {progTagKeys.length > 0 && (
           <div class="prog-tags-row" aria-label="Field tags">
@@ -406,6 +424,39 @@ const jsonLd = {
     font-size: 1.1rem;
     color: var(--muted);
     margin: 0 0 16px 0;
+  }
+
+  .compare-campuses-wrap {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+
+  .compare-campuses-link {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 14px;
+    background: var(--surface);
+    border: 1px solid var(--link);
+    border-radius: 6px;
+    color: var(--link);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: background-color 0.15s, color 0.15s;
+  }
+
+  .compare-campuses-link:hover {
+    background: var(--link);
+    color: #ffffff;
+  }
+
+  .compare-campuses-note {
+    font-size: 0.85rem;
+    color: var(--muted);
+    font-style: italic;
   }
 
   .prog-tags-row {

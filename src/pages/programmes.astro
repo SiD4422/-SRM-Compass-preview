@@ -179,6 +179,7 @@ const feeSteps = [
       <table id="programmes-table" class="ledger-table">
         <thead>
           <tr>
+            <th scope="col" class="th-compare">Compare</th>
             <th scope="col">Programme</th>
             <th scope="col">Campus</th>
             <th scope="col">Fee per year</th>
@@ -207,6 +208,17 @@ const feeSteps = [
                 data-seats={offering.intake?.value ?? 0}
                 data-tags={rowTags.join(' ')}
               >
+                <td data-l="Compare" class="td-compare">
+                  <button
+                    type="button"
+                    class="compare-toggle-btn"
+                    data-id={offering.id}
+                    aria-pressed="false"
+                    aria-label={`Compare ${offering.programme} at ${offering.campus}`}
+                  >
+                    Compare
+                  </button>
+                </td>
                 <td data-l="Programme">
                   <a href={`/programmes/${offeringSlugMap.get(offering.id)}`}>
                     <strong>{offering.programme}</strong>
@@ -247,6 +259,25 @@ const feeSteps = [
       </table>
     </div>
   </section>
+
+  <!-- Sticky Compare Bar -->
+  <div id="compare-sticky-bar" class="compare-sticky-bar" hidden>
+    <div class="w compare-sticky-inner">
+      <span id="compare-sticky-count" class="compare-sticky-text">0 selected</span>
+      <div class="compare-sticky-actions">
+        <a id="compare-sticky-link" href="/compare" class="btn p">Compare (0)</a>
+        <button id="compare-sticky-clear" type="button" class="btn s">Clear</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Live region for compare selection announcements -->
+  <div id="compare-announcer" class="sr-only" role="status" aria-live="polite"></div>
+
+  <!-- Toast alert when selection exceeds 3 -->
+  <div id="compare-limit-toast" class="compare-limit-toast" role="alert" hidden>
+    Maximum 3 offerings can be compared at once. Remove one to add another.
+  </div>
 
   <!-- Client-side vanilla TypeScript engine: filters, searches and sorts in place -->
   <script>
@@ -456,6 +487,94 @@ const feeSteps = [
         });
       }
 
+      // Compare selection logic
+      const selectedCompareIds = new Set<string>();
+      const stickyBar = document.getElementById('compare-sticky-bar');
+      const stickyLink = document.getElementById('compare-sticky-link') as HTMLAnchorElement | null;
+      const stickyCount = document.getElementById('compare-sticky-count');
+      const stickyClear = document.getElementById('compare-sticky-clear');
+      const compareAnnouncer = document.getElementById('compare-announcer');
+      const compareLimitToast = document.getElementById('compare-limit-toast');
+      let toastTimer: any = null;
+
+      function showToast(msg: string) {
+        if (!compareLimitToast) return;
+        compareLimitToast.textContent = msg;
+        compareLimitToast.hidden = false;
+        if (toastTimer) clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => {
+          if (compareLimitToast) compareLimitToast.hidden = true;
+        }, 3500);
+      }
+
+      function updateCompareStickyUI() {
+        const count = selectedCompareIds.size;
+        if (!stickyBar || !stickyLink || !stickyCount) return;
+
+        if (count > 0) {
+          stickyBar.hidden = false;
+          stickyLink.href = `/compare?ids=${Array.from(selectedCompareIds).join(',')}`;
+          stickyLink.textContent = `Compare (${count})`;
+          stickyCount.textContent = `${count} selected (max 3)`;
+        } else {
+          stickyBar.hidden = true;
+        }
+      }
+
+      // Delegate click on compare toggle buttons
+      tbody.addEventListener('click', (e) => {
+        const target = e.target as HTMLElement;
+        const btn = target.closest<HTMLButtonElement>('.compare-toggle-btn');
+        if (!btn) return;
+
+        const id = btn.getAttribute('data-id');
+        if (!id) return;
+
+        const isPressed = btn.getAttribute('aria-pressed') === 'true';
+
+        if (isPressed) {
+          selectedCompareIds.delete(id);
+          btn.setAttribute('aria-pressed', 'false');
+          btn.classList.remove('is-selected');
+          btn.textContent = 'Compare';
+          if (compareAnnouncer) {
+            compareAnnouncer.textContent = `Removed offering from comparison. ${selectedCompareIds.size} of 3 selected.`;
+          }
+        } else {
+          if (selectedCompareIds.size >= 3) {
+            const msg = 'Maximum 3 offerings can be compared at once. Remove one to add another.';
+            if (compareAnnouncer) compareAnnouncer.textContent = msg;
+            showToast(msg);
+            return;
+          }
+          selectedCompareIds.add(id);
+          btn.setAttribute('aria-pressed', 'true');
+          btn.classList.add('is-selected');
+          btn.textContent = 'Selected';
+          if (compareAnnouncer) {
+            compareAnnouncer.textContent = `Added offering to comparison. ${selectedCompareIds.size} of 3 selected.`;
+          }
+        }
+
+        updateCompareStickyUI();
+      });
+
+      if (stickyClear) {
+        stickyClear.addEventListener('click', () => {
+          selectedCompareIds.clear();
+          const allToggleBtns = tbody.querySelectorAll<HTMLButtonElement>('.compare-toggle-btn');
+          allToggleBtns.forEach((btn) => {
+            btn.setAttribute('aria-pressed', 'false');
+            btn.classList.remove('is-selected');
+            btn.textContent = 'Compare';
+          });
+          updateCompareStickyUI();
+          if (compareAnnouncer) {
+            compareAnnouncer.textContent = 'Cleared all compare selections.';
+          }
+        });
+      }
+
       // Keep reference to imported utilities to ensure they are bundled and available
       if (false as boolean) {
         matchesWord('', '');
@@ -468,3 +587,93 @@ const feeSteps = [
     })();
   </script>
 </Layout>
+
+<style>
+  .th-compare,
+  .td-compare {
+    width: 90px;
+    text-align: center;
+  }
+
+  .compare-toggle-btn {
+    display: inline-block;
+    padding: 4px 10px;
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--ink);
+    cursor: pointer;
+    transition: background-color 0.15s, border-color 0.15s, color 0.15s;
+    white-space: nowrap;
+  }
+
+  .compare-toggle-btn:hover {
+    border-color: var(--link);
+    color: var(--link);
+  }
+
+  .compare-toggle-btn.is-selected {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: #ffffff;
+  }
+
+  .compare-sticky-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--surface);
+    border-top: 2px solid var(--gold);
+    box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.12);
+    z-index: 100;
+    padding: 12px 0;
+  }
+
+  .compare-sticky-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .compare-sticky-text {
+    font-weight: 600;
+    color: var(--ink);
+    font-size: 0.95rem;
+  }
+
+  .compare-sticky-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .compare-limit-toast {
+    position: fixed;
+    bottom: 75px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #FFF8E6;
+    color: #5C3800;
+    border: 1px solid var(--gold);
+    padding: 10px 18px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+    z-index: 101;
+    max-width: 90vw;
+    text-align: center;
+  }
+
+  @media (max-width: 768px) {
+    .th-compare,
+    .td-compare {
+      width: auto;
+      text-align: left;
+    }
+  }
+</style>

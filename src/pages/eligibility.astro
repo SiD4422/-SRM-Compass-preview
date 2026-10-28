@@ -1,6 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import offeringsData from '../../data/offerings.m1.json';
+import offeringsData from '../../data/offerings.json';
 
 const totalOfferings = offeringsData.length;
 const conflictCount = offeringsData.filter(
@@ -21,7 +21,7 @@ const conflictCount = offeringsData.filter(
 
       <div class="note">
         <p>
-          <b>Source conflict.</b> We show SRM’s 2026-27 rule: at least 60% aggregate in Physics, Mathematics and one more qualifying subject. Biotechnology and biomedical programmes need 60% in PCM, PMB, PCB or similar combinations. In {conflictCount} of the {totalOfferings} sample offerings in SRM’s fee table, older text still says 50% and cites SRMJEEE (UG) 2022.
+          <b>Source conflict.</b> We show SRM’s 2026-27 rule: at least 60% aggregate in Physics, Mathematics and one more qualifying subject. Biotechnology and biomedical programmes need 60% in PCM, PMB, PCB or similar combinations. In {conflictCount} of the {totalOfferings} offerings in SRM’s fee table, older text still says 50% and cites SRMJEEE (UG) 2022.
         </p>
         <details>
           <summary>See both versions</summary>
@@ -58,7 +58,7 @@ const conflictCount = offeringsData.filter(
       </div>
 
       <div class="btn-row">
-        <a class="btn p" href="/#programmes">Compare programmes</a>
+        <a class="btn p" href="/programmes">See programmes</a>
         <a class="btn s" href="/apply">How applying works</a>
       </div>
     </div>

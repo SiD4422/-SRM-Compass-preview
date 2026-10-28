@@ -287,5 +287,16 @@ describe('M2 Programme Finder Filter & Search Engine', () => {
       expect(scriptCode).toContain('matchesSearch');
       expect(scriptCode).toContain('matchesWord');
     });
+
+    it('verifies eligibility page uses full 106 offerings dataset and links to /programmes', () => {
+      const eligibilityContent = fs.readFileSync(
+        path.resolve(__dirname, '../src/pages/eligibility.astro'),
+        'utf-8'
+      );
+      expect(eligibilityContent).toContain("import offeringsData from '../../data/offerings.json'");
+      expect(eligibilityContent).not.toContain("offerings.m1.json");
+      expect(eligibilityContent).toContain('href="/programmes">See programmes</a>');
+      expect(eligibilityContent).not.toContain('Compare programmes');
+    });
   });
 });

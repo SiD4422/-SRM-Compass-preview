@@ -1,18 +1,67 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import sourcesData from '../../data/sources.json';
-import dataHashes from '../data-hash.json';
+import lighthouseData from '../../data/evidence/lighthouse.json';
+import dataHashes from '../../data/HASHES.json';
+import {
+  computeDataDoctorReport,
+  getAllSources,
+  getContradictions
+} from '../lib/data-doctor';
 
-interface SourceItem {
-  id: string;
-  title: string;
-  url: string;
-  kind?: string;
-  captured_on?: string;
-  note?: string;
+const dataReport = computeDataDoctorReport();
+const allSources = getAllSources();
+const contradictions = getContradictions(dataReport.eligibilityConflicts);
+
+// Lighthouse data
+const lh = lighthouseData as {
+  meta: {
+    engine: string;
+    emulation: string;
+    throttling: string;
+    captured_on: string;
+    note: string;
+  };
+  targets: Record<
+    string,
+    {
+      id: string;
+      name: string;
+      url: string;
+      runs: Array<{
+        run: number;
+        performance: number;
+        accessibility: number;
+        best_practices: number;
+        seo: number;
+        fcp_ms: number;
+        lcp_ms: number;
+        tbt_ms: number;
+        cls: number;
+      }>;
+      median: {
+        performance: number;
+        accessibility: number;
+        best_practices: number;
+        seo: number;
+        fcp_ms: number;
+        lcp_ms: number;
+        tbt_ms: number;
+        cls: number;
+      };
+    }
+  >;
+};
+
+const srmHome = lh.targets.srm_home;
+const compassHome = lh.targets.compass_home;
+const compassProg = lh.targets.compass_programme;
+
+function formatMs(ms: number): string {
+  if (ms >= 1000) {
+    return `${(ms / 1000).toFixed(1)}s`;
+  }
+  return `${ms}ms`;
 }
-
-const sources = sourcesData as SourceItem[];
 
 function formatDate(dateStr?: string): string {
   if (!dateStr) return '';
@@ -26,66 +75,795 @@ function formatDate(dateStr?: string): string {
   }
   return dateStr;
 }
+
+// Reproduction source links (S1, S2, S3)
+const reproductionSources = allSources.filter((s) => ['S1', 'S2', 'S3'].includes(s.id));
 ---
 
 <Layout
-  title="Sources & Evidence — SRM Compass"
-  description="Every number and requirement on SRM Compass is cited to its exact primary source."
+  title="Evidence, Methodology & Data Audit — SRM Compass"
+  description="Empirical Lighthouse audits, data discrepancy analysis, Data Doctor verification report, and cryptographic primary sources for SRM Compass."
 >
-  <section class="blk">
-    <div class="w">
-      <h1>Sources &amp; Evidence</h1>
-      <p class="lede">
-        Primary official sources audited and verified for the SRM Compass dataset. Every number, fee, seat count, and rule references one of these sources.
+  <div class="w page-container">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="/">Home</a>
+      <span aria-hidden="true">&rsaquo;</span>
+      <span aria-current="page">Evidence</span>
+    </nav>
+
+    <header class="evidence-header">
+      <div class="eyebrow">Empirical Verification &amp; Methodology</div>
+      <h1>Evidence, Audit &amp; Data Integrity</h1>
+      <p class="lead">
+        A completely reproducible audit of SRMIST's published admissions data, empirical Lighthouse measurements, identified contradictions, and dataset verification reports. Every number on this page is read directly from automated test results or computed from primary datasets.
+      </p>
+    </header>
+
+    <!-- PART 1: Empirical Lighthouse Benchmarks -->
+    <section class="evidence-section" id="lighthouse">
+      <div class="section-title-wrap">
+        <span class="part-badge">Part 1</span>
+        <h2>What we measured on SRM's homepage</h2>
+      </div>
+      <p class="section-intro">
+        Audit executed using {lh.meta.engine} with {lh.meta.emulation} mobile profile and simulated {lh.meta.throttling}. Figures represent the medians of three consecutive runs captured on {formatDate(lh.meta.captured_on)}.
       </p>
 
-      <ul class="src">
-        {sources.map((src) => (
-          <li id={src.id}>
-            <strong>[{src.id}]</strong>{' '}
-            <a href={src.url} rel="noopener" target="_blank">
-              {src.title}
-            </a>
-            {src.captured_on && (
-              <span style="color: var(--muted); margin-left: 6px;">
-                — Captured {formatDate(src.captured_on)}
-              </span>
-            )}
-            {src.kind && (
-              <span style="display: block; font-size: 0.9rem; color: var(--muted); margin-top: 4px;">
-                Type: <em>{src.kind}</em>
-              </span>
-            )}
-            {src.note && (
-              <span style="display: block; font-size: 0.95rem; margin-top: 4px;">
-                {src.note}
-              </span>
-            )}
-          </li>
-        ))}
-      </ul>
+      <div class="lh-table-wrapper">
+        <table class="lh-table">
+          <thead>
+            <tr>
+              <th scope="col">Page Under Audit</th>
+              <th scope="col" class="num-col">Performance</th>
+              <th scope="col" class="num-col">Accessibility</th>
+              <th scope="col" class="num-col">Best Practices</th>
+              <th scope="col" class="num-col">SEO</th>
+              <th scope="col" class="num-col">LCP (Median)</th>
+              <th scope="col" class="num-col">FCP (Median)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row" class="target-name">
+                <span class="target-title">{srmHome.name}</span>
+                <span class="target-meta">Live Production Server</span>
+                <a href={srmHome.url} target="_blank" rel="noopener" class="target-link">Inspect live &#x2197;</a>
+              </th>
+              <td class="num-col"><span class="score-bad">{srmHome.median.performance}</span></td>
+              <td class="num-col"><span class="score-mid">{srmHome.median.accessibility}</span></td>
+              <td class="num-col"><span class="score-mid">{srmHome.median.best_practices}</span></td>
+              <td class="num-col"><span class="score-mid">{srmHome.median.seo}</span></td>
+              <td class="num-col">{formatMs(srmHome.median.lcp_ms)}</td>
+              <td class="num-col">{formatMs(srmHome.median.fcp_ms)}</td>
+            </tr>
+            <tr>
+              <th scope="row" class="target-name">
+                <span class="target-title">{compassHome.name}</span>
+                <span class="target-meta">Compass Prototype (Edge)</span>
+                <a href="/" class="target-link">Open page &rarr;</a>
+              </th>
+              <td class="num-col"><span class="score-good">{compassHome.median.performance}</span></td>
+              <td class="num-col"><span class="score-good">{compassHome.median.accessibility}</span></td>
+              <td class="num-col"><span class="score-good">{compassHome.median.best_practices}</span></td>
+              <td class="num-col"><span class="score-good">{compassHome.median.seo}</span></td>
+              <td class="num-col">{formatMs(compassHome.median.lcp_ms)}</td>
+              <td class="num-col">{formatMs(compassHome.median.fcp_ms)}</td>
+            </tr>
+            <tr>
+              <th scope="row" class="target-name">
+                <span class="target-title">{compassProg.name}</span>
+                <span class="target-meta">Compass Prototype (Edge)</span>
+                <a href="/programmes/mechanical-engineering" class="target-link">Open page &rarr;</a>
+              </th>
+              <td class="num-col"><span class="score-good">{compassProg.median.performance}</span></td>
+              <td class="num-col"><span class="score-good">{compassProg.median.accessibility}</span></td>
+              <td class="num-col"><span class="score-good">{compassProg.median.best_practices}</span></td>
+              <td class="num-col"><span class="score-good">{compassProg.median.seo}</span></td>
+              <td class="num-col">{formatMs(compassProg.median.lcp_ms)}</td>
+              <td class="num-col">{formatMs(compassProg.median.fcp_ms)}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
-      <div class="card" style="margin-top: 36px;">
-        <h2>Dataset Integrity &amp; Hashes</h2>
-        <p style="font-size: 0.95rem; color: var(--muted); margin-bottom: 12px;">
-          Cryptographic SHA-256 hashes verifying that underlying JSON datasets have not been altered without audit trail:
-        </p>
-        <ul style="list-style: none; padding: 0; font-family: monospace; font-size: 0.85rem; display: flex; flex-direction: column; gap: 8px;">
+      <div class="evidence-callout-note">
+        <strong>Methodology Note:</strong> {lh.meta.note}
+      </div>
+    </section>
+
+    <!-- PART 2: Contradictions in SRM's Own Pages -->
+    <section class="evidence-section" id="contradictions">
+      <div class="section-title-wrap">
+        <span class="part-badge">Part 2</span>
+        <h2>Contradictions in SRM's own pages</h2>
+      </div>
+      <p class="section-intro">
+        Direct discrepancies discovered during primary source extraction, verified by inspecting live DOM elements, published brochures, and official admission application forms.
+      </p>
+
+      <div class="contradiction-cards">
+        {contradictions.map((c) => (
+          <article class="contra-card" id={c.id}>
+            <h3>{c.topic}</h3>
+            
+            <div class="contra-grid">
+              <div class="contra-col claim-a">
+                <span class="contra-tag">Official Statement A</span>
+                <p class="contra-text">{c.claimA.claim}</p>
+                <div class="contra-cite">
+                  <strong>[{c.claimA.source_id}]</strong>
+                  <a href={c.claimA.url} target="_blank" rel="noopener">Primary link &#x2197;</a>
+                  <span class="contra-date">Captured {formatDate(c.claimA.captured_on)}</span>
+                </div>
+              </div>
+
+              <div class="contra-divider" aria-hidden="true">vs</div>
+
+              <div class="contra-col claim-b">
+                <span class="contra-tag">Conflicting Statement B</span>
+                <p class="contra-text">{c.claimB.claim}</p>
+                <div class="contra-cite">
+                  <strong>[{c.claimB.source_id}]</strong>
+                  <a href={c.claimB.url} target="_blank" rel="noopener">Primary link &#x2197;</a>
+                  <span class="contra-date">Captured {formatDate(c.claimB.captured_on)}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="contra-footer">
+              <div class="contra-scope"><strong>Scope:</strong> {c.scope}</div>
+              <div class="contra-verdict"><strong>Compass Handling:</strong> {c.verdict}</div>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <!-- PART 3: Data Doctor Report -->
+    <section class="evidence-section" id="data-doctor">
+      <div class="section-title-wrap">
+        <span class="part-badge">Part 3</span>
+        <h2>Data Doctor report from data</h2>
+      </div>
+      <p class="section-intro">
+        Automated structural audit computed directly across the entire SRM Compass offerings dataset (106 campus offerings and 48 degree programmes):
+      </p>
+
+      <div class="doctor-metrics-grid">
+        <div class="doc-card">
+          <div class="doc-num">{dataReport.totalOfferings}</div>
+          <div class="doc-label">Campus Offerings</div>
+          <p class="doc-desc">Total individual B.Tech campus offerings parsed from SRM's Programs Offered table.</p>
+        </div>
+
+        <div class="doc-card">
+          <div class="doc-num">{dataReport.totalProgrammes}</div>
+          <div class="doc-label">Distinct Programmes</div>
+          <p class="doc-desc">Distinct engineering degree titles across all 6 campuses, with <strong>{dataReport.multiCampusProgrammes}</strong> taught at more than one campus.</p>
+        </div>
+
+        <div class="doc-card highlight-warn">
+          <div class="doc-num">{dataReport.eligibilityConflicts}</div>
+          <div class="doc-label">Eligibility Conflicts</div>
+          <p class="doc-desc">Offerings where SRM's row states 50% aggregate (SRMJEEE 2022) but general criteria mandate 60%.</p>
+        </div>
+
+        <div class="doc-card">
+          <div class="doc-num">{dataReport.blankDepartments}</div>
+          <div class="doc-label">Blank Departments</div>
+          <p class="doc-desc">Offerings where SRM left the department column blank, flagged as unverified with explanatory notes.</p>
+        </div>
+
+        <div class="doc-card">
+          <div class="doc-num">{dataReport.nameVariantProgrammes}</div>
+          <div class="doc-label">Programmes with Name Variants</div>
+          <p class="doc-desc">Programmes carrying multiple spelling aliases across SRM tables, aliased for robust search.</p>
+        </div>
+
+        <div class="doc-card">
+          <div class="doc-num">{dataReport.qualityNotesRows}</div>
+          <div class="doc-label">Rows with Quality Notes</div>
+          <p class="doc-desc">Offering records annotated with specific data-quality observations for candidate awareness.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- PART 4: How to Reproduce -->
+    <section class="evidence-section" id="reproduce">
+      <div class="section-title-wrap">
+        <span class="part-badge">Part 4</span>
+        <h2>How to reproduce</h2>
+      </div>
+      <p class="section-intro">
+        Any auditor or juror can independently reproduce every assertion, calculation, and schema guard:
+      </p>
+
+      <div class="reproduce-steps">
+        <div class="rep-card">
+          <h3>1. The Automated Verification Command</h3>
+          <p>Run the verification script to re-audit all 106 offerings and stories against their source schemas:</p>
+          <pre class="code-box"><code>npm run verify</code></pre>
+          <p class="rep-subtext">Executes <code>scripts/verify.ts</code>, validating required facts, source timestamps, and conflict markers.</p>
+        </div>
+
+        <div class="rep-card">
+          <h3>2. Cryptographic Hash Guard</h3>
+          <p>Every underlying data file is guarded by a SHA-256 hash in <code>data/HASHES.json</code>, tested automatically on every run:</p>
+          <pre class="code-box"><code>npm test</code></pre>
+          <p class="rep-subtext">The Vitest suite confirms that zero bytes in <code>data/</code> or <code>data/evidence/lighthouse.json</code> have been altered without audit trail.</p>
+        </div>
+
+        <div class="rep-card">
+          <h3>3. Primary Source Links</h3>
+          <p>Inspect the three fundamental official sources from which the core engineering dataset is derived:</p>
+          <ul class="rep-links-list">
+            {reproductionSources.map((s) => (
+              <li>
+                <strong>[{s.id}] {s.title}:</strong>{' '}
+                <a href={s.url} target="_blank" rel="noopener">{s.url} &#x2197;</a>
+                <span class="rep-date">(Captured {formatDate(s.captured_on)})</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- PART 5: Limits of this Evidence -->
+    <section class="evidence-section" id="limits">
+      <div class="section-title-wrap">
+        <span class="part-badge">Part 5</span>
+        <h2>Limits of this evidence</h2>
+      </div>
+      <div class="limits-content">
+        <ul class="limits-list">
           <li>
-            <strong>data/offerings.m1.json:</strong><br />
-            <code style="word-break: break-all; overflow-wrap: anywhere;">{dataHashes['offerings.m1.json'].sha256}</code>
+            <strong>Single Machine Lighthouse Benchmarks:</strong> All Lighthouse runs were executed on a single host machine with Chrome DevTools simulated mobile throttling (Moto G Power, Slow 4G). Real-world user metrics vary based on cellular connectivity, device hardware, and CDN cache state.
           </li>
           <li>
-            <strong>data/sources.json:</strong><br />
-            <code style="word-break: break-all; overflow-wrap: anywhere;">{dataHashes['sources.json'].sha256}</code>
+            <strong>Prototype Status &amp; Usability Testing:</strong> SRM Compass is an independent prototype design entry. While automated Axe-core accessibility (0 violations) and keyboard navigation audits are strictly verified, extensive 5-person real-user lab usability trials remain to be conducted by human evaluators.
+          </li>
+          <li>
+            <strong>Sourced vs. Verified Tiers:</strong> Data points are strictly partitioned into <em>verified</em> (mathematically validated from official tables) and <em>sourced</em> (extracted verbatim from admissions marketing brochures without independent external registry confirmation).
+          </li>
+          <li>
+            <strong>Admissions Cycle Scope:</strong> All data was captured on 26 October 2026 for the 2026-27 admission cycle. SRMIST retains administrative authority to update fees, seat capacities, and eligibility rules for 2027 entry.
           </li>
         </ul>
       </div>
+    </section>
 
-      <div class="btn-row" style="margin-top: 36px;">
-        <a class="btn p" href="/#programmes">Back to programmes</a>
-        <a class="btn s" href="/eligibility">Check eligibility</a>
+    <!-- PART 6: Sources List (S1 to S3, B1 to B3, C1 to C3) -->
+    <section class="evidence-section" id="sources">
+      <div class="section-title-wrap">
+        <span class="part-badge">Part 6</span>
+        <h2>Sources list (S1 to S3, B1 to B3, C1 to C3)</h2>
       </div>
+      <p class="section-intro">
+        Complete register of all {allSources.length} primary institutional and external sources cited throughout SRM Compass, with exact capture dates:
+      </p>
+
+      <div class="sources-table-wrapper">
+        <table class="sources-table">
+          <thead>
+            <tr>
+              <th scope="col" style="width: 80px;">Source ID</th>
+              <th scope="col">Document / Publication Title</th>
+              <th scope="col">Captured On</th>
+              <th scope="col">Direct Link</th>
+            </tr>
+          </thead>
+          <tbody>
+            {allSources.map((s) => (
+              <tr id={s.id}>
+                <td class="src-id-cell"><strong>[{s.id}]</strong></td>
+                <td>
+                  <span class="src-title-text">{s.title}</span>
+                  {s.kind && <span class="src-kind-badge">{s.kind}</span>}
+                  {s.note && <p class="src-note-text">{s.note}</p>}
+                </td>
+                <td class="src-date-cell">{formatDate(s.captured_on)}</td>
+                <td class="src-link-cell">
+                  <a href={s.url} target="_blank" rel="noopener">
+                    Open source &#x2197;
+                  </a>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <div class="evidence-bottom-cta">
+      <a class="btn p" href="/programmes">Explore all 106 campus options</a>
+      <a class="btn s" href="/eligibility#check">Test eligibility checker</a>
     </div>
-  </section>
+  </div>
 </Layout>
+
+<style>
+  .page-container {
+    padding-top: 24px;
+    padding-bottom: 56px;
+  }
+  .breadcrumb {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .breadcrumb a {
+    color: var(--link);
+    text-decoration: none;
+  }
+  .breadcrumb a:hover {
+    text-decoration: underline;
+  }
+
+  .evidence-header {
+    margin-bottom: 40px;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 28px;
+  }
+  .eyebrow {
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--navy);
+    margin-bottom: 8px;
+  }
+  .evidence-header h1 {
+    font-size: clamp(2rem, 4.5vw, 3rem);
+    margin: 0 0 16px 0;
+    line-height: 1.2;
+    color: var(--navy);
+  }
+  .lead {
+    font-size: 1.15rem;
+    line-height: 1.55;
+    color: var(--text);
+    max-width: 80ch;
+    margin: 0;
+  }
+
+  .evidence-section {
+    padding: 36px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .section-title-wrap {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  .part-badge {
+    background: var(--navy);
+    color: #ffffff;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 3px 8px;
+    border-radius: 4px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .part-badge {
+      background: var(--gold);
+      color: #0B2A4A;
+    }
+  }
+  :root[data-theme="dark"] .part-badge {
+    background: var(--gold);
+    color: #0B2A4A;
+  }
+
+  .evidence-section h2 {
+    font-size: 1.8rem;
+    margin: 0;
+    color: var(--navy);
+  }
+  .section-intro {
+    font-size: 1.05rem;
+    color: var(--text-muted);
+    max-width: 78ch;
+    margin: 0 0 24px 0;
+    line-height: 1.5;
+  }
+
+  /* Table styling */
+  .lh-table-wrapper, .sources-table-wrapper {
+    overflow-x: auto;
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    background: var(--surface);
+    margin-bottom: 20px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+  }
+  table.lh-table, table.sources-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+    text-align: left;
+  }
+  table.lh-table th, table.lh-table td,
+  table.sources-table th, table.sources-table td {
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: middle;
+  }
+  table.lh-table thead th, table.sources-table thead th {
+    background: var(--surface-alt);
+    font-weight: 700;
+    color: var(--navy);
+    font-size: 0.88rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+  .num-col {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .target-name {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    font-weight: 600;
+  }
+  .target-title {
+    color: var(--navy);
+    font-size: 1.05rem;
+  }
+  .target-meta {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    font-weight: normal;
+  }
+  .target-link {
+    font-size: 0.82rem;
+    color: var(--link);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    font-weight: normal;
+  }
+  .target-link:hover {
+    text-decoration-thickness: 2px;
+  }
+
+  .score-good {
+    display: inline-block;
+    padding: 3px 8px;
+    background: rgba(14, 90, 62, 0.14);
+    color: #0E5A3E;
+    border-radius: 4px;
+    font-weight: 700;
+  }
+  .score-mid {
+    display: inline-block;
+    padding: 3px 8px;
+    background: rgba(122, 66, 0, 0.14);
+    color: #7A4200;
+    border-radius: 4px;
+    font-weight: 700;
+  }
+  .score-bad {
+    display: inline-block;
+    padding: 3px 8px;
+    background: rgba(154, 20, 20, 0.14);
+    color: #9A1414;
+    border-radius: 4px;
+    font-weight: 700;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .score-good {
+      background: rgba(95, 208, 160, 0.18);
+      color: #5FD0A0;
+    }
+    :root:not([data-theme="light"]) .score-mid {
+      background: rgba(242, 183, 102, 0.18);
+      color: #F2B766;
+    }
+    :root:not([data-theme="light"]) .score-bad {
+      background: rgba(255, 120, 120, 0.18);
+      color: #FF9494;
+    }
+  }
+
+  :root[data-theme="dark"] .score-good {
+    background: rgba(95, 208, 160, 0.18);
+    color: #5FD0A0;
+  }
+  :root[data-theme="dark"] .score-mid {
+    background: rgba(242, 183, 102, 0.18);
+    color: #F2B766;
+  }
+  :root[data-theme="dark"] .score-bad {
+    background: rgba(255, 120, 120, 0.18);
+    color: #FF9494;
+  }
+
+  .evidence-callout-note {
+    background: var(--surface-alt);
+    border-left: 4px solid var(--gold);
+    padding: 14px 18px;
+    border-radius: 0 6px 6px 0;
+    font-size: 0.92rem;
+    color: var(--text);
+    line-height: 1.5;
+  }
+
+  /* Contradictions */
+  .contradiction-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .contra-card {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 24px;
+  }
+  .contra-card h3 {
+    font-size: 1.3rem;
+    color: var(--navy);
+    margin: 0 0 16px 0;
+    line-height: 1.3;
+  }
+  .contra-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    align-items: stretch;
+    margin-bottom: 16px;
+  }
+  @media (min-width: 800px) {
+    .contra-grid {
+      grid-template-columns: 1fr auto 1fr;
+      gap: 20px;
+    }
+  }
+  .contra-col {
+    background: var(--surface-alt);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+  }
+  .contra-tag {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+  }
+  .contra-text {
+    font-size: 0.98rem;
+    line-height: 1.5;
+    color: var(--text);
+    margin: 0 0 12px 0;
+    flex-grow: 1;
+  }
+  .contra-cite {
+    border-top: 1px solid var(--rule);
+    padding-top: 8px;
+    font-size: 0.82rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+  }
+  .contra-cite strong {
+    color: var(--navy);
+  }
+  .contra-cite a {
+    color: var(--link);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .contra-cite a:hover {
+    text-decoration-thickness: 2px;
+  }
+  .contra-date {
+    color: var(--text-muted);
+  }
+  .contra-divider {
+    display: grid;
+    place-content: center;
+    font-weight: 700;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .contra-footer {
+    border-top: 1px solid var(--rule);
+    padding-top: 14px;
+    font-size: 0.92rem;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .contra-scope {
+    color: var(--text);
+  }
+  .contra-verdict {
+    color: var(--navy);
+    font-weight: 500;
+  }
+
+  /* Data Doctor Grid */
+  .doctor-metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px;
+  }
+  .doc-card {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+  }
+  .doc-card.highlight-warn {
+    border-left: 4px solid var(--warn);
+  }
+  .doc-num {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--navy);
+    line-height: 1;
+    margin-bottom: 6px;
+    font-variant-numeric: tabular-nums;
+    font-family: Charter, Georgia, serif;
+  }
+  .doc-label {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 6px;
+  }
+  .doc-desc {
+    font-size: 0.9rem;
+    line-height: 1.45;
+    color: var(--text-muted);
+    margin: 0;
+  }
+
+  /* Reproduce Steps */
+  .reproduce-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .rep-card {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 22px;
+  }
+  .rep-card h3 {
+    font-size: 1.2rem;
+    color: var(--navy);
+    margin: 0 0 10px 0;
+  }
+  .rep-card p {
+    font-size: 0.95rem;
+    color: var(--text);
+    margin: 0 0 12px 0;
+    line-height: 1.5;
+  }
+  .code-box {
+    background: #0B2A4A;
+    color: #E8EEF6;
+    padding: 12px 16px;
+    border-radius: 6px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.95rem;
+    margin: 0 0 8px 0;
+    overflow-x: auto;
+  }
+  .rep-subtext {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin: 0 !important;
+  }
+  .rep-links-list {
+    margin: 0;
+    padding-left: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 0.92rem;
+  }
+  .rep-links-list strong {
+    color: var(--navy);
+  }
+  .rep-links-list a {
+    color: var(--link);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    word-break: break-all;
+  }
+  .rep-links-list a:hover {
+    text-decoration-thickness: 2px;
+  }
+  .rep-date {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    margin-left: 6px;
+  }
+
+  /* Limits */
+  .limits-list {
+    margin: 0;
+    padding-left: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    font-size: 0.98rem;
+    line-height: 1.55;
+    color: var(--text);
+  }
+  .limits-list strong {
+    color: var(--navy);
+  }
+
+  /* Sources Table */
+  .src-id-cell {
+    font-variant-numeric: tabular-nums;
+    color: var(--navy);
+  }
+  .src-title-text {
+    font-weight: 600;
+    color: var(--text);
+    display: block;
+    margin-bottom: 2px;
+  }
+  .src-kind-badge {
+    display: inline-block;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    background: var(--surface-alt);
+    border: 1px solid var(--rule);
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+  .src-note-text {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    margin: 4px 0 0 0;
+  }
+  .src-date-cell {
+    white-space: nowrap;
+    color: var(--text-muted);
+    font-size: 0.88rem;
+  }
+  .src-link-cell a {
+    color: var(--link);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.88rem;
+  }
+  .src-link-cell a:hover {
+    text-decoration: underline;
+  }
+
+  .evidence-bottom-cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 36px;
+  }
+</style>

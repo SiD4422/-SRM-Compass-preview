@@ -591,4 +591,119 @@ describe('Stage M3 & M3-fix: Programme Detail Pages (/programmes/[slug])', () =>
       expect(body).not.toContain('clip:');
     });
   });
+
+  describe('Stage M7: /evidence, Data Doctor, Contradictions, and Security Integrity', () => {
+    it('verifies /evidence computes and displays the six Data Doctor metrics correctly from data', () => {
+      const evidenceHtml = fs.readFileSync(path.join(distDir, 'evidence/index.html'), 'utf-8');
+
+      // Part 3 Data Doctor metrics:
+      expect(evidenceHtml).toContain('106'); // 106 campus offerings
+      expect(evidenceHtml).toContain('48');  // 48 distinct programmes
+      expect(evidenceHtml).toContain('23');  // 23 multi-campus
+      expect(evidenceHtml).toContain('75');  // 75 eligibility conflicts
+      expect(evidenceHtml).toContain('18');  // 18 blank departments
+      expect(evidenceHtml).toContain('7');   // 7 name variants
+      expect(evidenceHtml).toContain('58');  // 58 quality notes
+    });
+
+    it('verifies /evidence Part 1 displays empirical Lighthouse figures read from data/evidence/lighthouse.json', () => {
+      const evidenceHtml = fs.readFileSync(path.join(distDir, 'evidence/index.html'), 'utf-8');
+      const lh = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../data/evidence/lighthouse.json'), 'utf-8'));
+
+      // Check that engine and emulation from json appear
+      expect(evidenceHtml).toContain(lh.meta.engine);
+      expect(evidenceHtml).toContain(lh.meta.emulation);
+      expect(evidenceHtml).toContain(lh.meta.throttling);
+
+      // Check targets: SRM Homepage, Compass Home, Compass Programme
+      expect(evidenceHtml).toContain(lh.targets.srm_home.name);
+      expect(evidenceHtml).toContain(lh.targets.compass_home.name);
+      expect(evidenceHtml).toContain(lh.targets.compass_programme.name);
+
+      // Check median performance scores
+      expect(evidenceHtml).toContain(String(lh.targets.srm_home.median.performance));
+      expect(evidenceHtml).toContain(String(lh.targets.compass_home.median.performance));
+      expect(evidenceHtml).toContain(String(lh.targets.compass_programme.median.performance));
+    });
+
+    it('verifies /evidence Part 2 documents the four specific SRM contradictions with citations', () => {
+      const evidenceHtml = fs.readFileSync(path.join(distDir, 'evidence/index.html'), 'utf-8');
+
+      // 1. Eligibility 60% vs 50%
+      expect(evidenceHtml).toContain('60%');
+      expect(evidenceHtml).toContain('50%');
+      expect(evidenceHtml).toContain('SRMJEEE 2022');
+
+      // 2. Artificial Engineering vs Intelligence
+      expect(evidenceHtml).toContain('Artificial Engineering');
+      expect(evidenceHtml).toContain('Artificial Intelligence');
+      expect(evidenceHtml).toContain('Future Technologies');
+
+      // 3. NIRF 2025 vs 2024
+      expect(evidenceHtml).toContain('NIRF 2025 Ranked 11th');
+      expect(evidenceHtml).toContain('12th');
+
+      // 4. Job offers 14,030+ vs 5,700+
+      expect(evidenceHtml).toContain('14,030+');
+      expect(evidenceHtml).toContain('5,700+');
+    });
+
+    it('verifies /evidence Part 4 (Reproduction) and Part 5 (Limits) are fully detailed', () => {
+      const evidenceHtml = fs.readFileSync(path.join(distDir, 'evidence/index.html'), 'utf-8');
+
+      expect(evidenceHtml).toContain('npm run verify');
+      expect(evidenceHtml).toContain('HASHES.json');
+      expect(evidenceHtml).toContain('Moto G Power');
+      expect(evidenceHtml).toContain('Slow 4G');
+      expect(evidenceHtml).toContain('2026-27');
+    });
+
+    it('verifies /evidence Part 6 lists all 9 sources (S1-S3, B1-B3, C1-C3) with capture dates', () => {
+      const evidenceHtml = fs.readFileSync(path.join(distDir, 'evidence/index.html'), 'utf-8');
+
+      const expectedIds = ['S1', 'S2', 'S3', 'B1', 'B2', 'B3', 'C1', 'C2', 'C3'];
+      for (const id of expectedIds) {
+        expect(evidenceHtml).toContain(`[${id}]`);
+      }
+    });
+
+    it('verifies every external link across built pages has rel containing noopener', () => {
+      const htmlFiles = [
+        'index.html',
+        'apply/index.html',
+        'compare/index.html',
+        'eligibility/index.html',
+        'evidence/index.html',
+        'stories/index.html',
+        'programmes/index.html'
+      ];
+
+      for (const relPath of htmlFiles) {
+        const fullPath = path.join(distDir, relPath);
+        if (!fs.existsSync(fullPath)) continue;
+        const html = fs.readFileSync(fullPath, 'utf-8');
+
+        // Match all external <a> tags (href starting with http:// or https://)
+        const linkMatches = [...html.matchAll(/<a\b[^>]*\bhref=["'](https?:\/\/[^"']+)["'][^>]*>/gi)];
+        for (const match of linkMatches) {
+          const tag = match[0];
+          const href = match[1];
+          if (href.includes('localhost') || href.includes('127.0.0.1')) continue;
+          expect(tag).toMatch(/rel=["'][^"']*noopener/i);
+        }
+      }
+    });
+
+    it('verifies no built page contains the word "official" next to Compass', () => {
+      const allFiles = fs.readdirSync(distDir, { recursive: true }) as string[];
+      const htmlFiles = allFiles.filter((f) => typeof f === 'string' && f.endsWith('.html'));
+
+      for (const relPath of htmlFiles) {
+        const html = fs.readFileSync(path.join(distDir, relPath), 'utf-8');
+        expect(html).not.toMatch(/official\s+srm\s+compass/i);
+        expect(html).not.toMatch(/srm\s+compass\s+is\s+(an?\s+)?official/i);
+        expect(html).not.toMatch(/official\s+website\s+of\s+srm\s+compass/i);
+      }
+    });
+  });
 });

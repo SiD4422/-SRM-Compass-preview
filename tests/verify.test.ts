@@ -250,6 +250,14 @@ describe('Data File Integrity Suite (data/HASHES.json)', () => {
     const sourceCsvContent = fs.readFileSync(sourceCsvPath);
     const actualCsvHash = crypto.createHash('sha256').update(sourceCsvContent).digest('hex');
     expect(actualCsvHash).toBe(storedHashes[sourceCsvRel]);
+
+    // Also assert evidence/lighthouse.json matches its SHA-256
+    const lighthouseRel = 'evidence/lighthouse.json';
+    const lighthousePath = path.join(dataDir, lighthouseRel);
+    expect(fs.existsSync(lighthousePath)).toBe(true);
+    const lighthouseContent = fs.readFileSync(lighthousePath);
+    const actualLhHash = crypto.createHash('sha256').update(lighthouseContent).digest('hex');
+    expect(actualLhHash).toBe(storedHashes[lighthouseRel]);
   });
 
   it('fails if any data file SHA-256 differs from data/HASHES.json', () => {
@@ -263,7 +271,8 @@ describe('Data File Integrity Suite (data/HASHES.json)', () => {
       'programmes.json',
       'stories.json',
       'apply_routes.json',
-      'source/programs_offered_table_all_254_rows.csv'
+      'source/programs_offered_table_all_254_rows.csv',
+      'evidence/lighthouse.json'
     ];
 
     for (const file of dataFiles) {

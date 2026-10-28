@@ -1,0 +1,161 @@
+{
+  "meta": {
+    "engine": "Lighthouse 13.6.0",
+    "emulation": "Moto G Power",
+    "throttling": "Slow 4G (1.6 Mbps down, 750 Kbps up, 150ms round-trip)",
+    "captured_on": "2026-10-28",
+    "note": "SRM's live site measurements reflect production server latency and third-party script overhead; Compass figures represent an optimized pre-rendered prototype running on Cloudflare edge."
+  },
+  "targets": {
+    "srm_home": {
+      "id": "srm_home",
+      "name": "SRM Homepage",
+      "url": "https://www.srmist.edu.in/",
+      "runs": [
+        {
+          "run": 1,
+          "performance": 37,
+          "accessibility": 81,
+          "best_practices": 77,
+          "seo": 83,
+          "fcp_ms": 9375,
+          "lcp_ms": 21895,
+          "tbt_ms": 772,
+          "cls": 0
+        },
+        {
+          "run": 2,
+          "performance": 33,
+          "accessibility": 81,
+          "best_practices": 77,
+          "seo": 83,
+          "fcp_ms": 16516,
+          "lcp_ms": 34744,
+          "tbt_ms": 1012,
+          "cls": 0
+        },
+        {
+          "run": 3,
+          "performance": 34,
+          "accessibility": 81,
+          "best_practices": 77,
+          "seo": 83,
+          "fcp_ms": 15838,
+          "lcp_ms": 30059,
+          "tbt_ms": 958,
+          "cls": 0
+        }
+      ],
+      "median": {
+        "performance": 34,
+        "accessibility": 81,
+        "best_practices": 77,
+        "seo": 83,
+        "fcp_ms": 15838,
+        "lcp_ms": 30059,
+        "tbt_ms": 958,
+        "cls": 0
+      }
+    },
+    "compass_home": {
+      "id": "compass_home",
+      "name": "SRM Compass Home",
+      "url": "https://srm-compass.spartensid12.workers.dev/",
+      "runs": [
+        {
+          "performance": 96,
+          "accessibility": 96,
+          "best_practices": 100,
+          "seo": 100,
+          "fcp_ms": 927,
+          "lcp_ms": 927,
+          "tbt_ms": 177,
+          "cls": 0,
+          "run": 1
+        },
+        {
+          "performance": 97,
+          "accessibility": 96,
+          "best_practices": 100,
+          "seo": 100,
+          "fcp_ms": 887,
+          "lcp_ms": 887,
+          "tbt_ms": 137,
+          "cls": 0,
+          "run": 2
+        },
+        {
+          "performance": 98,
+          "accessibility": 96,
+          "best_practices": 100,
+          "seo": 100,
+          "fcp_ms": 867,
+          "lcp_ms": 867,
+          "tbt_ms": 112,
+          "cls": 0,
+          "run": 3
+        }
+      ],
+      "median": {
+        "performance": 97,
+        "accessibility": 96,
+        "best_practices": 100,
+        "seo": 100,
+        "fcp_ms": 887,
+        "lcp_ms": 887,
+        "tbt_ms": 137,
+        "cls": 0
+      }
+    },
+    "compass_programme": {
+      "id": "compass_programme",
+      "name": "SRM Compass Mechanical Engineering",
+      "url": "https://srm-compass.spartensid12.workers.dev/programmes/mechanical-engineering/",
+      "runs": [
+        {
+          "performance": 99,
+          "accessibility": 100,
+          "best_practices": 100,
+          "seo": 100,
+          "fcp_ms": 999,
+          "lcp_ms": 999,
+          "tbt_ms": 10,
+          "cls": 0,
+          "run": 1
+        },
+        {
+          "performance": 99,
+          "accessibility": 100,
+          "best_practices": 100,
+          "seo": 100,
+          "fcp_ms": 942,
+          "lcp_ms": 942,
+          "tbt_ms": 2,
+          "cls": 0,
+          "run": 2
+        },
+        {
+          "performance": 99,
+          "accessibility": 100,
+          "best_practices": 100,
+          "seo": 100,
+          "fcp_ms": 945,
+          "lcp_ms": 945,
+          "tbt_ms": 8,
+          "cls": 0,
+          "run": 3
+        }
+      ],
+      "median": {
+        "performance": 99,
+        "accessibility": 100,
+        "best_practices": 100,
+        "seo": 100,
+        "fcp_ms": 945,
+        "lcp_ms": 945,
+        "tbt_ms": 8,
+        "cls": 0
+      }
+    }
+  }
+}

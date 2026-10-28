@@ -242,19 +242,154 @@ describe('Data File Integrity Suite (data/HASHES.json)', () => {
       const actualHash = crypto.createHash('sha256').update(content).digest('hex');
       expect(actualHash).toBe(storedHashes[file]);
     }
+
+    // Also assert source CSV matches its SHA-256
+    const sourceCsvRel = 'source/programs_offered_table_all_254_rows.csv';
+    const sourceCsvPath = path.join(dataDir, sourceCsvRel);
+    expect(fs.existsSync(sourceCsvPath)).toBe(true);
+    const sourceCsvContent = fs.readFileSync(sourceCsvPath);
+    const actualCsvHash = crypto.createHash('sha256').update(sourceCsvContent).digest('hex');
+    expect(actualCsvHash).toBe(storedHashes[sourceCsvRel]);
   });
 
   it('fails if any data file SHA-256 differs from data/HASHES.json', () => {
     const storedHashes: Record<string, string> = JSON.parse(fs.readFileSync(hashesPath, 'utf-8'));
-    const dataFiles = ['offerings.m1.json', 'offerings.json', 'sources.json', 'synonyms.json', 'tags.json', 'programmes.json'];
+    const dataFiles = [
+      'offerings.m1.json',
+      'offerings.json',
+      'sources.json',
+      'synonyms.json',
+      'tags.json',
+      'programmes.json',
+      'source/programs_offered_table_all_254_rows.csv'
+    ];
 
     for (const file of dataFiles) {
-      const content = fs.readFileSync(path.join(dataDir, file));
+      const filePath = path.join(dataDir, file);
+      const content = fs.readFileSync(filePath);
       const mutated = Buffer.concat([content, Buffer.from(' ')]);
       const mutatedHash = crypto.createHash('sha256').update(mutated).digest('hex');
 
       expect(mutatedHash).not.toBe(storedHashes[file]);
     }
+  });
+});
+
+function parseCsv(content: string): Array<Record<string, string>> {
+  const lines: string[][] = [];
+  let row: string[] = [];
+  let inQuotes = false;
+  let entry = '';
+
+  for (let i = 0; i < content.length; i++) {
+    const c = content[i];
+    const next = content[i + 1];
+
+    if (c === '"') {
+      if (inQuotes && next === '"') {
+        entry += '"';
+        i++;
+      } else {
+        inQuotes = !inQuotes;
+      }
+    } else if (c === ',' && !inQuotes) {
+      row.push(entry);
+      entry = '';
+    } else if ((c === '\r' || c === '\n') && !inQuotes) {
+      if (c === '\r' && next === '\n') i++;
+      row.push(entry);
+      if (row.some((cell) => cell.length > 0)) {
+        lines.push(row);
+      }
+      row = [];
+      entry = '';
+    } else {
+      entry += c;
+    }
+  }
+  if (entry || row.length > 0) {
+    row.push(entry);
+    if (row.some((cell) => cell.length > 0)) {
+      lines.push(row);
+    }
+  }
+
+  const [header, ...dataRows] = lines;
+  return dataRows.map((r) => {
+    const obj: Record<string, string> = {};
+    header.forEach((h, idx) => {
+      obj[h.trim()] = (r[idx] ?? '').trim();
+    });
+    return obj;
+  });
+}
+
+describe('Raw Source Table Audit (data/source/programs_offered_table_all_254_rows.csv)', () => {
+  it('cross-verifies all 106 offerings against raw source table rows', () => {
+    const csvPath = path.resolve(__dirname, '../data/source/programs_offered_table_all_254_rows.csv');
+    expect(fs.existsSync(csvPath)).toBe(true);
+
+    const csvContent = fs.readFileSync(csvPath, 'utf-8');
+    const rows = parseCsv(csvContent);
+
+    const offeringsPath = path.resolve(__dirname, '../data/offerings.json');
+    const offerings: Offering[] = JSON.parse(fs.readFileSync(offeringsPath, 'utf-8'));
+    expect(offerings).toHaveLength(106);
+
+    let conflicts = 0;
+    let verified = 0;
+
+    for (const off of offerings) {
+      const campusCode = off.campus_code;
+      const programme = off.programme;
+
+      // Extract exact Branch text from locator e.g. Branch='...' or match programme
+      const locMatch = off.annual_fee?.locator?.match(/Branch='([^']+)'/);
+      const exactBranch = locMatch ? locMatch[1] : programme;
+
+      const matches = rows.filter(
+        (r) =>
+          r['Campus'] === campusCode &&
+          r['Degree'].replace(/\s+/g, '') === 'B.Tech' &&
+          r['Program Type'] === 'Full Time' &&
+          (r['Branch With Specialization'] === exactBranch ||
+            r['Branch With Specialization'].replace(' ###', '') === programme)
+      );
+
+      expect(matches).toHaveLength(1);
+      const row = matches[0];
+
+      // Assert fee matches
+      const csvFee = parseInt(row['Annual Fees'].replace(/[,#\s]/g, ''), 10);
+      expect(off.annual_fee.value).toBe(csvFee);
+
+      // Assert intake matches
+      const csvIntake = row['Intake'] ? parseInt(row['Intake'].replace(/[,#\s]/g, ''), 10) : null;
+      const offIntake = off.intake ? off.intake.value : null;
+      expect(offIntake).toBe(csvIntake);
+
+      // Assert duration matches
+      const csvDuration = parseInt(row['Duration (Years)'].replace(/[,#\s]/g, ''), 10);
+      expect(off.duration.value).toBe(csvDuration);
+
+      // Assert department matches
+      const csvDept = row['Dept'] || null;
+      const offDept = off.department ? off.department.value : null;
+      expect(offDept).toBe(csvDept);
+
+      // Assert eligibility status is 'conflict' iff row's Eligibility cell is non-empty
+      const csvElig = row['Eligibility'];
+      if (csvElig && csvElig.length > 0) {
+        expect(off.eligibility.status).toBe('conflict');
+        conflicts++;
+      } else {
+        expect(off.eligibility.status).toBe('verified');
+        verified++;
+      }
+    }
+
+    expect(conflicts).toBe(75);
+    expect(verified).toBe(31);
   });
 });
 

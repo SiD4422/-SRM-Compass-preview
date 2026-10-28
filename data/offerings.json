@@ -904,10 +904,14 @@
   "eligibility": {
    "value": "Min 60% aggregate (3 subjects) in Physics + Maths + one of Chemistry / Biotechnology / Biology / Computer Science / IT / Informatics Practices / Engineering Graphics / Botany & Zoology; age 16y6m on 31 July",
    "unit": "rule",
-   "status": "verified",
+   "status": "conflict",
    "source_id": "S2",
    "captured_on": "2026-10-26",
-   "locator": "Eligibility section, B.TECH / M.TECH Integrated - ELIGIBILITY CRITERIA 2026-2027"
+   "locator": "Eligibility section, B.TECH / M.TECH Integrated - ELIGIBILITY CRITERIA 2026-2027",
+   "conflicts_with": {
+    "source_id": "S1",
+    "value": "Table text says 50% aggregate and cites SRMJEEE (UG) 2022"
+   }
   },
   "quality_notes": []
  },
@@ -2516,10 +2520,14 @@
   "eligibility": {
    "value": "Min 60% aggregate (3 subjects) in Physics + Maths + one of Chemistry / Biotechnology / Biology / Computer Science / IT / Informatics Practices / Engineering Graphics / Botany & Zoology; age 16y6m on 31 July",
    "unit": "rule",
-   "status": "verified",
+   "status": "conflict",
    "source_id": "S2",
    "captured_on": "2026-10-26",
-   "locator": "Eligibility section, B.TECH / M.TECH Integrated - ELIGIBILITY CRITERIA 2026-2027"
+   "locator": "Eligibility section, B.TECH / M.TECH Integrated - ELIGIBILITY CRITERIA 2026-2027",
+   "conflicts_with": {
+    "source_id": "S1",
+    "value": "Table text says 50% aggregate and cites SRMJEEE (UG) 2022"
+   }
   },
   "quality_notes": [
    "Department looks wrong in SRM table (Civil listed under Biomedical)"
@@ -2687,10 +2695,14 @@
   "eligibility": {
    "value": "Min 60% aggregate (3 subjects) in Physics + Maths + one of Chemistry / Biotechnology / Biology / Computer Science / IT / Informatics Practices / Engineering Graphics / Botany & Zoology; age 16y6m on 31 July",
    "unit": "rule",
-   "status": "verified",
+   "status": "conflict",
    "source_id": "S2",
    "captured_on": "2026-10-26",
-   "locator": "Eligibility section, B.TECH / M.TECH Integrated - ELIGIBILITY CRITERIA 2026-2027"
+   "locator": "Eligibility section, B.TECH / M.TECH Integrated - ELIGIBILITY CRITERIA 2026-2027",
+   "conflicts_with": {
+    "source_id": "S1",
+    "value": "Table text says 50% aggregate and cites SRMJEEE (UG) 2022"
+   }
   },
   "quality_notes": [
    "Name differs between SRM application page and fee table"
@@ -3032,10 +3044,14 @@
   "eligibility": {
    "value": "Min 60% aggregate (3 subjects) in Physics + Maths + one of Chemistry / Biotechnology / Biology / Computer Science / IT / Informatics Practices / Engineering Graphics / Botany & Zoology; age 16y6m on 31 July",
    "unit": "rule",
-   "status": "verified",
+   "status": "conflict",
    "source_id": "S2",
    "captured_on": "2026-10-26",
-   "locator": "Eligibility section, B.TECH / M.TECH Integrated - ELIGIBILITY CRITERIA 2026-2027"
+   "locator": "Eligibility section, B.TECH / M.TECH Integrated - ELIGIBILITY CRITERIA 2026-2027",
+   "conflicts_with": {
+    "source_id": "S1",
+    "value": "Table text says 50% aggregate and cites SRMJEEE (UG) 2022"
+   }
   },
   "quality_notes": []
  },
@@ -3995,10 +4011,14 @@
   "eligibility": {
    "value": "Min 60% aggregate (3 subjects) in Physics + Maths + one of Chemistry / Biotechnology / Biology / Computer Science / IT / Informatics Practices / Engineering Graphics / Botany & Zoology; age 16y6m on 31 July",
    "unit": "rule",
-   "status": "verified",
+   "status": "conflict",
    "source_id": "S2",
    "captured_on": "2026-10-26",
-   "locator": "Eligibility section, B.TECH / M.TECH Integrated - ELIGIBILITY CRITERIA 2026-2027"
+   "locator": "Eligibility section, B.TECH / M.TECH Integrated - ELIGIBILITY CRITERIA 2026-2027",
+   "conflicts_with": {
+    "source_id": "S1",
+    "value": "Table text says 50% aggregate and cites SRMJEEE (UG) 2022"
+   }
   },
   "quality_notes": []
  },
@@ -4048,10 +4068,14 @@
   "eligibility": {
    "value": "Min 60% aggregate (3 subjects) in Physics + Maths + one of Chemistry / Biotechnology / Biology / Computer Science / IT / Informatics Practices / Engineering Graphics / Botany & Zoology; age 16y6m on 31 July",
    "unit": "rule",
-   "status": "verified",
+   "status": "conflict",
    "source_id": "S2",
    "captured_on": "2026-10-26",
-   "locator": "Eligibility section, B.TECH / M.TECH Integrated - ELIGIBILITY CRITERIA 2026-2027"
+   "locator": "Eligibility section, B.TECH / M.TECH Integrated - ELIGIBILITY CRITERIA 2026-2027",
+   "conflicts_with": {
+    "source_id": "S1",
+    "value": "Table text says 50% aggregate and cites SRMJEEE (UG) 2022"
+   }
   },
   "quality_notes": [
    "Name differs between SRM application page and fee table"
@@ -4274,10 +4298,14 @@
   "eligibility": {
    "value": "Min 60% aggregate (3 subjects) in Physics + Maths + one of Chemistry / Biotechnology / Biology / Computer Science / IT / Informatics Practices / Engineering Graphics / Botany & Zoology; age 16y6m on 31 July",
    "unit": "rule",
-   "status": "verified",
+   "status": "conflict",
    "source_id": "S2",
    "captured_on": "2026-10-26",
-   "locator": "Eligibility section, B.TECH / M.TECH Integrated - ELIGIBILITY CRITERIA 2026-2027"
+   "locator": "Eligibility section, B.TECH / M.TECH Integrated - ELIGIBILITY CRITERIA 2026-2027",
+   "conflicts_with": {
+    "source_id": "S1",
+    "value": "Table text says 50% aggregate and cites SRMJEEE (UG) 2022"
+   }
   },
   "quality_notes": []
  },
@@ -4440,10 +4468,14 @@
   "eligibility": {
    "value": "Min 60% aggregate (3 subjects) in Physics + Maths + one of Chemistry / Biotechnology / Biology / Computer Science / IT / Informatics Practices / Engineering Graphics / Botany & Zoology; age 16y6m on 31 July",
    "unit": "rule",
-   "status": "verified",
+   "status": "conflict",
    "source_id": "S2",
    "captured_on": "2026-10-26",
-   "locator": "Eligibility section, B.TECH / M.TECH Integrated - ELIGIBILITY CRITERIA 2026-2027"
+   "locator": "Eligibility section, B.TECH / M.TECH Integrated - ELIGIBILITY CRITERIA 2026-2027",
+   "conflicts_with": {
+    "source_id": "S1",
+    "value": "Table text says 50% aggregate and cites SRMJEEE (UG) 2022"
+   }
   },
   "quality_notes": []
  },
@@ -4939,10 +4971,14 @@
   "eligibility": {
    "value": "Min 60% aggregate (3 subjects) in Physics + Maths + one of Chemistry / Biotechnology / Biology / Computer Science / IT / Informatics Practices / Engineering Graphics / Botany & Zoology; age 16y6m on 31 July",
    "unit": "rule",
-   "status": "verified",
+   "status": "conflict",
    "source_id": "S2",
    "captured_on": "2026-10-26",
-   "locator": "Eligibility section, B.TECH / M.TECH Integrated - ELIGIBILITY CRITERIA 2026-2027"
+   "locator": "Eligibility section, B.TECH / M.TECH Integrated - ELIGIBILITY CRITERIA 2026-2027",
+   "conflicts_with": {
+    "source_id": "S1",
+    "value": "Table text says 50% aggregate and cites SRMJEEE (UG) 2022"
+   }
   },
   "quality_notes": [
    "Name differs between SRM application page and fee table"

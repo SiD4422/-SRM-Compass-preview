@@ -1,0 +1,667 @@
+{
+ "note": "Grouping of offerings into unique programmes by normalised name. Display names differ across SRM sources.",
+ "programmes": [
+  {
+   "slug": "aerospace-engineering",
+   "name": "Aerospace Engineering",
+   "aliases": [],
+   "offering_ids": [
+    "ktr-aerospace-engineering"
+   ],
+   "campuses": [
+    "KTR"
+   ]
+  },
+  {
+   "slug": "aeronautical-engineering",
+   "name": "Aeronautical Engineering",
+   "aliases": [],
+   "offering_ids": [
+    "ktr-aeronautical-engineering"
+   ],
+   "campuses": [
+    "KTR"
+   ]
+  },
+  {
+   "slug": "artificial-intelligence",
+   "name": "Artificial Intelligence",
+   "aliases": [],
+   "offering_ids": [
+    "ktr-artificial-intelligence",
+    "rmp-artificial-intelligence",
+    "vdp-artificial-intelligence",
+    "trichy-artificial-intelligence"
+   ],
+   "campuses": [
+    "KTR",
+    "RMP",
+    "VDP",
+    "Trichy"
+   ]
+  },
+  {
+   "slug": "automation-and-robotics",
+   "name": "Automation and Robotics",
+   "aliases": [],
+   "offering_ids": [
+    "ktr-automation-and-robotics"
+   ],
+   "campuses": [
+    "KTR"
+   ]
+  },
+  {
+   "slug": "automobile-engineering",
+   "name": "Automobile Engineering",
+   "aliases": [],
+   "offering_ids": [
+    "ktr-automobile-engineering",
+    "ncr-automobile-engineering"
+   ],
+   "campuses": [
+    "KTR",
+    "NCR"
+   ]
+  },
+  {
+   "slug": "automobile-engineering-automotive-electronics",
+   "name": "Automobile Engineering W/S in Automotive Electronics",
+   "aliases": [],
+   "offering_ids": [
+    "ktr-automobile-engineering-w-s-in-automotive-electronics"
+   ],
+   "campuses": [
+    "KTR"
+   ]
+  },
+  {
+   "slug": "biomedical-engineering",
+   "name": "Biomedical Engineering (BME)",
+   "aliases": [
+    "Biomedical Engineering"
+   ],
+   "offering_ids": [
+    "ktr-biomedical-engineering-bme",
+    "rmp-biomedical-engineering-bme",
+    "trichy-biomedical-engineering"
+   ],
+   "campuses": [
+    "KTR",
+    "RMP",
+    "Trichy"
+   ]
+  },
+  {
+   "slug": "biotechnology",
+   "name": "Biotechnology",
+   "aliases": [],
+   "offering_ids": [
+    "ktr-biotechnology",
+    "rmp-biotechnology",
+    "trichy-biotechnology"
+   ],
+   "campuses": [
+    "KTR",
+    "RMP",
+    "Trichy"
+   ]
+  },
+  {
+   "slug": "biotechnology-computational-biology",
+   "name": "Biotechnology (Computational Biology)",
+   "aliases": [],
+   "offering_ids": [
+    "ktr-biotechnology-computational-biology"
+   ],
+   "campuses": [
+    "KTR"
+   ]
+  },
+  {
+   "slug": "biotechnology-genetic-engineering",
+   "name": "Biotechnology W/S in Genetic Engineering",
+   "aliases": [],
+   "offering_ids": [
+    "ktr-biotechnology-w-s-in-genetic-engineering"
+   ],
+   "campuses": [
+    "KTR"
+   ]
+  },
+  {
+   "slug": "biotechnology-regenerative-medicine",
+   "name": "Biotechnology W/S in Regenerative Medicine",
+   "aliases": [],
+   "offering_ids": [
+    "ktr-biotechnology-w-s-in-regenerative-medicine"
+   ],
+   "campuses": [
+    "KTR"
+   ]
+  },
+  {
+   "slug": "chemical-engineering",
+   "name": "Chemical Engineering",
+   "aliases": [],
+   "offering_ids": [
+    "ktr-chemical-engineering"
+   ],
+   "campuses": [
+    "KTR"
+   ]
+  },
+  {
+   "slug": "civil-engineering",
+   "name": "Civil Engineering",
+   "aliases": [],
+   "offering_ids": [
+    "ktr-civil-engineering",
+    "rmp-civil-engineering"
+   ],
+   "campuses": [
+    "KTR",
+    "RMP"
+   ]
+  },
+  {
+   "slug": "civil-engineering-with-computer-application",
+   "name": "Civil Engineering with Computer Applications",
+   "aliases": [],
+   "offering_ids": [
+    "ktr-civil-engineering-with-computer-applications"
+   ],
+   "campuses": [
+    "KTR"
+   ]
+  },
+  {
+   "slug": "computer-science-and-business-system",
+   "name": "Computer science and Business systems (TCS)",
+   "aliases": [
+    "Computer Science and Business System (in partnership with TCS)",
+    "Computer Science and Business System (with TCS partnership)"
+   ],
+   "offering_ids": [
+    "ktr-computer-science-and-business-system-in-partnership-with-tcs",
+    "rmp-computer-science-and-business-system-with-tcs-partnership",
+    "trichy-computer-science-and-business-systems-tcs"
+   ],
+   "campuses": [
+    "KTR",
+    "RMP",
+    "Trichy"
+   ]
+  },
+  {
+   "slug": "computer-science-and-engineering",
+   "name": "Computer Science and Engineering",
+   "aliases": [],
+   "offering_ids": [
+    "ktr-computer-science-and-engineering",
+    "rmp-computer-science-and-engineering",
+    "ncr-computer-science-and-engineering",
+    "vdp-computer-science-and-engineering",
+    "trichy-computer-science-and-engineering",
+    "bab-computer-science-and-engineering"
+   ],
+   "campuses": [
+    "KTR",
+    "RMP",
+    "NCR",
+    "VDP",
+    "Trichy",
+    "BAB"
+   ]
+  },
+  {
+   "slug": "computer-science-and-engineering-data-science",
+   "name": "Computer Science and Engineering (Data Science)",
+   "aliases": [
+    "Computer science and Engineering (Data science)"
+   ],
+   "offering_ids": [
+    "ktr-computer-science-and-engineering-data-science",
+    "rmp-computer-science-and-engineering-data-science",
+    "ncr-computer-science-and-engineering-data-science",
+    "trichy-computer-science-and-engineering-data-science"
+   ],
+   "campuses": [
+    "KTR",
+    "RMP",
+    "NCR",
+    "Trichy"
+   ]
+  },
+  {
+   "slug": "computer-science-and-engineering-artificial-intelligence-and-machine-learning",
+   "name": "Computer Science and Engineering W/S in Artificial Intelligence and Machine Learning",
+   "aliases": [],
+   "offering_ids": [
+    "ktr-computer-science-and-engineering-w-s-in-artificial-intelligence-and-machine-learning",
+    "rmp-computer-science-and-engineering-w-s-in-artificial-intelligence-and-machine-learning",
+    "ncr-computer-science-and-engineering-w-s-in-artificial-intelligence-and-machine-learning",
+    "vdp-computer-science-and-engineering-w-s-in-artificial-intelligence-and-machine-learning",
+    "trichy-computer-science-and-engineering-w-s-in-artificial-intelligence-and-machine-learning"
+   ],
+   "campuses": [
+    "KTR",
+    "RMP",
+    "NCR",
+    "VDP",
+    "Trichy"
+   ]
+  },
+  {
+   "slug": "computer-science-and-engineering-big-data-analytics",
+   "name": "Computer Science and Engineering W/S in Big Data Analytics",
+   "aliases": [
+    "Computer Science and Engineering W/S Big Data Analytics"
+   ],
+   "offering_ids": [
+    "ktr-computer-science-and-engineering-w-s-in-big-data-analytics",
+    "rmp-computer-science-and-engineering-w-s-big-data-analytics",
+    "vdp-computer-science-and-engineering-w-s-in-big-data-analytics",
+    "trichy-computer-science-and-engineering-w-s-in-big-data-analytics"
+   ],
+   "campuses": [
+    "KTR",
+    "RMP",
+    "VDP",
+    "Trichy"
+   ]
+  },
+  {
+   "slug": "computer-science-and-engineering-blockchain-technology",
+   "name": "Computer Science and Engineering W/S in Block chain Technology",
+   "aliases": [],
+   "offering_ids": [
+    "ktr-computer-science-and-engineering-w-s-in-block-chain-technology",
+    "trichy-computer-science-and-engineering-w-s-in-block-chain-technology"
+   ],
+   "campuses": [
+    "KTR",
+    "Trichy"
+   ]
+  },
+  {
+   "slug": "computer-science-and-engineering-cloud-computing",
+   "name": "Computer Science and Engineering W/S in Cloud Computing",
+   "aliases": [],
+   "offering_ids": [
+    "ktr-computer-science-and-engineering-w-s-in-cloud-computing",
+    "rmp-computer-science-and-engineering-w-s-in-cloud-computing",
+    "ncr-computer-science-and-engineering-w-s-in-cloud-computing",
+    "vdp-computer-science-and-engineering-w-s-in-cloud-computing"
+   ],
+   "campuses": [
+    "KTR",
+    "RMP",
+    "NCR",
+    "VDP"
+   ]
+  },
+  {
+   "slug": "computer-science-and-engineering-computer-networking",
+   "name": "Computer Science and Engineering W/S in Computer Networking",
+   "aliases": [],
+   "offering_ids": [
+    "ktr-computer-science-and-engineering-w-s-in-computer-networking"
+   ],
+   "campuses": [
+    "KTR"
+   ]
+  },
+  {
+   "slug": "computer-science-and-engineering-cyber-security",
+   "name": "Computer Science and Engineering W/S in Cyber Security",
+   "aliases": [],
+   "offering_ids": [
+    "ktr-computer-science-and-engineering-w-s-in-cyber-security",
+    "rmp-computer-science-and-engineering-w-s-in-cyber-security",
+    "ncr-computer-science-and-engineering-w-s-in-cyber-security",
+    "vdp-computer-science-and-engineering-w-s-in-cyber-security",
+    "trichy-computer-science-and-engineering-w-s-in-cyber-security"
+   ],
+   "campuses": [
+    "KTR",
+    "RMP",
+    "NCR",
+    "VDP",
+    "Trichy"
+   ]
+  },
+  {
+   "slug": "computer-science-and-engineering-gaming-technology",
+   "name": "Computer Science and Engineering W/S in Gaming Technology",
+   "aliases": [],
+   "offering_ids": [
+    "ktr-computer-science-and-engineering-w-s-in-gaming-technology",
+    "rmp-computer-science-and-engineering-w-s-in-gaming-technology"
+   ],
+   "campuses": [
+    "KTR",
+    "RMP"
+   ]
+  },
+  {
+   "slug": "computer-science-and-engineering-information-technology",
+   "name": "Computer Science and Engineering W/S in Information Technology",
+   "aliases": [],
+   "offering_ids": [
+    "ktr-computer-science-and-engineering-w-s-in-information-technology"
+   ],
+   "campuses": [
+    "KTR"
+   ]
+  },
+  {
+   "slug": "computer-science-and-engineering-software-engineering",
+   "name": "Computer Science and Engineering W/S in Software Engineering",
+   "aliases": [],
+   "offering_ids": [
+    "ktr-computer-science-and-engineering-w-s-in-software-engineering"
+   ],
+   "campuses": [
+    "KTR"
+   ]
+  },
+  {
+   "slug": "electrical-and-electronics-engineering",
+   "name": "Electrical and Electronics Engineering",
+   "aliases": [],
+   "offering_ids": [
+    "ktr-electrical-and-electronics-engineering",
+    "rmp-electrical-and-electronics-engineering",
+    "trichy-electrical-and-electronics-engineering"
+   ],
+   "campuses": [
+    "KTR",
+    "RMP",
+    "Trichy"
+   ]
+  },
+  {
+   "slug": "electronics-and-communication-engineering",
+   "name": "Electronics and Communication Engineering",
+   "aliases": [],
+   "offering_ids": [
+    "ktr-electronics-and-communication-engineering",
+    "rmp-electronics-and-communication-engineering",
+    "ncr-electronics-and-communication-engineering",
+    "vdp-electronics-and-communication-engineering",
+    "trichy-electronics-and-communication-engineering",
+    "bab-electronics-and-communication-engineering"
+   ],
+   "campuses": [
+    "KTR",
+    "RMP",
+    "NCR",
+    "VDP",
+    "Trichy",
+    "BAB"
+   ]
+  },
+  {
+   "slug": "electronics-and-communication-engineering-cyber-physical-systems",
+   "name": "Electronics and Communication Engineering W/S in Cyber Physical Systems",
+   "aliases": [],
+   "offering_ids": [
+    "ktr-electronics-and-communication-engineering-w-s-in-cyber-physical-systems"
+   ],
+   "campuses": [
+    "KTR"
+   ]
+  },
+  {
+   "slug": "electronics-and-communication-engineering-data-science",
+   "name": "Electronics and Communication Engineering W/S in Data Science",
+   "aliases": [
+    "Electronic and Communication Engineering W/S in Data Science",
+    "Electronics and Communication Engineering w/s in Data Science",
+    "Electronics and Communication Engineering with specialization in Data Science",
+    "Electronics and communication Engineering W/S in Data Science - Full Time"
+   ],
+   "offering_ids": [
+    "ktr-electronic-and-communication-engineering-w-s-in-data-science",
+    "rmp-electronics-and-communication-engineering-w-s-in-data-science-full-time",
+    "ncr-electronics-and-communication-engineering-w-s-in-data-science",
+    "vdp-electronics-and-communication-engineering-w-s-in-data-science",
+    "trichy-electronics-and-communication-engineering-with-specialization-in-data-science"
+   ],
+   "campuses": [
+    "KTR",
+    "RMP",
+    "NCR",
+    "VDP",
+    "Trichy"
+   ]
+  },
+  {
+   "slug": "electronics-and-computer-engineering",
+   "name": "Electronics and Computer Engineering",
+   "aliases": [],
+   "offering_ids": [
+    "ktr-electronics-and-computer-engineering"
+   ],
+   "campuses": [
+    "KTR"
+   ]
+  },
+  {
+   "slug": "electronics-and-instrumentation-engineering",
+   "name": "Electronics and Instrumentation Engineering",
+   "aliases": [],
+   "offering_ids": [
+    "ktr-electronics-and-instrumentation-engineering"
+   ],
+   "campuses": [
+    "KTR"
+   ]
+  },
+  {
+   "slug": "electronics-engineering-vlsi-design-and-technology",
+   "name": "Electronics Engineering (VLSI Design and Technology)",
+   "aliases": [],
+   "offering_ids": [
+    "ktr-electronics-engineering-vlsi-design-and-technology",
+    "ncr-electronics-engineering-vlsi-design-and-technology",
+    "vdp-electronics-engineering-vlsi-design-and-technology"
+   ],
+   "campuses": [
+    "KTR",
+    "NCR",
+    "VDP"
+   ]
+  },
+  {
+   "slug": "mathematics-and-computing",
+   "name": "Mathematics and Computing",
+   "aliases": [],
+   "offering_ids": [
+    "ktr-mathematics-and-computing"
+   ],
+   "campuses": [
+    "KTR"
+   ]
+  },
+  {
+   "slug": "mechanical-engineering",
+   "name": "Mechanical Engineering",
+   "aliases": [],
+   "offering_ids": [
+    "ktr-mechanical-engineering",
+    "rmp-mechanical-engineering",
+    "ncr-mechanical-engineering",
+    "vdp-mechanical-engineering",
+    "trichy-mechanical-engineering"
+   ],
+   "campuses": [
+    "KTR",
+    "RMP",
+    "NCR",
+    "VDP",
+    "Trichy"
+   ]
+  },
+  {
+   "slug": "mechanical-engineering-automation-and-robotics",
+   "name": "Mechanical Engineering (Automation and Robotics)",
+   "aliases": [],
+   "offering_ids": [
+    "ktr-mechanical-engineering-automation-and-robotics"
+   ],
+   "campuses": [
+    "KTR"
+   ]
+  },
+  {
+   "slug": "mechanical-engineering-artificial-intelligence-and-machine-learning",
+   "name": "Mechanical Engineering W/S in Artificial Intelligence and Machine Learning",
+   "aliases": [
+    "Mechanical Engineering with specialization in Artificial Intelligence and Machine Learning"
+   ],
+   "offering_ids": [
+    "ktr-mechanical-engineering-w-s-in-artificial-intelligence-and-machine-learning",
+    "ncr-mechanical-engineering-with-specialization-in-artificial-intelligence-and-machine-learning",
+    "vdp-mechanical-engineering-w-s-in-artificial-intelligence-and-machine-learning"
+   ],
+   "campuses": [
+    "KTR",
+    "NCR",
+    "VDP"
+   ]
+  },
+  {
+   "slug": "mechatronics-engineering",
+   "name": "Mechatronics Engineering",
+   "aliases": [],
+   "offering_ids": [
+    "ktr-mechatronics-engineering"
+   ],
+   "campuses": [
+    "KTR"
+   ]
+  },
+  {
+   "slug": "mechatronics-engineering-robotics",
+   "name": "Mechatronics Engineering W/S in Robotics",
+   "aliases": [],
+   "offering_ids": [
+    "ktr-mechatronics-engineering-w-s-in-robotics"
+   ],
+   "campuses": [
+    "KTR"
+   ]
+  },
+  {
+   "slug": "nanotechnology",
+   "name": "Nanotechnology",
+   "aliases": [],
+   "offering_ids": [
+    "ktr-nanotechnology"
+   ],
+   "campuses": [
+    "KTR"
+   ]
+  },
+  {
+   "slug": "information-technology",
+   "name": "Information Technology",
+   "aliases": [],
+   "offering_ids": [
+    "rmp-information-technology",
+    "trichy-information-technology"
+   ],
+   "campuses": [
+    "RMP",
+    "Trichy"
+   ]
+  },
+  {
+   "slug": "artificial-intelligence-and-future-technologies",
+   "name": "Artificial Intelligence & Future Technologies",
+   "aliases": [],
+   "offering_ids": [
+    "trichy-artificial-intelligence-future-technologies"
+   ],
+   "campuses": [
+    "Trichy"
+   ]
+  },
+  {
+   "slug": "computer-science-and-engineering-medical-engineering",
+   "name": "Computer Science and Engineering W/S in Medical Engineering",
+   "aliases": [],
+   "offering_ids": [
+    "trichy-computer-science-and-engineering-w-s-in-medical-engineering"
+   ],
+   "campuses": [
+    "Trichy"
+   ]
+  },
+  {
+   "slug": "computer-science-and-engineering-internet-of-things",
+   "name": "Computer Science and Engineering W/S in Internet of Things (IOT)",
+   "aliases": [
+    "Computer Science and Engineering W/S in IOT"
+   ],
+   "offering_ids": [
+    "trichy-computer-science-and-engineering-w-s-in-iot",
+    "ktr-computer-science-and-engineering-w-s-in-internet-of-things-iot",
+    "rmp-computer-science-and-engineering-w-s-in-internet-of-things-iot"
+   ],
+   "campuses": [
+    "Trichy",
+    "KTR",
+    "RMP"
+   ]
+  },
+  {
+   "slug": "software-product-engineering",
+   "name": "Software product Engineering",
+   "aliases": [],
+   "offering_ids": [
+    "trichy-software-product-engineering"
+   ],
+   "campuses": [
+    "Trichy"
+   ]
+  },
+  {
+   "slug": "biomedical-engineering-machine-intelligence",
+   "name": "Biomedical Engineering (Machine Intelligence)",
+   "aliases": [],
+   "offering_ids": [
+    "ktr-biomedical-engineering-machine-intelligence"
+   ],
+   "campuses": [
+    "KTR"
+   ]
+  },
+  {
+   "slug": "biotechnology-food-technology",
+   "name": "Biotechnology (Food Technology)",
+   "aliases": [],
+   "offering_ids": [
+    "ktr-biotechnology-food-technology",
+    "trichy-biotechnology-food-technology"
+   ],
+   "campuses": [
+    "KTR",
+    "Trichy"
+   ]
+  },
+  {
+   "slug": "computer-science-and-engineering-devsecops",
+   "name": "Computer Science and Engineering (DevSecOps)",
+   "aliases": [],
+   "offering_ids": [
+    "ktr-computer-science-and-engineering-devsecops"
+   ],
+   "campuses": [
+    "KTR"
+   ]
+  }
+ ]
+}

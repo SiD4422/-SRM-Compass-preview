@@ -38,7 +38,9 @@
    "data science",
    "big data",
    "electronics and computer",
-   "computer application"
+   "computer application",
+   "machine intelligence",
+   "machine learning"
   ],
   "machines-vehicles": [
    "mechanical",
@@ -411,6 +413,7 @@
    "circuits-power"
   ],
   "ktr-biomedical-engineering-machine-intelligence": [
+   "code-ai",
    "health-bio"
   ],
   "ktr-biotechnology-food-technology": [

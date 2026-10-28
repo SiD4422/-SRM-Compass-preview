@@ -32,7 +32,7 @@ describe('M2 Programme Finder Filter & Search Engine', () => {
     // Expected counts derived from direct inspection of data/tags.json
     const expectedTagCounts: Record<string, number> = {
       'circuits-power': 21,
-      'code-ai': 62,
+      'code-ai': 63,
       'machines-vehicles': 16,
       'robots-automation': 5,
       'health-bio': 13,
@@ -176,13 +176,13 @@ describe('M2 Programme Finder Filter & Search Engine', () => {
   });
 
   describe('Compound Filter Scenarios', () => {
-    it('[M2 Gate] combines Kattankulathur + Code and AI expecting exactly 20 offerings', () => {
+    it('[M2 Gate] combines Kattankulathur + Code and AI expecting exactly 21 offerings', () => {
       const results = filterOfferings(offerings, {
         campuses: ['KTR'],
         tag: 'code-ai',
         tagsByOffering
       });
-      expect(results).toHaveLength(20);
+      expect(results).toHaveLength(21);
     });
 
     it('combines tag=health-bio AND campus=Trichy', () => {
@@ -297,6 +297,32 @@ describe('M2 Programme Finder Filter & Search Engine', () => {
       expect(eligibilityContent).not.toContain("offerings.m1.json");
       expect(eligibilityContent).toContain('href="/programmes">See programmes</a>');
       expect(eligibilityContent).not.toContain('Compare programmes');
+    });
+  });
+
+  describe('Programme Taxonomy Grouping (data/programmes.json)', () => {
+    it('covers all 106 offering ids exactly once', () => {
+      const programmesFilePath = path.resolve(__dirname, '../data/programmes.json');
+      expect(fs.existsSync(programmesFilePath)).toBe(true);
+
+      const programmesData = JSON.parse(fs.readFileSync(programmesFilePath, 'utf-8'));
+      expect(programmesData).toHaveProperty('programmes');
+      expect(Array.isArray(programmesData.programmes)).toBe(true);
+
+      const coveredIds: string[] = [];
+      for (const prog of programmesData.programmes) {
+        expect(prog).toHaveProperty('offering_ids');
+        expect(Array.isArray(prog.offering_ids)).toBe(true);
+        coveredIds.push(...prog.offering_ids);
+      }
+
+      // Must cover all 106 offerings
+      expect(coveredIds).toHaveLength(106);
+
+      // Must cover all 106 unique offering IDs from offerings.json exactly once
+      const offeringIds = offerings.map((o) => o.id);
+      expect(new Set(coveredIds).size).toBe(106);
+      expect(new Set(coveredIds)).toEqual(new Set(offeringIds));
     });
   });
 });

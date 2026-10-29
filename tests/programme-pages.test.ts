@@ -632,6 +632,30 @@ describe('Stage M3 & M3-fix: Programme Detail Pages (/programmes/[slug])', () =>
       expect(evidenceHtml).toContain(String(lh.targets.compass_programme.median.performance));
     });
 
+    it('verifies /evidence displays runs count for every Lighthouse row labelled "median of N runs" (N >= 3) or "single run" (N == 1)', () => {
+      const evidenceHtml = fs.readFileSync(path.join(distDir, 'evidence/index.html'), 'utf-8');
+      const lh = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../data/evidence/lighthouse.json'), 'utf-8'));
+
+      // Check header contains Runs column
+      expect(evidenceHtml).toMatch(/<th scope="col"[^>]*>Runs<\/th>/);
+
+      // Check each target row's runs label matches data
+      for (const target of Object.values(lh.targets) as any[]) {
+        const count = target.runs.length;
+        const expectedLabel = count >= 3
+          ? `median of ${count} runs`
+          : count === 1
+          ? 'single run'
+          : `${count} runs`;
+
+        expect(evidenceHtml).toContain(expectedLabel);
+      }
+
+      // Explicitly check single run and median of 3 runs labels
+      expect(evidenceHtml).toContain('single run');
+      expect(evidenceHtml).toContain('median of 3 runs');
+    });
+
     it('verifies /evidence Part 2 documents the four specific SRM contradictions with citations', () => {
       const evidenceHtml = fs.readFileSync(path.join(distDir, 'evidence/index.html'), 'utf-8');
 

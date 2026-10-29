@@ -17,6 +17,7 @@ interface LhTarget {
   id: string;
   name: string;
   runner: string;
+  runs_count?: number;
   url: string;
   captured_on?: string;
   runs: Array<{
@@ -72,6 +73,16 @@ function formatWeight(kib?: number): string {
   return `${kib} KiB`;
 }
 
+function formatRunsLabel(count: number): string {
+  if (count >= 3) {
+    return `median of ${count} runs`;
+  }
+  if (count === 1) {
+    return 'single run';
+  }
+  return `${count} runs`;
+}
+
 function formatDate(dateStr?: string): string {
   if (!dateStr) return '';
   const [year, month, day] = dateStr.split('-');
@@ -124,6 +135,7 @@ const reproductionSources = allSources.filter((s) => ['S1', 'S2', 'S3'].includes
             <tr>
               <th scope="col">Page Under Audit</th>
               <th scope="col">Runner</th>
+              <th scope="col">Runs</th>
               <th scope="col" class="num-col">Performance</th>
               <th scope="col" class="num-col">Accessibility</th>
               <th scope="col" class="num-col">Best Practices</th>
@@ -148,6 +160,9 @@ const reproductionSources = allSources.filter((s) => ['S1', 'S2', 'S3'].includes
                 </th>
                 <td class="runner-cell">
                   <span class="runner-badge">{target.runner}</span>
+                </td>
+                <td class="runs-cell">
+                  <span class="runs-badge">{formatRunsLabel(target.runs_count ?? target.runs.length)}</span>
                 </td>
                 <td class="num-col">
                   <span class={target.median.performance >= 90 ? 'score-good' : target.median.performance >= 50 ? 'score-mid' : 'score-bad'}>
@@ -503,10 +518,10 @@ const reproductionSources = allSources.filter((s) => ['S1', 'S2', 'S3'].includes
     text-align: left;
   }
   table.lh-table th, table.lh-table td {
-    padding: 10px 6px;
+    padding: 10px 5px;
     border-bottom: 1px solid var(--rule);
     vertical-align: middle;
-    font-size: 0.84rem;
+    font-size: 0.82rem;
   }
   table.sources-table th, table.sources-table td {
     padding: 14px 18px;
@@ -517,7 +532,7 @@ const reproductionSources = allSources.filter((s) => ['S1', 'S2', 'S3'].includes
     background: var(--surface-alt);
     font-weight: 700;
     color: var(--navy);
-    font-size: 0.74rem;
+    font-size: 0.72rem;
     text-transform: uppercase;
     letter-spacing: 0.01em;
     padding: 10px 6px;
@@ -548,6 +563,21 @@ const reproductionSources = allSources.filter((s) => ['S1', 'S2', 'S3'].includes
     border-radius: 4px;
     font-weight: 600;
     font-size: 0.78rem;
+    color: var(--navy);
+  }
+
+  .runs-cell {
+    font-size: 0.82rem;
+    white-space: nowrap;
+  }
+  .runs-badge {
+    display: inline-block;
+    padding: 3px 7px;
+    background: var(--surface-alt);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    font-weight: 600;
+    font-size: 0.76rem;
     color: var(--navy);
   }
 

@@ -116,6 +116,15 @@ export function getAllSources(): AggregatedSource[] {
 }
 
 export function getContradictions(eligConflictsCount: number): ContradictionItem[] {
+  const offerings = offeringsData as any[];
+  const aiOfferings = offerings.filter(
+    (o) =>
+      o.id.includes('future-technologies') ||
+      (o.programme && o.programme.toLowerCase().includes('future technologies'))
+  );
+  const aiCampuses = Array.from(new Set(aiOfferings.map((o) => o.campus)));
+  const aiScope = `${aiOfferings.length} offering, ${aiCampuses.join(', ')}`;
+
   return [
     {
       id: 'eligibility-conflict',
@@ -139,18 +148,18 @@ export function getContradictions(eligConflictsCount: number): ContradictionItem
       id: 'nomenclature-conflict',
       topic: 'Programme Nomenclature: Engineering vs Intelligence',
       claimA: {
-        claim: 'Listed as "Artificial Engineering & Future Technologies" in the official engineering offerings table.',
+        claim: 'Claim A: "Artificial Engineering & Future Technologies" appears in the 2026-27 brochure (B3) and SRM\'s B.Tech application page (S3).',
+        source_id: 'B3, S3',
+        captured_on: '2026-10-28',
+        url: 'https://webstor.srmist.edu.in/web_assets/downloads/2026/srm-admission-brochure-2026-2027.pdf',
+      },
+      claimB: {
+        claim: 'Claim B: "Artificial Intelligence & Future Technologies" appears in the Programs Offered table (S1).',
         source_id: 'S1',
         captured_on: '2026-10-26',
         url: 'https://www.srmist.edu.in/admission-india/engineering/',
       },
-      claimB: {
-        claim: 'Listed as "Artificial Intelligence & Future Technologies" across the admissions brochure and department directories.',
-        source_id: 'B3',
-        captured_on: '2026-10-28',
-        url: 'https://webstor.srmist.edu.in/web_assets/downloads/2026/srm-admission-brochure-2026-2027.pdf',
-      },
-      scope: 'Affects B.Tech Artificial Intelligence & Future Technologies offerings at Ramapuram campus.',
+      scope: aiScope,
       verdict: 'Compass indexes both names so student search queries succeed regardless of which variant is typed.'
     },
     {

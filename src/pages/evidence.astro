@@ -13,6 +13,37 @@ const allSources = getAllSources();
 const contradictions = getContradictions(dataReport.eligibilityConflicts);
 
 // Lighthouse data
+interface LhTarget {
+  id: string;
+  name: string;
+  runner: string;
+  url: string;
+  captured_on?: string;
+  runs: Array<{
+    run: number;
+    performance: number;
+    accessibility: number;
+    best_practices: number;
+    seo: number;
+    fcp_ms: number;
+    lcp_ms: number;
+    tbt_ms: number;
+    cls: number;
+    weight_kib?: number;
+  }>;
+  median: {
+    performance: number;
+    accessibility: number;
+    best_practices: number;
+    seo: number;
+    fcp_ms: number;
+    lcp_ms: number;
+    tbt_ms: number;
+    cls: number;
+    weight_kib?: number;
+  };
+}
+
 const lh = lighthouseData as {
   meta: {
     engine: string;
@@ -21,46 +52,24 @@ const lh = lighthouseData as {
     captured_on: string;
     note: string;
   };
-  targets: Record<
-    string,
-    {
-      id: string;
-      name: string;
-      url: string;
-      runs: Array<{
-        run: number;
-        performance: number;
-        accessibility: number;
-        best_practices: number;
-        seo: number;
-        fcp_ms: number;
-        lcp_ms: number;
-        tbt_ms: number;
-        cls: number;
-      }>;
-      median: {
-        performance: number;
-        accessibility: number;
-        best_practices: number;
-        seo: number;
-        fcp_ms: number;
-        lcp_ms: number;
-        tbt_ms: number;
-        cls: number;
-      };
-    }
-  >;
+  targets: Record<string, LhTarget>;
 };
 
-const srmHome = lh.targets.srm_home;
-const compassHome = lh.targets.compass_home;
-const compassProg = lh.targets.compass_programme;
+const targetRows = Object.values(lh.targets) as LhTarget[];
 
 function formatMs(ms: number): string {
   if (ms >= 1000) {
     return `${(ms / 1000).toFixed(1)}s`;
   }
   return `${ms}ms`;
+}
+
+function formatWeight(kib?: number): string {
+  if (kib === undefined || kib === null) return '—';
+  if (kib >= 1024) {
+    return `${(kib / 1024).toFixed(1)} MB (${kib.toLocaleString()} KiB)`;
+  }
+  return `${kib} KiB`;
 }
 
 function formatDate(dateStr?: string): string {
@@ -95,7 +104,7 @@ const reproductionSources = allSources.filter((s) => ['S1', 'S2', 'S3'].includes
       <div class="eyebrow">Empirical Verification &amp; Methodology</div>
       <h1>Evidence, Audit &amp; Data Integrity</h1>
       <p class="lead">
-        A completely reproducible audit of SRMIST's published admissions data, empirical Lighthouse measurements, identified contradictions, and dataset verification reports. Every number on this page is read directly from automated test results or computed from primary datasets.
+        An audit of SRMIST's published admissions data (reproducible; steps below), empirical Lighthouse measurements, identified contradictions, and dataset verification reports. Every number on this page is read directly from automated test results or computed from primary datasets.
       </p>
     </header>
 
@@ -106,7 +115,7 @@ const reproductionSources = allSources.filter((s) => ['S1', 'S2', 'S3'].includes
         <h2>What we measured on SRM's homepage</h2>
       </div>
       <p class="section-intro">
-        Audit executed using {lh.meta.engine} with {lh.meta.emulation} mobile profile and simulated {lh.meta.throttling}. Figures represent the medians of three consecutive runs captured on {formatDate(lh.meta.captured_on)}.
+        Audit executed using {lh.meta.engine} with {lh.meta.emulation} mobile profile and simulated {lh.meta.throttling}. Figures represent the medians of consecutive runs. When two runners disagree for the same page, both are reported below.
       </p>
 
       <div class="lh-table-wrapper">
@@ -114,54 +123,58 @@ const reproductionSources = allSources.filter((s) => ['S1', 'S2', 'S3'].includes
           <thead>
             <tr>
               <th scope="col">Page Under Audit</th>
+              <th scope="col">Runner</th>
               <th scope="col" class="num-col">Performance</th>
               <th scope="col" class="num-col">Accessibility</th>
               <th scope="col" class="num-col">Best Practices</th>
               <th scope="col" class="num-col">SEO</th>
               <th scope="col" class="num-col">LCP (Median)</th>
               <th scope="col" class="num-col">FCP (Median)</th>
+              <th scope="col" class="num-col">TBT (Median)</th>
+              <th scope="col" class="num-col">Page Weight</th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <th scope="row" class="target-name">
-                <span class="target-title">{srmHome.name}</span>
-                <span class="target-meta">Live Production Server</span>
-                <a href={srmHome.url} target="_blank" rel="noopener" class="target-link">Inspect live &#x2197;</a>
-              </th>
-              <td class="num-col"><span class="score-bad">{srmHome.median.performance}</span></td>
-              <td class="num-col"><span class="score-mid">{srmHome.median.accessibility}</span></td>
-              <td class="num-col"><span class="score-mid">{srmHome.median.best_practices}</span></td>
-              <td class="num-col"><span class="score-mid">{srmHome.median.seo}</span></td>
-              <td class="num-col">{formatMs(srmHome.median.lcp_ms)}</td>
-              <td class="num-col">{formatMs(srmHome.median.fcp_ms)}</td>
-            </tr>
-            <tr>
-              <th scope="row" class="target-name">
-                <span class="target-title">{compassHome.name}</span>
-                <span class="target-meta">Compass Prototype (Edge)</span>
-                <a href="/" class="target-link">Open page &rarr;</a>
-              </th>
-              <td class="num-col"><span class="score-good">{compassHome.median.performance}</span></td>
-              <td class="num-col"><span class="score-good">{compassHome.median.accessibility}</span></td>
-              <td class="num-col"><span class="score-good">{compassHome.median.best_practices}</span></td>
-              <td class="num-col"><span class="score-good">{compassHome.median.seo}</span></td>
-              <td class="num-col">{formatMs(compassHome.median.lcp_ms)}</td>
-              <td class="num-col">{formatMs(compassHome.median.fcp_ms)}</td>
-            </tr>
-            <tr>
-              <th scope="row" class="target-name">
-                <span class="target-title">{compassProg.name}</span>
-                <span class="target-meta">Compass Prototype (Edge)</span>
-                <a href="/programmes/mechanical-engineering" class="target-link">Open page &rarr;</a>
-              </th>
-              <td class="num-col"><span class="score-good">{compassProg.median.performance}</span></td>
-              <td class="num-col"><span class="score-good">{compassProg.median.accessibility}</span></td>
-              <td class="num-col"><span class="score-good">{compassProg.median.best_practices}</span></td>
-              <td class="num-col"><span class="score-good">{compassProg.median.seo}</span></td>
-              <td class="num-col">{formatMs(compassProg.median.lcp_ms)}</td>
-              <td class="num-col">{formatMs(compassProg.median.fcp_ms)}</td>
-            </tr>
+            {targetRows.map((target) => (
+              <tr>
+                <th scope="row" class="target-name">
+                  <span class="target-title">{target.name}</span>
+                  <span class="target-meta">{target.id.startsWith('srm') ? 'Live Production Server' : 'Compass Prototype (Edge)'}</span>
+                  {target.url.startsWith('https://www.srmist.edu.in') ? (
+                    <a href={target.url} target="_blank" rel="noopener" class="target-link">Inspect live &#x2197;</a>
+                  ) : (
+                    <a href={target.url.replace('https://srm-compass.spartensid12.workers.dev', '') || '/'} class="target-link">Open page &rarr;</a>
+                  )}
+                </th>
+                <td class="runner-cell">
+                  <span class="runner-badge">{target.runner}</span>
+                </td>
+                <td class="num-col">
+                  <span class={target.median.performance >= 90 ? 'score-good' : target.median.performance >= 50 ? 'score-mid' : 'score-bad'}>
+                    {target.median.performance}
+                  </span>
+                </td>
+                <td class="num-col">
+                  <span class={target.median.accessibility >= 90 ? 'score-good' : target.median.accessibility >= 50 ? 'score-mid' : 'score-bad'}>
+                    {target.median.accessibility}
+                  </span>
+                </td>
+                <td class="num-col">
+                  <span class={target.median.best_practices >= 90 ? 'score-good' : target.median.best_practices >= 50 ? 'score-mid' : 'score-bad'}>
+                    {target.median.best_practices}
+                  </span>
+                </td>
+                <td class="num-col">
+                  <span class={target.median.seo >= 90 ? 'score-good' : target.median.seo >= 50 ? 'score-mid' : 'score-bad'}>
+                    {target.median.seo}
+                  </span>
+                </td>
+                <td class="num-col">{formatMs(target.median.lcp_ms)}</td>
+                <td class="num-col">{formatMs(target.median.fcp_ms)}</td>
+                <td class="num-col">{formatMs(target.median.tbt_ms)}</td>
+                <td class="num-col">{formatWeight(target.median.weight_kib)}</td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
@@ -324,7 +337,7 @@ const reproductionSources = allSources.filter((s) => ['S1', 'S2', 'S3'].includes
             <strong>Prototype Status &amp; Usability Testing:</strong> SRM Compass is an independent prototype design entry. While automated Axe-core accessibility (0 violations) and keyboard navigation audits are strictly verified, extensive 5-person real-user lab usability trials remain to be conducted by human evaluators.
           </li>
           <li>
-            <strong>Sourced vs. Verified Tiers:</strong> Data points are strictly partitioned into <em>verified</em> (mathematically validated from official tables) and <em>sourced</em> (extracted verbatim from admissions marketing brochures without independent external registry confirmation).
+            <strong>Sourced vs. Verified Tiers:</strong> Data points are strictly partitioned into <em>verified</em> (mathematically validated from official tables) and <em>sourced</em> (as published by SRM; not independently checked).
           </li>
           <li>
             <strong>Admissions Cycle Scope:</strong> All data was captured on 26 October 2026 for the 2026-27 admission cycle. SRMIST retains administrative authority to update fees, seat capacities, and eligibility rules for 2027 entry.
@@ -489,13 +502,27 @@ const reproductionSources = allSources.filter((s) => ['S1', 'S2', 'S3'].includes
     font-size: 0.95rem;
     text-align: left;
   }
-  table.lh-table th, table.lh-table td,
+  table.lh-table th, table.lh-table td {
+    padding: 12px 10px;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: middle;
+    font-size: 0.88rem;
+  }
   table.sources-table th, table.sources-table td {
     padding: 14px 18px;
     border-bottom: 1px solid var(--rule);
     vertical-align: middle;
   }
-  table.lh-table thead th, table.sources-table thead th {
+  table.lh-table thead th {
+    background: var(--surface-alt);
+    font-weight: 700;
+    color: var(--navy);
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    padding: 10px 10px;
+  }
+  table.sources-table thead th {
     background: var(--surface-alt);
     font-weight: 700;
     color: var(--navy);
@@ -506,6 +533,22 @@ const reproductionSources = allSources.filter((s) => ['S1', 'S2', 'S3'].includes
   .num-col {
     text-align: right;
     font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
+  .runner-cell {
+    font-size: 0.85rem;
+    white-space: nowrap;
+  }
+  .runner-badge {
+    display: inline-block;
+    padding: 3px 8px;
+    background: var(--surface-alt);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    font-weight: 600;
+    font-size: 0.78rem;
+    color: var(--navy);
   }
 
   .target-name {

@@ -606,7 +606,7 @@ describe('Stage M3 & M3-fix: Programme Detail Pages (/programmes/[slug])', () =>
       expect(evidenceHtml).toContain('58');  // 58 quality notes
     });
 
-    it('verifies /evidence Part 1 displays empirical Lighthouse figures read from data/evidence/lighthouse.json', () => {
+    it('verifies /evidence Part 1 displays empirical Lighthouse figures read from data/evidence/lighthouse.json with runner and page weight', () => {
       const evidenceHtml = fs.readFileSync(path.join(distDir, 'evidence/index.html'), 'utf-8');
       const lh = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../data/evidence/lighthouse.json'), 'utf-8'));
 
@@ -615,13 +615,19 @@ describe('Stage M3 & M3-fix: Programme Detail Pages (/programmes/[slug])', () =>
       expect(evidenceHtml).toContain(lh.meta.emulation);
       expect(evidenceHtml).toContain(lh.meta.throttling);
 
-      // Check targets: SRM Homepage, Compass Home, Compass Programme
-      expect(evidenceHtml).toContain(lh.targets.srm_home.name);
+      // Check targets and runner labels
+      expect(evidenceHtml).toContain('Chrome DevTools (Author)');
+      expect(evidenceHtml).toContain('Lighthouse CLI (Automated)');
       expect(evidenceHtml).toContain(lh.targets.compass_home.name);
       expect(evidenceHtml).toContain(lh.targets.compass_programme.name);
 
+      // Both runners for SRM homepage are present (never drop one silently)
+      expect(evidenceHtml).toContain('10,167 KiB');
+      expect(evidenceHtml).toContain('9,840 KiB');
+
       // Check median performance scores
-      expect(evidenceHtml).toContain(String(lh.targets.srm_home.median.performance));
+      expect(evidenceHtml).toContain(String(lh.targets.srm_home_devtools.median.performance));
+      expect(evidenceHtml).toContain(String(lh.targets.srm_home_cli.median.performance));
       expect(evidenceHtml).toContain(String(lh.targets.compass_home.median.performance));
       expect(evidenceHtml).toContain(String(lh.targets.compass_programme.median.performance));
     });
@@ -646,6 +652,74 @@ describe('Stage M3 & M3-fix: Programme Detail Pages (/programmes/[slug])', () =>
       // 4. Job offers 14,030+ vs 5,700+
       expect(evidenceHtml).toContain('14,030+');
       expect(evidenceHtml).toContain('5,700+');
+    });
+
+    it('asserts nomenclature contradiction scope contains Tiruchirappalli and not Ramapuram', () => {
+      const evidenceHtml = fs.readFileSync(path.join(distDir, 'evidence/index.html'), 'utf-8');
+      
+      // Locate nomenclature-conflict article
+      const nomenclatureSection = evidenceHtml.split('id="nomenclature-conflict"')[1]?.split('</article>')[0];
+      expect(nomenclatureSection).toBeDefined();
+
+      // Check scope text
+      expect(nomenclatureSection).toContain('Tiruchirappalli');
+      expect(nomenclatureSection).not.toContain('Ramapuram');
+      expect(nomenclatureSection).toContain('1 offering, Tiruchirappalli');
+    });
+
+    it('verifies M7-fix wording changes on /evidence', () => {
+      const evidenceHtml = fs.readFileSync(path.join(distDir, 'evidence/index.html'), 'utf-8');
+
+      // 'completely reproducible' -> 'reproducible; steps below'
+      expect(evidenceHtml).toContain('reproducible; steps below');
+      expect(evidenceHtml).not.toContain('completely reproducible');
+
+      // 'unconfirmed marketing copy' -> 'as published by SRM; not independently checked'
+      expect(evidenceHtml).toContain('as published by SRM; not independently checked');
+      expect(evidenceHtml).not.toContain('unconfirmed marketing copy');
+    });
+
+    it('fails if any built HTML page contains an empty list item or empty link', () => {
+      const allFiles = fs.readdirSync(distDir, { recursive: true }) as string[];
+      const htmlFiles = allFiles.filter((f) => typeof f === 'string' && f.endsWith('.html'));
+      expect(htmlFiles.length).toBeGreaterThan(0);
+
+      const emptyLis: string[] = [];
+      const emptyAs: string[] = [];
+
+      for (const relPath of htmlFiles) {
+        const fullPath = path.join(distDir, relPath);
+        const html = fs.readFileSync(fullPath, 'utf-8');
+
+        // Check for empty <li></li> or <li>   </li>
+        const liMatches = [...html.matchAll(/<li\b[^>]*>([\s\S]*?)<\/li>/gi)];
+        for (const match of liMatches) {
+          const inner = match[1];
+          // Strip HTML tags and whitespace
+          const stripped = inner.replace(/<[^>]+>/g, '').trim();
+          // Check if there are non-textual visible elements like img or svg
+          const hasGraphic = /<(img|svg)\b[^>]*>/i.test(inner);
+          if (!stripped && !hasGraphic) {
+            emptyLis.push(`${relPath}: ${match[0]}`);
+          }
+        }
+
+        // Check for empty <a></a> or <a>   </a>
+        const aMatches = [...html.matchAll(/<a\b[^>]*>([\s\S]*?)<\/a>/gi)];
+        for (const match of aMatches) {
+          const openTag = match[0];
+          const inner = match[1];
+          const stripped = inner.replace(/<[^>]+>/g, '').trim();
+          const hasGraphic = /<(img|svg)\b[^>]*>/i.test(inner);
+          const hasAriaLabel = /aria-label=["'][^"']+["']/i.test(openTag);
+          if (!stripped && !hasGraphic && !hasAriaLabel) {
+            emptyAs.push(`${relPath}: ${match[0]}`);
+          }
+        }
+      }
+
+      expect(emptyLis).toEqual([]);
+      expect(emptyAs).toEqual([]);
     });
 
     it('verifies /evidence Part 4 (Reproduction) and Part 5 (Limits) are fully detailed', () => {

@@ -5,7 +5,7 @@ import programmesData from '../../../data/programmes.json';
 import offeringsData from '../../../data/offerings.json';
 import sourcesData from '../../../data/sources.json';
 import tagsData from '../../../data/tags.json';
-import { getStoriesForProgramme } from '../../lib/stories';
+import { getStoriesForProgramme, getStoryField } from '../../lib/stories';
 
 export interface OfferingItem {
   id: string;
@@ -95,6 +95,20 @@ const feeSummary = minFee === maxFee
   ? `Fees are ₹${formatInr(minFee)} per year across ${campusCount} campus${campusCount > 1 ? 'es' : ''}.`
   : `Fees range from ₹${formatInr(minFee)} to ₹${formatInr(maxFee)} per year across ${campusCount} campuses.`;
 
+const ALL_CAMPUSES = [
+  { code: 'KTR', name: 'Kattankulathur' },
+  { code: 'RMP', name: 'Ramapuram' },
+  { code: 'Trichy', name: 'Tiruchirappalli' },
+  { code: 'VDP', name: 'Vadapalani' },
+  { code: 'NCR', name: 'Delhi NCR' },
+  { code: 'BAB', name: 'Baburayanpettai' }
+];
+
+function progFeeToWidth(val: number): number {
+  const maxRef = 475000;
+  return Math.min(320, Math.max(20, (val / maxRef) * 320));
+}
+
 // Aliases / alternate spellings
 const spellingWays = Array.from(new Set([programme.name, ...(programme.aliases || [])]));
 const hasAliases = programme.aliases && programme.aliases.length > 0;
@@ -178,7 +192,7 @@ const linkedStories = getStoriesForProgramme(programme.slug);
         <a href="/programmes">← All Programmes</a>
       </nav>
 
-      <header class="prog-header">
+      <header class="prog-header" data-field={progTagKeys[0] || 'code-ai'}>
         <h1>{programme.name}</h1>
         <p class="prog-campuses-line">
           Offered at {campusCount} campus{campusCount > 1 ? 'es' : ''} ({campusNames.join(', ')})
@@ -200,12 +214,34 @@ const linkedStories = getStoriesForProgramme(programme.slug);
         {progTagKeys.length > 0 && (
           <div class="prog-tags-row" aria-label="Field tags">
             {progTagKeys.map((tagKey) => (
-              <a href={`/programmes?tag=${tagKey}`} class="chip-link">
+              <a href={`/programmes?tag=${tagKey}`} class="chip-link" data-field={tagKey}>
                 {tagLabels[tagKey] || tagKey}
               </a>
             ))}
           </div>
         )}
+
+        <!-- Stage C: Campus Strip showing all campuses that offer it -->
+        <div class="campus-offered-strip" aria-label="Campuses offering this programme">
+          <span class="strip-eyebrow">Campus Availability:</span>
+          <div class="strip-pill-grid">
+            {ALL_CAMPUSES.map((c) => {
+              const isOffered = programme.campuses.includes(c.code);
+              const off = progOfferings.find((o) => o.campus_code === c.code);
+              return (
+                <div class={`campus-strip-item ${isOffered ? 'offered' : 'unoffered'}`}>
+                  <span class="strip-item-code">{c.code}</span>
+                  <span class="strip-item-name">{c.name}</span>
+                  {isOffered && off?.annual_fee?.value ? (
+                    <span class="strip-item-fee">₹{formatInr(off.annual_fee.value)}/yr</span>
+                  ) : (
+                    <span class="strip-item-none">Not offered</span>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
 
         <!-- In-page Anchors (real fragments, no client JS) -->
         <nav class="prog-nav" aria-label="Page sections">
@@ -223,6 +259,64 @@ const linkedStories = getStoriesForProgramme(programme.slug);
       <section id="fees" class="prog-section">
         <h2>Fees &amp; Campuses</h2>
         <p class="fee-range-lead">{feeSummary}</p>
+
+        <!-- Stage C: Pure SVG Fee by Campus bar graphic -->
+        <div class="prog-fee-graphic-card">
+          <div class="graphic-header">
+            <h3>Fee by campus</h3>
+            <p class="graphic-subtitle">
+              {campusCount > 1
+                ? `Comparing annual B.Tech tuition across all ${campusCount} offering campuses`
+                : `Annual B.Tech tuition at ${progOfferings[0]?.campus || 'SRM'} campus against university range (₹1.00L to ₹4.75L)`}
+            </p>
+          </div>
+
+          <div class="prog-svg-wrap">
+            <svg
+              viewBox={`0 0 540 ${progOfferings.length * 36 + 32}`}
+              width="100%"
+              height="auto"
+              class="prog-fee-svg"
+              role="img"
+              aria-label={`Fee by campus comparison chart for ${programme.name}`}
+            >
+              <!-- Gridlines -->
+              <line x1="120" y1="10" x2="120" y2={progOfferings.length * 36 + 15} stroke="var(--rule)" stroke-width="0.75" stroke-dasharray="2 2" />
+              <line x1="200" y1="10" x2="200" y2={progOfferings.length * 36 + 15} stroke="var(--rule)" stroke-width="0.75" stroke-dasharray="2 2" />
+              <line x1="280" y1="10" x2="280" y2={progOfferings.length * 36 + 15} stroke="var(--rule)" stroke-width="0.75" stroke-dasharray="2 2" />
+              <line x1="360" y1="10" x2="360" y2={progOfferings.length * 36 + 15} stroke="var(--rule)" stroke-width="0.75" stroke-dasharray="2 2" />
+              <line x1="440" y1="10" x2="440" y2={progOfferings.length * 36 + 15} stroke="var(--rule)" stroke-width="0.75" stroke-dasharray="2 2" />
+
+              <text x="120" y={progOfferings.length * 36 + 26} font-size="9.5" font-weight="600" fill="var(--muted)" text-anchor="middle">₹1L</text>
+              <text x="200" y={progOfferings.length * 36 + 26} font-size="9.5" font-weight="600" fill="var(--muted)" text-anchor="middle">₹2L</text>
+              <text x="280" y={progOfferings.length * 36 + 26} font-size="9.5" font-weight="600" fill="var(--muted)" text-anchor="middle">₹3L</text>
+              <text x="360" y={progOfferings.length * 36 + 26} font-size="9.5" font-weight="600" fill="var(--muted)" text-anchor="middle">₹4L</text>
+              <text x="440" y={progOfferings.length * 36 + 26} font-size="9.5" font-weight="600" fill="var(--muted)" text-anchor="middle">₹4.75L</text>
+
+              {progOfferings.map((off, i) => {
+                const y = 24 + i * 36;
+                const feeVal = (off.annual_fee?.value as number) || 0;
+                const w = progFeeToWidth(feeVal);
+                return (
+                  <g class="prog-chart-row">
+                    <text x="10" y={y + 4} font-size="11.5" font-weight="700" fill="var(--ink)">
+                      {off.campus_code}
+                    </text>
+                    <text x="46" y={y + 4} font-size="10" fill="var(--muted)">
+                      {off.campus.split(' ')[0]}
+                    </text>
+                    <rect x="120" y={y - 6} width="320" height="12" rx="6" fill="var(--surface-alt)" stroke="var(--rule)" stroke-width="0.75" />
+                    <rect x="120" y={y - 6} width={w} height="12" rx="6" fill="var(--link)" opacity="0.9" />
+                    <circle cx={120 + w} cy={y} r="4" fill="var(--gold)" stroke="var(--surface)" stroke-width="1.25" />
+                    <text x={120 + w + 8} y={y + 4} font-size="10.5" font-weight="700" fill="var(--ink)">
+                      ₹{formatInr(feeVal)}
+                    </text>
+                  </g>
+                );
+              })}
+            </svg>
+          </div>
+        </div>
 
         {hasAliases && (
           <details class="alias-details">
@@ -348,7 +442,7 @@ const linkedStories = getStoriesForProgramme(programme.slug);
           </p>
           <div class="linked-stories-grid">
             {linkedStories.map((story) => (
-              <div class="card linked-story-card">
+              <div class="card linked-story-card" data-field={getStoryField(story.id)}>
                 <div class="linked-story-meta">
                   <span class="story-kind-tag">{story.kind}</span>
                   <span class="story-facts-count">{story.facts.length} documented facts</span>
@@ -786,6 +880,103 @@ const linkedStories = getStoriesForProgramme(programme.slug);
 
   .related-card p {
     margin: 0;
+  }
+
+  /* Campus Strip & Fee Graphic (Stage C) */
+  .campus-offered-strip {
+    background: var(--surface-alt);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-lg, 14px);
+    padding: 16px 20px;
+    margin: 20px 0 24px;
+  }
+  .strip-eyebrow {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+  .strip-pill-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 10px;
+  }
+  .campus-strip-item {
+    display: flex;
+    flex-direction: column;
+    padding: 10px 12px;
+    border-radius: var(--radius-md, 10px);
+    border: 1px solid var(--rule);
+    background: var(--surface);
+    transition: transform var(--ease-lift), border-color var(--ease-lift);
+  }
+  .campus-strip-item.offered {
+    border-color: var(--link);
+    background: var(--surface);
+    box-shadow: var(--elevation-1);
+  }
+  .campus-strip-item.unoffered {
+    opacity: 0.55;
+    background: var(--surface-alt);
+    border-style: dashed;
+  }
+  .strip-item-code {
+    font-size: 0.82rem;
+    font-weight: 800;
+    color: var(--ink);
+  }
+  .strip-item-name {
+    font-size: 0.82rem;
+    color: var(--muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .strip-item-fee {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--link);
+    margin-top: 4px;
+  }
+  .strip-item-none {
+    font-size: 0.78rem;
+    color: var(--muted);
+    margin-top: 4px;
+    font-style: italic;
+  }
+
+  /* Fee by Campus Graphic Card */
+  .prog-fee-graphic-card {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-lg, 14px);
+    box-shadow: var(--elevation-1);
+    padding: 20px 24px;
+    margin: 20px 0 24px;
+  }
+  .prog-fee-graphic-card .graphic-header {
+    margin-bottom: 14px;
+  }
+  .prog-fee-graphic-card .graphic-header h3 {
+    font-size: 1.15rem;
+    margin: 0 0 4px;
+    color: var(--ink);
+  }
+  .prog-fee-graphic-card .graphic-subtitle {
+    font-size: 0.86rem;
+    color: var(--muted);
+  }
+  .prog-svg-wrap {
+    width: 100%;
+  }
+  .prog-fee-svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
   }
 
   @media (max-width: 600px) {

@@ -126,6 +126,35 @@ const reproductionSources = allSources.filter((s) => ['S1', 'S2', 'S3'].includes
       </p>
     </header>
 
+    <!-- STAGE C: Top Summary Cards (The 4 Headline Numbers) -->
+    <section class="summary-cards-section" aria-label="Key admissions audit headline metrics">
+      <div class="summary-cards-grid">
+        <div class="summary-headline-card">
+          <span class="summary-num">{dataReport.totalOfferings}</span>
+          <span class="summary-title">Campus Offerings</span>
+          <p class="summary-desc">Total individual B.Tech campus offerings parsed and verified from SRM’s official Programs Offered table.</p>
+        </div>
+
+        <div class="summary-headline-card">
+          <span class="summary-num">{dataReport.totalProgrammes}</span>
+          <span class="summary-title">Distinct Programmes</span>
+          <p class="summary-desc">Distinct engineering degree specialisations across all 6 campuses, with <strong>{dataReport.multiCampusProgrammes}</strong> multi-campus.</p>
+        </div>
+
+        <div class="summary-headline-card">
+          <span class="summary-num">6</span>
+          <span class="summary-title">SRMIST Campuses</span>
+          <p class="summary-desc">Kattankulathur, Ramapuram, Tiruchirappalli, Vadapalani, Delhi NCR, and Baburayanpettai on 1 entrance form.</p>
+        </div>
+
+        <div class="summary-headline-card highlight-warn">
+          <span class="summary-num">{dataReport.eligibilityConflicts}</span>
+          <span class="summary-title">Eligibility Conflicts</span>
+          <p class="summary-desc">Offerings where SRM’s row states 50% aggregate (SRMJEEE 2022) but general criteria mandate 60%.</p>
+        </div>
+      </div>
+    </section>
+
     <!-- PART 1: Empirical Lighthouse Benchmarks -->
     <section class="evidence-section" id="lighthouse">
       <div class="section-title-wrap">
@@ -472,6 +501,54 @@ const reproductionSources = allSources.filter((s) => ['S1', 'S2', 'S3'].includes
     line-height: 1.55;
     color: var(--text);
     max-width: 80ch;
+    margin: 0;
+  }
+
+  /* Top Summary Cards (Stage C) */
+  .summary-cards-section {
+    padding: 28px 0 36px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .summary-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 18px;
+  }
+  .summary-headline-card {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-lg, 14px);
+    box-shadow: var(--elevation-1);
+    padding: 22px 20px;
+    display: flex;
+    flex-direction: column;
+    transition: transform var(--ease-lift), box-shadow var(--ease-lift);
+  }
+  .summary-headline-card.highlight-warn {
+    border-top: 4px solid var(--warn);
+  }
+  .summary-num {
+    font-size: 2.4rem;
+    font-weight: 800;
+    line-height: 1;
+    color: var(--ink);
+    font-family: Charter, "Iowan Old Style", Georgia, serif;
+    font-variant-numeric: lining-nums tabular-nums;
+    margin-bottom: 6px;
+  }
+  .summary-headline-card.highlight-warn .summary-num {
+    color: var(--warn);
+  }
+  .summary-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 8px;
+  }
+  .summary-desc {
+    font-size: 0.88rem;
+    line-height: 1.45;
+    color: var(--text-muted);
     margin: 0;
   }
 

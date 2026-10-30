@@ -1,5 +1,6 @@
 ---
 import '../styles/tokens.css';
+import BrandCompass from '../components/BrandCompass.astro';
 
 export interface Props {
   title?: string;
@@ -23,7 +24,7 @@ const canonicalUrl = canonical || (Astro.site ? new URL(Astro.url.pathname.endsW
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%230B2A4A' stroke='%23E4B316' stroke-width='2'/%3E%3Cpath d='M32 10 L38 32 L32 32 Z' fill='%23E4B316'/%3E%3Cpath d='M32 10 L26 32 L32 32 Z' fill='%23FFF'/%3E%3Cpath d='M32 54 L38 32 L32 32 Z' fill='%237C95B1'/%3E%3Cpath d='M32 54 L26 32 L32 32 Z' fill='%234A6585'/%3E%3Ccircle cx='32' cy='32' r='4.5' fill='%230B2A4A' stroke='%23E4B316' stroke-width='1.5'/%3E%3Ccircle cx='32' cy='32' r='2' fill='%23E4B316'/%3E%3C/svg%3E" />
     <title>{title}</title>
     <meta name="description" content={description} />
     {canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
@@ -35,7 +36,8 @@ const canonicalUrl = canonical || (Astro.site ? new URL(Astro.url.pathname.endsW
     <header class="top">
       <div class="w header-bar">
         <a class="brand" href="/">
-          <i>✦</i>SRM Compass
+          <BrandCompass size={22} class="brand-compass-icon" />
+          <span>SRM Compass</span>
         </a>
         <nav class="nav-desktop" aria-label="Main">
           <a

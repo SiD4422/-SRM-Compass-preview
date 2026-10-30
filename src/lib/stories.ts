@@ -79,6 +79,20 @@ export function getStorySource(sourceId: string): StorySource | undefined {
   return sourcesMap.get(sourceId);
 }
 
+const STORY_FIELD_MAP: Record<string, string> = {
+  'abhinava-rizel': 'machines-vehicles',
+  'camber-racing': 'machines-vehicles',
+  'torus-robotics': 'robots-automation',
+  'neur-industries': 'robots-automation',
+  'weezy-streetwear': 'circuits-power',
+  'paperplane': 'code-ai',
+  'surelocal': 'code-ai'
+};
+
+export function getStoryField(storyId: string): string {
+  return STORY_FIELD_MAP[storyId] || 'code-ai';
+}
+
 function enrichStory(story: Story): EnrichedStory {
   const facts: EnrichedStoryFact[] = story.facts.map((fact) => ({
     ...fact,

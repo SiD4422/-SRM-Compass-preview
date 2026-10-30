@@ -26,7 +26,7 @@ describe('Stage M7-fix-2: Full-Site Axe Accessibility Suite', () => {
     };
 
     const htmlFiles = getHtmlFiles(distDir);
-    expect(htmlFiles.length).toBe(62);
+    expect(htmlFiles.length).toBe(63);
   });
 
   it('runs axe on every built page in both light and dark themes at 360 and 1440 px and fails on any violation', () => {
@@ -46,8 +46,8 @@ describe('Stage M7-fix-2: Full-Site Axe Accessibility Suite', () => {
     expect(result.status).toBe(0);
 
     const report = JSON.parse(result.stdout);
-    expect(report.pages_count).toBe(62);
-    expect(report.total_audits).toBe(248); // 62 pages * 2 themes * 2 viewports
+    expect(report.pages_count).toBe(63);
+    expect(report.total_audits).toBe(252); // 63 pages * 2 themes * 2 viewports
     expect(report.violations_count).toBe(0);
     expect(report.violations).toEqual([]);
   }, 120000);

@@ -1,0 +1,128 @@
+---
+import Layout from '../layouts/Layout.astro';
+import BrandCompass from '../components/BrandCompass.astro';
+---
+
+<Layout
+  title="Page Not Found (404) — SRM Compass"
+  description="The requested page could not be found. Find official SRM B.Tech programme offerings, fees, and eligibility on SRM Compass."
+>
+  <div class="w not-found-wrapper">
+    <div class="not-found-card">
+      <div class="not-found-mark-wrap" aria-hidden="true">
+        <BrandCompass size={72} class="not-found-compass" />
+      </div>
+      <span class="not-found-code">Error 404</span>
+      <h1>Off course? Let’s find your programme.</h1>
+      <p class="not-found-lede">
+        The page you requested could not be located. Every B.Tech option, official fee, and eligibility rule is verified and available across our main directories.
+      </p>
+
+      <div class="not-found-actions">
+        <a href="/" class="btn p">Return to Home</a>
+        <a href="/programmes" class="btn s">Browse all 106 options</a>
+        <a href="/eligibility" class="btn s">Check Eligibility</a>
+      </div>
+
+      <div class="not-found-links">
+        <span class="quick-nav-label">Direct links:</span>
+        <a href="/compare">Compare Programmes</a> &bull;
+        <a href="/stories">Built at SRM</a> &bull;
+        <a href="/apply">How to Apply</a> &bull;
+        <a href="/evidence">Evidence &amp; Methodology</a>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .not-found-wrapper {
+    padding: 60px 20px 80px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .not-found-card {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-xl, 20px);
+    box-shadow: var(--elevation-1);
+    max-width: 640px;
+    width: 100%;
+    padding: 48px 36px;
+    text-align: center;
+  }
+  .not-found-mark-wrap {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    background: var(--surface-alt);
+    border: 1px solid var(--rule);
+    margin-bottom: 20px;
+    color: var(--navy);
+  }
+  .not-found-code {
+    display: inline-block;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--warn);
+    background: rgba(143, 82, 0, 0.08);
+    padding: 3px 10px;
+    border-radius: var(--radius-pill, 9999px);
+    margin-bottom: 12px;
+  }
+  :root[data-theme="dark"] .not-found-code {
+    background: rgba(242, 183, 102, 0.15);
+  }
+  .not-found-card h1 {
+    font-size: clamp(1.75rem, 4vw, 2.25rem);
+    margin-bottom: 14px;
+    color: var(--ink);
+  }
+  .not-found-lede {
+    font-size: 1.05rem;
+    line-height: 1.55;
+    color: var(--text-muted);
+    max-width: 520px;
+    margin: 0 auto 28px;
+  }
+  .not-found-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+  .not-found-links {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    border-top: 1px solid var(--rule);
+    padding-top: 20px;
+  }
+  .quick-nav-label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 6px;
+  }
+  .not-found-links a {
+    color: var(--link);
+    text-decoration: underline;
+    margin: 0 4px;
+  }
+  @media (max-width: 600px) {
+    .not-found-card {
+      padding: 32px 20px;
+    }
+    .not-found-actions .btn {
+      width: 100%;
+    }
+  }
+</style>

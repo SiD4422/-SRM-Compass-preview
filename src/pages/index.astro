@@ -6,7 +6,8 @@ import fullOfferingsData from '../../data/offerings.json';
 import sourcesData from '../../data/sources.json';
 import tagsData from '../../data/tags.json';
 import programmesData from '../../data/programmes.json';
-import { getAllStories } from '../lib/stories';
+import { getAllStories, getStoryField } from '../lib/stories';
+import BrandCompass from '../components/BrandCompass.astro';
 
 interface OfferingItem {
   id: string;
@@ -123,6 +124,14 @@ const campusCards: CampusSummary[] = Array.from(campusDataMap.entries())
 
 // 3. Built at SRM: 3 stories
 const featuredStories = getAllStories().slice(0, 3);
+
+// 4. SVG Data Graphics Scale Helpers
+function feeToX(fee: number): number {
+  return 110 + ((fee - 100000) / 400000) * 330;
+}
+function countToWidth(count: number): number {
+  return (count / 44) * 310;
+}
 ---
 
 <Layout
@@ -156,7 +165,7 @@ const featuredStories = getAllStories().slice(0, 3);
           <span class="quick-tags-label">Explore by field:</span>
           <div class="chips-row">
             {Object.entries(tagsData.labels).map(([tagKey, tagLabel]) => (
-              <a class="chip-link" href={`/programmes?tag=${tagKey}`}>
+              <a class="chip-link" href={`/programmes?tag=${tagKey}`} data-field={tagKey}>
                 {tagLabel}
               </a>
             ))}
@@ -164,16 +173,19 @@ const featuredStories = getAllStories().slice(0, 3);
         </div>
 
         <div class="btn-row">
-          <a class="btn p" href="/programmes">Browse all 106 options</a>
+          <a class="btn p hero-primary" href="/programmes">Browse all 106 options &rarr;</a>
           <a class="btn s" href="/apply">How applying works</a>
           <a class="btn s" href="/eligibility#check">Can I apply?</a>
         </div>
       </div>
 
       <div class="hero-seal-wrapper">
-        <div class="seal" role="img" aria-label="Verified 26 October 2026">
-          <b>✓</b>
-          <span>Verified<br />26 Oct 2026</span>
+        <div class="seal" role="img" aria-label="SRM Compass Official Verification Seal: 106 options, 6 campuses verified 26 Oct 2026">
+          <div class="seal-compass-inner">
+            <BrandCompass size={46} ariaLabel="" role="presentation" />
+          </div>
+          <span class="seal-badge">Official Data</span>
+          <span class="seal-text">Verified<br />26 Oct 2026</span>
         </div>
         <div class="seal-meta-box">
           <span class="seal-meta-title">106 options, 6 campuses</span>
@@ -227,7 +239,7 @@ const featuredStories = getAllStories().slice(0, 3);
 
       <div class="stories-home-grid">
         {featuredStories.map((story) => (
-          <article class="story-home-card">
+          <article class="story-home-card" data-field={getStoryField(story.id)}>
             <div class="story-home-top">
               <span class="story-home-kind">{story.kind}</span>
               <span class="story-home-facts-count">{story.facts.length} facts</span>
@@ -278,6 +290,195 @@ const featuredStories = getAllStories().slice(0, 3);
             <span class="campus-action-link">View campus options &rarr;</span>
           </a>
         ))}
+      </div>
+
+      <!-- Stage C: Pure SVG Campus Data Graphics with Text Table Fallbacks -->
+      <div class="campus-graphics-grid">
+        <!-- Graphic 1: Fee range by campus -->
+        <div class="data-graphic-card">
+          <div class="graphic-header">
+            <h3>Fee range by campus</h3>
+            <p class="graphic-subtitle">Annual B.Tech tuition spectrum from SRM’s official table (₹1.00L to ₹4.75L)</p>
+          </div>
+
+          <div class="svg-container">
+            <svg
+              viewBox="0 0 550 230"
+              width="100%"
+              height="auto"
+              class="data-graphic-svg"
+              role="img"
+              aria-labelledby="fee-chart-title fee-chart-desc"
+            >
+              <title id="fee-chart-title">Fee range by campus</title>
+              <desc id="fee-chart-desc">Horizontal range bars showing the minimum and maximum annual B.Tech fee across all six SRMIST campuses from official data.</desc>
+
+              <!-- Gridlines & Axis labels -->
+              <line x1="110" y1="20" x2="110" y2="195" stroke="var(--rule)" stroke-width="0.75" stroke-dasharray="2 2" />
+              <line x1="192.5" y1="20" x2="192.5" y2="195" stroke="var(--rule)" stroke-width="0.75" stroke-dasharray="2 2" />
+              <line x1="275" y1="20" x2="275" y2="195" stroke="var(--rule)" stroke-width="0.75" stroke-dasharray="2 2" />
+              <line x1="357.5" y1="20" x2="357.5" y2="195" stroke="var(--rule)" stroke-width="0.75" stroke-dasharray="2 2" />
+              <line x1="440" y1="20" x2="440" y2="195" stroke="var(--rule)" stroke-width="0.75" stroke-dasharray="2 2" />
+
+              <text x="110" y="210" font-size="10" font-weight="600" fill="var(--muted)" text-anchor="middle">₹1L</text>
+              <text x="192.5" y="210" font-size="10" font-weight="600" fill="var(--muted)" text-anchor="middle">₹2L</text>
+              <text x="275" y="210" font-size="10" font-weight="600" fill="var(--muted)" text-anchor="middle">₹3L</text>
+              <text x="357.5" y="210" font-size="10" font-weight="600" fill="var(--muted)" text-anchor="middle">₹4L</text>
+              <text x="440" y="210" font-size="10" font-weight="600" fill="var(--muted)" text-anchor="middle">₹5L</text>
+
+              <!-- Campus Range Bars -->
+              {campusCards.map((c, i) => {
+                const y = 32 + i * 28;
+                const x1 = feeToX(c.minFee);
+                const x2 = feeToX(c.maxFee);
+                const barWidth = Math.max(x2 - x1, 8);
+                const isSingle = c.minFee === c.maxFee;
+                return (
+                  <g class="chart-row">
+                    <!-- Campus Code & Name -->
+                    <text x="10" y={y + 4} font-size="11" font-weight="700" fill="var(--ink)">
+                      {c.code}
+                    </text>
+                    <text x="42" y={y + 4} font-size="10" fill="var(--muted)">
+                      {c.name.split(' ')[0]}
+                    </text>
+
+                    <!-- Background Track -->
+                    <rect x="110" y={y - 4} width="330" height="8" rx="4" fill="var(--surface-alt)" stroke="var(--rule)" stroke-width="0.75" />
+
+                    <!-- Fee Range Bar -->
+                    <rect x={x1} y={y - 5} width={barWidth} height="10" rx="5" fill="var(--link)" opacity="0.85" />
+
+                    <!-- Left & Right Markers -->
+                    <circle cx={x1} cy={y} r="4" fill="var(--gold)" stroke="var(--surface)" stroke-width="1.25" />
+                    {!isSingle && (
+                      <circle cx={x2} cy={y} r="4" fill="var(--gold)" stroke="var(--surface)" stroke-width="1.25" />
+                    )}
+
+                    <!-- Value Label -->
+                    <text x="450" y={y + 4} font-size="10.5" font-weight="600" fill="var(--ink)">
+                      ₹{(c.minFee / 100000).toFixed(c.minFee % 100000 === 0 ? 0 : 2)}L{c.minFee !== c.maxFee ? `–${(c.maxFee / 100000).toFixed(c.maxFee % 100000 === 0 ? 0 : 2)}L` : ''}
+                    </text>
+                  </g>
+                );
+              })}
+            </svg>
+          </div>
+
+          <details class="graphic-table-fallback">
+            <summary>View text table: Fee range by campus</summary>
+            <table class="graphic-data-table">
+              <thead>
+                <tr>
+                  <th scope="col">Campus</th>
+                  <th scope="col">Full Name</th>
+                  <th scope="col">Min Fee / Year</th>
+                  <th scope="col">Max Fee / Year</th>
+                </tr>
+              </thead>
+              <tbody>
+                {campusCards.map((c) => (
+                  <tr>
+                    <th scope="row"><strong>{c.code}</strong></th>
+                    <td>{c.name}</td>
+                    <td>₹{formatInr(c.minFee)}</td>
+                    <td>₹{formatInr(c.maxFee)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </details>
+        </div>
+
+        <!-- Graphic 2: Options by campus -->
+        <div class="data-graphic-card">
+          <div class="graphic-header">
+            <h3>Options by campus</h3>
+            <p class="graphic-subtitle">Distribution of all 106 B.Tech programme offerings across campuses</p>
+          </div>
+
+          <div class="svg-container">
+            <svg
+              viewBox="0 0 550 230"
+              width="100%"
+              height="auto"
+              class="data-graphic-svg"
+              role="img"
+              aria-labelledby="options-chart-title options-chart-desc"
+            >
+              <title id="options-chart-title">Options by campus</title>
+              <desc id="options-chart-desc">Horizontal bar chart showing the count and share of B.Tech programme offerings at each of the six SRMIST campuses.</desc>
+
+              <!-- Gridlines & Axis labels -->
+              <line x1="110" y1="20" x2="110" y2="195" stroke="var(--rule)" stroke-width="0.75" stroke-dasharray="2 2" />
+              <line x1="180.5" y1="20" x2="180.5" y2="195" stroke="var(--rule)" stroke-width="0.75" stroke-dasharray="2 2" />
+              <line x1="250.9" y1="20" x2="250.9" y2="195" stroke="var(--rule)" stroke-width="0.75" stroke-dasharray="2 2" />
+              <line x1="321.4" y1="20" x2="321.4" y2="195" stroke="var(--rule)" stroke-width="0.75" stroke-dasharray="2 2" />
+              <line x1="391.8" y1="20" x2="391.8" y2="195" stroke="var(--rule)" stroke-width="0.75" stroke-dasharray="2 2" />
+              <line x1="420" y1="20" x2="420" y2="195" stroke="var(--rule)" stroke-width="0.75" stroke-dasharray="2 2" />
+
+              <text x="110" y="210" font-size="10" font-weight="600" fill="var(--muted)" text-anchor="middle">0</text>
+              <text x="180.5" y="210" font-size="10" font-weight="600" fill="var(--muted)" text-anchor="middle">10</text>
+              <text x="250.9" y="210" font-size="10" font-weight="600" fill="var(--muted)" text-anchor="middle">20</text>
+              <text x="321.4" y="210" font-size="10" font-weight="600" fill="var(--muted)" text-anchor="middle">30</text>
+              <text x="391.8" y="210" font-size="10" font-weight="600" fill="var(--muted)" text-anchor="middle">40</text>
+              <text x="440" y="210" font-size="10" font-weight="600" fill="var(--muted)" text-anchor="middle">44</text>
+
+              <!-- Campus Options Bars -->
+              {campusCards.map((c, i) => {
+                const y = 32 + i * 28;
+                const barWidth = countToWidth(c.optionCount);
+                const percentage = ((c.optionCount / 106) * 100).toFixed(0);
+                return (
+                  <g class="chart-row">
+                    <!-- Campus Code & Name -->
+                    <text x="10" y={y + 4} font-size="11" font-weight="700" fill="var(--ink)">
+                      {c.code}
+                    </text>
+                    <text x="42" y={y + 4} font-size="10" fill="var(--muted)">
+                      {c.name.split(' ')[0]}
+                    </text>
+
+                    <!-- Background Track -->
+                    <rect x="110" y={y - 5} width="310" height="10" rx="5" fill="var(--surface-alt)" stroke="var(--rule)" stroke-width="0.75" />
+
+                    <!-- Count Bar -->
+                    <rect x="110" y={y - 5} width={barWidth} height="10" rx="5" fill="var(--navy)" opacity="0.9" />
+
+                    <!-- Value Label -->
+                    <text x={110 + barWidth + 8} y={y + 4} font-size="10.5" font-weight="600" fill="var(--ink)">
+                      {c.optionCount} ({percentage}%)
+                    </text>
+                  </g>
+                );
+              })}
+            </svg>
+          </div>
+
+          <details class="graphic-table-fallback">
+            <summary>View text table: Options by campus</summary>
+            <table class="graphic-data-table">
+              <thead>
+                <tr>
+                  <th scope="col">Campus</th>
+                  <th scope="col">Full Name</th>
+                  <th scope="col">B.Tech Options</th>
+                  <th scope="col">Share of 106 Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                {campusCards.map((c) => (
+                  <tr>
+                    <th scope="row"><strong>{c.code}</strong></th>
+                    <td>{c.name}</td>
+                    <td>{c.optionCount}</td>
+                    <td>{((c.optionCount / 106) * 100).toFixed(1)}%</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </details>
+        </div>
       </div>
     </div>
   </section>
@@ -744,5 +945,77 @@ const featuredStories = getAllStories().slice(0, 3);
   }
   .apply-steps-cta {
     margin-top: 16px;
+  }
+
+  /* Campus Data Graphics (Stage C) */
+  .campus-graphics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 24px;
+    margin-top: 32px;
+  }
+  .data-graphic-card {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-lg, 14px);
+    box-shadow: var(--elevation-1);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+  }
+  .graphic-header {
+    margin-bottom: 16px;
+  }
+  .graphic-header h3 {
+    font-size: 1.25rem;
+    color: var(--ink);
+    margin: 0 0 4px 0;
+  }
+  .graphic-subtitle {
+    font-size: 0.88rem;
+    color: var(--muted);
+    margin: 0;
+    line-height: 1.4;
+  }
+  .svg-container {
+    width: 100%;
+    margin-bottom: 16px;
+  }
+  .data-graphic-svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+  .graphic-table-fallback {
+    margin-top: auto;
+    border-top: 1px solid var(--rule);
+    padding-top: 12px;
+  }
+  .graphic-table-fallback summary {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--link);
+    cursor: pointer;
+    padding: 4px 0;
+  }
+  .graphic-table-fallback summary:hover {
+    text-decoration: underline;
+  }
+  .graphic-data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 12px;
+    font-size: 0.82rem;
+  }
+  .graphic-data-table th,
+  .graphic-data-table td {
+    padding: 6px 10px;
+    border: 1px solid var(--rule);
+    text-align: left;
+  }
+  .graphic-data-table th {
+    background: var(--surface-alt);
+    color: var(--ink);
   }
 </style>

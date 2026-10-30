@@ -1,6 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import { getAllStories } from '../../lib/stories';
+import { getAllStories, getStoryField } from '../../lib/stories';
 
 const stories = getAllStories();
 ---
@@ -29,7 +29,7 @@ const stories = getAllStories();
 
     <div class="stories-list-grid">
       {stories.map((story) => (
-        <article class="story-list-card">
+        <article class="story-list-card" data-field={getStoryField(story.id)}>
           <div class="story-card-top">
             <span class="story-badge">{story.kind}</span>
             <span class="fact-count-pill">{story.facts.length} documented facts</span>

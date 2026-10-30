@@ -1,6 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import { getAllStories, type EnrichedStory } from '../../lib/stories';
+import { getAllStories, getStoryField, type EnrichedStory } from '../../lib/stories';
 
 export async function getStaticPaths() {
   const stories = getAllStories();
@@ -37,7 +37,7 @@ function getPillLabel(fact: { source?: { kind?: string } }) {
     </nav>
 
     <article class="story-article">
-      <header class="story-header">
+      <header class="story-header" data-field={getStoryField(story.id)}>
         <div class="story-meta-top">
           <span class="story-kind-badge">{story.kind}</span>
           <span class="story-fact-total">{story.facts.length} facts documented</span>

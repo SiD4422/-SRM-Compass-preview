@@ -1,0 +1,246 @@
+{
+  "search_tests": [
+    {
+      "query": "eee",
+      "expected": 3,
+      "actual": 3,
+      "passed": true
+    },
+    {
+      "query": "ece",
+      "expected": 12,
+      "actual": 12,
+      "passed": true
+    },
+    {
+      "query": "cse",
+      "expected": 43,
+      "actual": 43,
+      "passed": true
+    },
+    {
+      "query": "ai",
+      "expected": 13,
+      "actual": 13,
+      "passed": true
+    },
+    {
+      "query": "vlsi",
+      "expected": 3,
+      "actual": 3,
+      "passed": true
+    },
+    {
+      "query": "robotics",
+      "expected": 3,
+      "actual": 3,
+      "passed": true
+    },
+    {
+      "query": "biotech",
+      "expected": 8,
+      "actual": 8,
+      "passed": true
+    },
+    {
+      "query": "mechanical",
+      "expected": 9,
+      "actual": 9,
+      "passed": true
+    },
+    {
+      "query": "it",
+      "expected": 3,
+      "actual": 3,
+      "passed": true
+    },
+    {
+      "query": "iot",
+      "expected": 3,
+      "actual": 3,
+      "passed": true
+    },
+    {
+      "query": "ktr eee",
+      "expected": 1,
+      "actual": 1,
+      "passed": true
+    }
+  ],
+  "chip_tests": [
+    {
+      "tag": "circuits-power",
+      "expected": 21,
+      "actual": 21,
+      "passed": true
+    },
+    {
+      "tag": "code-ai",
+      "expected": 63,
+      "actual": 63,
+      "passed": true
+    },
+    {
+      "tag": "machines-vehicles",
+      "expected": 16,
+      "actual": 16,
+      "passed": true
+    },
+    {
+      "tag": "robots-automation",
+      "expected": 5,
+      "actual": 5,
+      "passed": true
+    },
+    {
+      "tag": "health-bio",
+      "expected": 13,
+      "actual": 13,
+      "passed": true
+    },
+    {
+      "tag": "build-infrastructure",
+      "expected": 3,
+      "actual": 3,
+      "passed": true
+    },
+    {
+      "tag": "data-business",
+      "expected": 17,
+      "actual": 17,
+      "passed": true
+    },
+    {
+      "tag": "materials",
+      "expected": 2,
+      "actual": 2,
+      "passed": true
+    }
+  ],
+  "campus_tests": [
+    {
+      "campus": "KTR",
+      "expected": 44,
+      "actual": 44,
+      "passed": true
+    },
+    {
+      "campus": "RMP",
+      "expected": 18,
+      "actual": 18,
+      "passed": true
+    },
+    {
+      "campus": "Trichy",
+      "expected": 20,
+      "actual": 20,
+      "passed": true
+    },
+    {
+      "campus": "NCR",
+      "expected": 11,
+      "actual": 11,
+      "passed": true
+    },
+    {
+      "campus": "VDP",
+      "expected": 11,
+      "actual": 11,
+      "passed": true
+    },
+    {
+      "campus": "BAB",
+      "expected": 2,
+      "actual": 2,
+      "passed": true
+    }
+  ],
+  "sort_tests": [
+    {
+      "sort": "fee-asc",
+      "first_fee": 100000,
+      "last_fee": 475000,
+      "passed": true
+    },
+    {
+      "sort": "fee-desc",
+      "first_fee": 475000,
+      "last_fee": 100000,
+      "passed": true
+    }
+  ],
+  "compare_tests": [
+    {
+      "state": "0 items",
+      "cards": 0,
+      "passed": true
+    },
+    {
+      "state": "1 item",
+      "cards": 1,
+      "passed": true
+    },
+    {
+      "state": "3 items",
+      "cards": 3,
+      "passed": true
+    },
+    {
+      "state": "4 items",
+      "cards": 3,
+      "passed": true
+    }
+  ],
+  "apply_route_tests": [
+    {
+      "route": "btech",
+      "target_open": true,
+      "other_open": 0,
+      "passed": true
+    },
+    {
+      "route": "mtech",
+      "target_open": true,
+      "other_open": 0,
+      "passed": true
+    },
+    {
+      "route": "architecture",
+      "target_open": true,
+      "other_open": 0,
+      "passed": true
+    },
+    {
+      "route": "law",
+      "target_open": true,
+      "other_open": 0,
+      "passed": true
+    },
+    {
+      "route": "mba",
+      "target_open": true,
+      "other_open": 0,
+      "passed": true
+    },
+    {
+      "route": "medicine",
+      "target_open": true,
+      "other_open": 0,
+      "passed": true
+    },
+    {
+      "route": "health",
+      "target_open": true,
+      "other_open": 0,
+      "passed": true
+    },
+    {
+      "route": "other",
+      "target_open": true,
+      "other_open": 0,
+      "passed": true
+    }
+  ],
+  "all_passed": true,
+  "failures": []
+}

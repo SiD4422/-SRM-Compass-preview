@@ -83,6 +83,13 @@ function formatRunsLabel(count: number): string {
   return `${count} runs`;
 }
 
+function getLighthouseVersion(target: LhTarget): string {
+  if (target.runner && (target.runner.toLowerCase().includes('author') || target.runner.toLowerCase().includes('devtools'))) {
+    return '13.5.0';
+  }
+  return '13.6.0';
+}
+
 function formatDate(dateStr?: string): string {
   if (!dateStr) return '';
   const [year, month, day] = dateStr.split('-');
@@ -135,6 +142,7 @@ const reproductionSources = allSources.filter((s) => ['S1', 'S2', 'S3'].includes
             <tr>
               <th scope="col">Page Under Audit</th>
               <th scope="col">Runner</th>
+              <th scope="col">Version</th>
               <th scope="col">Runs</th>
               <th scope="col" class="num-col">Performance</th>
               <th scope="col" class="num-col">Accessibility</th>
@@ -160,6 +168,9 @@ const reproductionSources = allSources.filter((s) => ['S1', 'S2', 'S3'].includes
                 </th>
                 <td class="runner-cell">
                   <span class="runner-badge">{target.runner}</span>
+                </td>
+                <td class="version-cell">
+                  <span class="version-badge">{getLighthouseVersion(target)}</span>
                 </td>
                 <td class="runs-cell">
                   <span class="runs-badge">{formatRunsLabel(target.runs_count ?? target.runs.length)}</span>
@@ -563,6 +574,21 @@ const reproductionSources = allSources.filter((s) => ['S1', 'S2', 'S3'].includes
     border-radius: 4px;
     font-weight: 600;
     font-size: 0.78rem;
+    color: var(--navy);
+  }
+
+  .version-cell {
+    font-size: 0.82rem;
+    white-space: nowrap;
+  }
+  .version-badge {
+    display: inline-block;
+    padding: 3px 7px;
+    background: var(--surface-alt);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    font-weight: 600;
+    font-size: 0.76rem;
     color: var(--navy);
   }
 

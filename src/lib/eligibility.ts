@@ -488,8 +488,14 @@ export function initEligibilityChecker(): void {
   const dobInput = document.getElementById('dob') as HTMLInputElement | null;
   const aggregateErrorEl = document.getElementById('aggregate-error');
   const dobErrorEl = document.getElementById('dob-error');
+  const submitBtn = document.getElementById('checker-submit-btn') as HTMLButtonElement | null;
 
   if (!form || !resultContainer) return;
+
+  // Enable submit button once client script has initialized
+  if (submitBtn) {
+    submitBtn.disabled = false;
+  }
 
   function clearInlineErrors() {
     if (aggregateInput) aggregateInput.classList.remove('input-has-error');

@@ -34,6 +34,15 @@ const conflictCount = offeringsData.filter(
           </div>
         </div>
 
+        <noscript>
+          <div class="noscript-banner" role="alert">
+            <strong>JavaScript is required for interactive eligibility checking.</strong>
+            <span>
+              SRM Compass evaluates marks and date of birth 100% locally in your browser. This form uses <code>method="post"</code> to ensure that student marks and dates of birth can never be leaked into the URL. Submit is disabled until JavaScript initialises. Please review the complete 2026–2027 rule breakdown below.
+            </span>
+          </div>
+        </noscript>
+
         <form id="eligibility-form" class="checker-form" action="#check" method="post" novalidate>
           <!-- 1. Resident Indian (yes/no) -->
           <div class="form-row">
@@ -173,7 +182,7 @@ const conflictCount = offeringsData.filter(
 
           <!-- Action buttons -->
           <div class="checker-actions">
-            <button type="submit" class="btn p">Check eligibility</button>
+            <button type="submit" id="checker-submit-btn" class="btn p" disabled>Check eligibility</button>
             <button type="button" id="checker-reset-btn" class="btn s">Reset</button>
           </div>
         </form>
@@ -249,6 +258,20 @@ const conflictCount = offeringsData.filter(
     margin-bottom: 24px;
     border-bottom: 1px solid var(--rule);
     padding-bottom: 20px;
+  }
+
+  .noscript-banner {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    background: rgba(180, 83, 9, 0.12);
+    border: 1px solid #d97706;
+    color: var(--ink);
+    border-radius: 6px;
+    padding: 14px 18px;
+    margin-bottom: 20px;
+    font-size: 0.92rem;
+    line-height: 1.5;
   }
 
   .checker-intro h2 {

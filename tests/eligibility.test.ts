@@ -1,4 +1,7 @@
 import { describe, it, expect } from 'vitest';
+import fs from 'node:fs';
+import path from 'node:path';
+import { spawnSync } from 'node:child_process';
 import {
   checkEligibility,
   isAgeEligible,
@@ -310,5 +313,42 @@ describe('Stage M5-fix: B.Tech Eligibility Evaluation Engine (src/lib/eligibilit
     const allReasons = result.reasons.join(' ');
     expect(allReasons).toContain(NON_RESIDENT_PORTAL_URL);
     expect(result.sourceStamp?.url).toBe(NON_RESIDENT_PORTAL_URL);
+  });
+
+  describe('Stage A: Eligibility No-JS Resilience and Privacy Protection', () => {
+    it('verifies built eligibility HTML shows method="post", disabled submit button, and noscript banner', () => {
+      const htmlPath = path.resolve(__dirname, '../dist/eligibility/index.html');
+      expect(fs.existsSync(htmlPath)).toBe(true);
+      const html = fs.readFileSync(htmlPath, 'utf-8');
+
+      // 1. Form has explicit method="post"
+      expect(html).toMatch(/<form[^>]+method=["']post["']/i);
+      // 2. Submit button is disabled in static HTML
+      expect(html).toMatch(/<button[^>]+id=["']checker-submit-btn["'][^>]*disabled/i);
+      // 3. Noscript tag exists with explanation
+      expect(html).toContain('<noscript>');
+      expect(html).toContain('JavaScript is required for interactive eligibility checking');
+      // 4. No form uses method="get"
+      expect(html).not.toMatch(/<form[^>]+method=["']get["']/i);
+    });
+
+    it('runs Playwright with JS disabled: pressing Enter in aggregate field does not mutate URL', () => {
+      const runnerScript = path.resolve(__dirname, 'check_eligibility_nojs.py');
+      expect(fs.existsSync(runnerScript)).toBe(true);
+
+      const result = spawnSync('python', [runnerScript], {
+        cwd: path.resolve(__dirname, '..'),
+        encoding: 'utf-8',
+        timeout: 30000
+      });
+
+      if (result.status !== 0) {
+        console.error('check_eligibility_nojs stdout:', result.stdout);
+        console.error('check_eligibility_nojs stderr:', result.stderr);
+      }
+
+      expect(result.status).toBe(0);
+      expect(result.stdout).toContain('PASS: Eligibility form with JS disabled guarantees zero URL mutation and zero data leakage.');
+    }, 30000);
   });
 });

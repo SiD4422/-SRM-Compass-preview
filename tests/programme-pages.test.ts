@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import fs from 'node:fs';
 import path from 'node:path';
 import zlib from 'node:zlib';
+import { spawnSync } from 'node:child_process';
 
 const distDir = path.resolve(__dirname, '../dist');
 const programmesData = JSON.parse(
@@ -883,5 +884,56 @@ describe('Stage M3 & M3-fix: Programme Detail Pages (/programmes/[slug])', () =>
         }
       }
     });
+
+    it('fails if any built page Lighthouse-equivalent check regresses (Stage D-fix)', () => {
+      const allFiles = fs.readdirSync(distDir, { recursive: true }) as string[];
+      const htmlFiles = allFiles.filter((f) => typeof f === 'string' && f.endsWith('.html'));
+
+      // 1. Static check: Every inline SVG conveying data must have role="img", a title, and a desc
+      for (const relPath of htmlFiles) {
+        const fullPath = path.join(distDir, relPath);
+        const html = fs.readFileSync(fullPath, 'utf-8');
+
+        // Match data graphic SVGs
+        const svgMatches = [...html.matchAll(/<svg\b[^>]*\bclass=["'][^"']*(?:data-graphic-svg|prog-fee-svg)[^"']*["'][^>]*>([\s\S]*?)<\/svg>/gi)];
+        for (const match of svgMatches) {
+          const fullSvgTag = match[0];
+          const innerSvg = match[1];
+
+          // Must have role="img"
+          expect(fullSvgTag).toMatch(/\brole=["']img["']/i);
+
+          // Must not have invalid height="auto" attribute (causes browser console error)
+          expect(fullSvgTag).not.toMatch(/\bheight=["']auto["']/i);
+
+          // Must have <title> with non-empty text
+          const titleMatch = innerSvg.match(/<title\b[^>]*>([^<]+)<\/title>/i);
+          expect(titleMatch).not.toBeNull();
+          expect(titleMatch![1].trim().length).toBeGreaterThan(0);
+
+          // Must have <desc> with non-empty text
+          const descMatch = innerSvg.match(/<desc\b[^>]*>([^<]+)<\/desc>/i);
+          expect(descMatch).not.toBeNull();
+          expect(descMatch![1].trim().length).toBeGreaterThan(0);
+
+          // Must have aria-labelledby referencing title and desc
+          expect(fullSvgTag).toMatch(/\baria-labelledby=["'][^"']+["']/i);
+        }
+      }
+
+      // 2. Browser check: No console errors on load with CSP enabled
+      const scriptPath = path.resolve(__dirname, 'check_csp_console.py');
+      const res = spawnSync('python', [scriptPath], {
+        encoding: 'utf-8',
+        cwd: path.resolve(__dirname, '..'),
+        timeout: 30000
+      });
+
+      if (res.status !== 0) {
+        console.error('CSP Check STDOUT:', res.stdout);
+        console.error('CSP Check STDERR:', res.stderr);
+      }
+      expect(res.status).toBe(0);
+    }, 30000);
   });
 });

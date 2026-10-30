@@ -1,0 +1,707 @@
+---
+import Layout from '../layouts/Layout.astro';
+import applyRoutesData from '../../data/apply_routes.json';
+import { t } from '../lib/i18n';
+
+interface RouteItem {
+  id: string;
+  label: string;
+  exam: string;
+  steps: string;
+  link: string;
+}
+
+const applyData = applyRoutesData as {
+  note: string;
+  source: {
+    id: string;
+    title: string;
+    url: string;
+    captured_on: string;
+  };
+  portal: string;
+  helpline: string;
+  helpline_hours: string;
+  email: string;
+  routes: RouteItem[];
+};
+
+const getRouteLabel = (route: RouteItem) => {
+  return t(`apply.routes.label_${route.id}`, undefined, 'ta', route.label);
+};
+
+const getRouteExam = (route: RouteItem) => {
+  return t(`apply.routes.exam_${route.id}`, undefined, 'ta', route.exam);
+};
+
+const getRouteSteps = (route: RouteItem) => {
+  return t(`apply.routes.steps_${route.id}`, undefined, 'ta', route.steps);
+};
+---
+
+<Layout
+  lang="ta"
+  title={t('apply.meta.title', undefined, 'ta')}
+  description={t('apply.meta.description', undefined, 'ta')}
+>
+  <div class="w page-container">
+    <nav class="breadcrumb" aria-label={t('apply.breadcrumb.aria', undefined, 'ta')}>
+      <a href="/">{t('apply.breadcrumb.home', undefined, 'ta')}</a>
+      <span aria-hidden="true">&rsaquo;</span>
+      <span aria-current="page">{t('apply.breadcrumb.apply', undefined, 'ta')}</span>
+    </nav>
+
+    <header class="apply-header">
+      <div class="eyebrow">{t('apply.eyebrow', undefined, 'ta')}</div>
+      <h1>{t('apply.heading', undefined, 'ta')}</h1>
+      <p class="lead" set:html={t('apply.lead', undefined, 'ta')}></p>
+    </header>
+
+    <!-- 1. B.Tech Three-Step Overview -->
+    <section class="steps-section">
+      <h2>{t('apply.steps.heading', undefined, 'ta')}</h2>
+      <p class="section-desc" set:html={t('apply.steps.description', undefined, 'ta')}></p>
+      
+      <ol class="st-cards">
+        <li class="st-card">
+          <div class="st-number">1</div>
+          <div class="st-body">
+            <h3>{t('apply.steps.step1_title', undefined, 'ta')}</h3>
+            <p>
+              {t('apply.steps.step1_text', undefined, 'ta')}
+            </p>
+            <a href="/ta/eligibility#check" class="st-link">{t('apply.steps.step1_link', undefined, 'ta')}</a>
+          </div>
+        </li>
+
+        <li class="st-card">
+          <div class="st-number">2</div>
+          <div class="st-body">
+            <h3>{t('apply.steps.step2_title', undefined, 'ta')}</h3>
+            <p>
+              {t('apply.steps.step2_text', undefined, 'ta')}
+            </p>
+            <a
+              href="https://applications.srmist.edu.in/btech"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="st-link"
+            >
+              {t('apply.steps.step2_link', undefined, 'ta')}
+            </a>
+          </div>
+        </li>
+
+        <li class="st-card">
+          <div class="st-number">3</div>
+          <div class="st-body">
+            <h3>{t('apply.steps.step3_title', undefined, 'ta')}</h3>
+            <p>
+              {t('apply.steps.step3_text', undefined, 'ta')}
+            </p>
+            <a href="/programmes" class="st-link">{t('apply.steps.step3_link', undefined, 'ta')}</a>
+          </div>
+        </li>
+      </ol>
+    </section>
+
+    <!-- 2. Which route fits you? (Progressive Enhancement) -->
+    <section class="routes-section" id="routes">
+      <div class="routes-header">
+        <h2>{t('apply.routes.heading', undefined, 'ta')}</h2>
+        <p class="routes-intro">
+          {t('apply.routes.intro', undefined, 'ta')}
+        </p>
+      </div>
+
+      <!-- Interactive Switcher (Client JS enabled) -->
+      <div class="route-switcher-wrap" id="route-switcher-container">
+        <label for="route-select" class="route-select-label">
+          <strong>{t('apply.routes.select_label', undefined, 'ta')}</strong>
+        </label>
+        <select id="route-select" class="ctrl-select">
+          {applyData.routes.map((route, idx) => (
+            <option value={route.id} selected={idx === 0}>
+              {getRouteLabel(route)}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <!-- Route Cards Container: details elements rendered for no-JS fallback -->
+      <div class="routes-cards-list" id="routes-list">
+        {applyData.routes.map((route, idx) => (
+          <details
+            class="route-details-item"
+            id={`route-card-${route.id}`}
+            open={idx === 0}
+          >
+            <summary class="route-summary">
+              <span class="route-summary-title">{getRouteLabel(route)}</span>
+              <span class="route-summary-exam">{t('apply.routes.exam_badge', { exam: getRouteExam(route) }, 'ta')}</span>
+            </summary>
+
+            <div class="route-card-content">
+              <div class="route-grid">
+                <div class="route-info-col">
+                  <div class="route-field">
+                    <span class="field-label">{t('apply.routes.field_discipline', undefined, 'ta')}</span>
+                    <p class="field-value">{getRouteLabel(route)}</p>
+                  </div>
+
+                  <div class="route-field">
+                    <span class="field-label">{t('apply.routes.field_exam', undefined, 'ta')}</span>
+                    <p class="field-value exam-highlight">{getRouteExam(route)}</p>
+                  </div>
+
+                  <div class="route-field">
+                    <span class="field-label">{t('apply.routes.field_procedure', undefined, 'ta')}</span>
+                    <p class="field-value">{getRouteSteps(route)}</p>
+                  </div>
+                </div>
+
+                <div class="route-contact-col">
+                  <div class="contact-box">
+                    <h3>{t('apply.routes.support_heading', undefined, 'ta')}</h3>
+                    
+                    <a
+                      href={route.link}
+                      class="btn p btn-apply-portal"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {t('apply.routes.apply_btn', undefined, 'ta')}
+                    </a>
+
+                    <div class="support-item">
+                      <span class="support-label">{t('apply.routes.helpline_label', undefined, 'ta')}</span>
+                      <a href={`tel:${applyData.helpline.replace(/\s+/g, '')}`} class="support-val">
+                        {applyData.helpline}
+                      </a>
+                      <span class="support-hours">{t('apply.support.helpline_hours', undefined, 'ta')}</span>
+                    </div>
+
+                    <div class="support-item">
+                      <span class="support-label">{t('apply.routes.email_label', undefined, 'ta')}</span>
+                      <a href={`mailto:${applyData.email}`} class="support-val">
+                        {applyData.email}
+                      </a>
+                    </div>
+
+                    <div class="support-source-stamp">
+                      <span>{t('apply.routes.source_prefix', { id: applyData.source.id }, 'ta')}</span>
+                      <a href={applyData.source.url} target="_blank" rel="noopener noreferrer">
+                        {t('apply.support.brochure_title', undefined, 'ta')}
+                      </a>
+                      <span class="stamp-date">{t('apply.routes.captured_date', { date: applyData.source.captured_on }, 'ta')}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </details>
+        ))}
+      </div>
+
+      <!-- No-JS Explanatory note -->
+      <noscript>
+        <p class="noscript-note">
+          {t('apply.routes.noscript_note', undefined, 'ta')}
+        </p>
+      </noscript>
+    </section>
+
+    <!-- Bottom Actions -->
+    <div class="apply-bottom-actions">
+      <a class="btn p" href="/programmes">{t('apply.actions.browse_options', undefined, 'ta')}</a>
+      <a class="btn s" href="/ta/eligibility#check">{t('apply.actions.test_eligibility', undefined, 'ta')}</a>
+      <a class="btn s" href="/stories">{t('apply.actions.student_stories', undefined, 'ta')}</a>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  // Progressive enhancement for route switcher
+  const selectElem = document.getElementById('route-select') as HTMLSelectElement | null;
+  const routeItems = document.querySelectorAll<HTMLDetailsElement>('.route-details-item');
+
+  if (selectElem && routeItems.length > 0) {
+    function updateActiveRoute(activeId: string) {
+      routeItems.forEach((item) => {
+        const isMatch = item.id === `route-card-${activeId}`;
+        item.open = isMatch;
+        if (isMatch) {
+          item.classList.add('is-active-route');
+          item.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        } else {
+          item.classList.remove('is-active-route');
+        }
+      });
+    }
+
+    selectElem.addEventListener('change', () => {
+      updateActiveRoute(selectElem.value);
+    });
+
+    routeItems.forEach((item) => {
+      item.addEventListener('toggle', () => {
+        if (item.open) {
+          const id = item.id.replace('route-card-', '');
+          if (selectElem.value !== id) {
+            selectElem.value = id;
+          }
+          routeItems.forEach((other) => {
+            if (other !== item) other.open = false;
+          });
+        }
+      });
+    });
+  }
+</script>
+
+<style>
+  .page-container {
+    padding: 24px 16px 64px 16px;
+    max-width: 960px;
+    margin: 0 auto;
+    box-sizing: border-box;
+    overflow-x: hidden;
+  }
+
+  .breadcrumb {
+    font-size: 0.88rem;
+    color: var(--muted);
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .breadcrumb a {
+    color: var(--link);
+    text-decoration: none;
+  }
+
+  .breadcrumb a:hover {
+    text-decoration: underline;
+  }
+
+  .apply-header {
+    margin-bottom: 40px;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 28px;
+  }
+
+  .eyebrow {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--accent);
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .apply-header h1 {
+    font-size: 2.3rem;
+    line-height: 1.25;
+    margin: 0 0 12px 0;
+    color: var(--ink);
+    overflow-wrap: break-word;
+    word-break: break-word;
+  }
+
+  .lead {
+    font-size: 1.15rem;
+    line-height: 1.5;
+    color: var(--text);
+    margin: 0;
+  }
+
+  /* 3-Step Section */
+  .steps-section {
+    margin-bottom: 56px;
+  }
+
+  .steps-section h2 {
+    font-size: 1.6rem;
+    margin: 0 0 8px 0;
+  }
+
+  .section-desc {
+    color: var(--muted);
+    margin: 0 0 24px 0;
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+
+  .st-cards {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  .st-card {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+  }
+
+  .st-number {
+    width: 36px;
+    height: 36px;
+    background: var(--accent);
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-bottom: 16px;
+  }
+
+  .st-body h3 {
+    font-size: 1.15rem;
+    margin: 0 0 10px 0;
+    color: var(--ink);
+  }
+
+  .st-body p {
+    font-size: 0.92rem;
+    line-height: 1.5;
+    color: var(--text);
+    margin: 0 0 16px 0;
+    flex-grow: 1;
+  }
+
+  .st-link {
+    font-weight: 600;
+    font-size: 0.92rem;
+    color: var(--link);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+
+  .st-link:hover {
+    text-decoration: underline;
+  }
+
+  /* Routes Section */
+  .routes-section {
+    margin-bottom: 48px;
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 32px 24px;
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow-x: hidden;
+  }
+
+  .routes-header {
+    margin-bottom: 24px;
+  }
+
+  .routes-header h2 {
+    font-size: 1.6rem;
+    margin: 0 0 8px 0;
+  }
+
+  .routes-intro {
+    color: var(--text);
+    margin: 0;
+    font-size: 0.98rem;
+    line-height: 1.5;
+  }
+
+  .route-switcher-wrap {
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--bg);
+    padding: 16px;
+    border-radius: 6px;
+    border: 1px solid var(--rule);
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .route-select-label {
+    font-size: 0.95rem;
+    color: var(--ink);
+  }
+
+  .ctrl-select {
+    padding: 10px 14px;
+    font-size: 1rem;
+    border-radius: 6px;
+    border: 1px solid var(--rule);
+    background: var(--surface);
+    color: var(--ink);
+    cursor: pointer;
+    min-height: 44px;
+    flex-grow: 1;
+    max-width: 480px;
+    box-sizing: border-box;
+    min-width: 0;
+  }
+
+  .routes-cards-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .route-details-item {
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    overflow: hidden;
+    background: var(--surface);
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .route-details-item.is-active-route {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 1px var(--accent);
+  }
+
+  .route-summary {
+    padding: 16px 20px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 600;
+    background: var(--bg);
+    user-select: none;
+    min-height: 44px;
+    gap: 12px;
+    box-sizing: border-box;
+    max-width: 100%;
+  }
+
+  .route-summary-title {
+    font-size: 1.05rem;
+    color: var(--ink);
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow-wrap: break-word;
+    word-break: break-word;
+  }
+
+  .route-summary-exam {
+    font-size: 0.85rem;
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    padding: 4px 10px;
+    border-radius: 14px;
+    color: var(--accent);
+    font-weight: 700;
+    flex-shrink: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow-wrap: break-word;
+    word-break: break-word;
+  }
+
+  .route-card-content {
+    padding: 24px 20px;
+    border-top: 1px solid var(--rule);
+    box-sizing: border-box;
+    max-width: 100%;
+  }
+
+  .route-grid {
+    display: grid;
+    grid-template-columns: 3fr 2fr;
+    gap: 24px;
+    box-sizing: border-box;
+    min-width: 0;
+  }
+
+  .route-field {
+    margin-bottom: 18px;
+  }
+
+  .field-label {
+    display: block;
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--muted);
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  .field-value {
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: var(--ink);
+  }
+
+  .exam-highlight {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--accent);
+  }
+
+  .contact-box {
+    background: var(--bg);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    padding: 20px;
+  }
+
+  .contact-box h3 {
+    margin: 0 0 16px 0;
+    font-size: 1.05rem;
+  }
+
+  .btn-apply-portal {
+    display: block;
+    text-align: center;
+    margin-bottom: 20px;
+    text-decoration: none;
+    font-weight: 600;
+    min-height: 44px;
+    line-height: 44px;
+    padding: 0 16px;
+  }
+
+  .support-item {
+    margin-bottom: 12px;
+    font-size: 0.88rem;
+  }
+
+  .support-label {
+    display: block;
+    color: var(--muted);
+    font-weight: 500;
+    margin-bottom: 2px;
+  }
+
+  .support-val {
+    color: var(--link);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.95rem;
+    word-break: break-all;
+    overflow-wrap: break-word;
+  }
+
+  .support-hours {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  .support-source-stamp {
+    margin-top: 18px;
+    padding-top: 12px;
+    border-top: 1px dashed var(--rule);
+    font-size: 0.8rem;
+    color: var(--muted);
+    line-height: 1.4;
+  }
+
+  .support-source-stamp a {
+    color: var(--link);
+  }
+
+  .stamp-date {
+    display: block;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  .noscript-note {
+    margin-top: 16px;
+    font-size: 0.88rem;
+    color: var(--muted);
+    font-style: italic;
+  }
+
+  /* Bottom Actions */
+  .apply-bottom-actions {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 40px;
+  }
+
+  .apply-bottom-actions .btn {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 24px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .btn.p {
+    background: var(--accent);
+    color: #fff;
+  }
+
+  .btn.s {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    color: var(--ink);
+  }
+
+  @media (max-width: 768px) {
+    .apply-header h1 {
+      font-size: 1.75rem;
+    }
+    .routes-section {
+      padding: 20px 14px;
+    }
+    .route-card-content {
+      padding: 16px 14px;
+    }
+    .route-summary {
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 14px 12px;
+      gap: 8px;
+    }
+    .route-summary-exam {
+      flex-shrink: 1;
+      align-self: flex-start;
+    }
+    .st-cards {
+      grid-template-columns: 1fr;
+    }
+    .route-grid {
+      grid-template-columns: 1fr;
+    }
+    .route-switcher-wrap {
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 14px 12px;
+    }
+    .ctrl-select {
+      width: 100%;
+      max-width: 100%;
+    }
+  }
+</style>

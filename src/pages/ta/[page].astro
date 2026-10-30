@@ -1,0 +1,19 @@
+---
+import TamilApply from '../../components/TamilApply.astro';
+import TamilEligibility from '../../components/TamilEligibility.astro';
+
+export function getStaticPaths() {
+  if (process.env.TAMIL_ENABLED !== 'true') {
+    return [];
+  }
+  return [
+    { params: { page: 'eligibility' } },
+    { params: { page: 'apply' } }
+  ];
+}
+
+const { page } = Astro.params;
+---
+
+{page === 'eligibility' && <TamilEligibility />}
+{page === 'apply' && <TamilApply />}

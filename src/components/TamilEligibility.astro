@@ -1,0 +1,721 @@
+---
+import Layout from '../layouts/Layout.astro';
+import offeringsData from '../../data/offerings.json';
+import { t } from '../lib/i18n';
+
+const totalOfferings = offeringsData.length;
+const conflictCount = offeringsData.filter(
+  (o) => o.eligibility?.status === 'conflict'
+).length;
+
+const linkHtml = `<a href="https://www.srmist.edu.in/admission-india/engineering/" rel="noopener" target="_blank">அதே SRM அதிகாரப்பூர்வப் பக்கம்</a>`;
+const methodHtml = `<code>method="post"</code>`;
+---
+
+<Layout
+  lang="ta"
+  title={t('eligibility.meta.title', undefined, 'ta')}
+  description={t('eligibility.meta.description', undefined, 'ta')}
+>
+  <section class="blk">
+    <div class="w">
+      <h1>{t('eligibility.heading', undefined, 'ta')}</h1>
+      <p class="lede">
+        {t('eligibility.lede', undefined, 'ta')}
+      </p>
+
+      <!-- Interactive Eligibility Checker Tool (id 'check') -->
+      <section id="check" class="checker-card" aria-labelledby="checker-title">
+        <div class="checker-intro">
+          <h2 id="checker-title">{t('eligibility.checker.title', undefined, 'ta')}</h2>
+          <p class="checker-desc">
+            {t('eligibility.checker.description', undefined, 'ta')}
+          </p>
+          <div class="privacy-note" role="note">
+            <span class="privacy-icon" aria-hidden="true">🔒</span>
+            <span>
+              <strong>{t('eligibility.checker.privacy_label', undefined, 'ta')}</strong> {t('eligibility.checker.privacy_text', undefined, 'ta')}
+            </span>
+          </div>
+        </div>
+
+        <noscript>
+          <div class="noscript-banner" role="alert">
+            <strong>{t('eligibility.checker.noscript_title', undefined, 'ta')}</strong>
+            <span set:html={t('eligibility.checker.noscript_text', { method: methodHtml }, 'ta')}></span>
+          </div>
+        </noscript>
+
+        <form id="eligibility-form" class="checker-form" action="#check" method="post" novalidate>
+          <!-- 1. Resident Indian (yes/no) -->
+          <div class="form-row">
+            <fieldset class="ctrl-fieldset">
+              <legend class="ctrl-label">{t('eligibility.form.resident_legend', undefined, 'ta')} <span class="req" aria-hidden="true">*</span></legend>
+              <div class="radio-options">
+                <label class="radio-label">
+                  <input type="radio" name="resident" value="yes" checked />
+                  <span>{t('eligibility.form.resident_yes', undefined, 'ta')}</span>
+                </label>
+                <label class="radio-label">
+                  <input type="radio" name="resident" value="no" />
+                  <span>{t('eligibility.form.resident_no', undefined, 'ta')}</span>
+                </label>
+              </div>
+            </fieldset>
+          </div>
+
+          <!-- 2. Qualifying Board & Class 12 Status -->
+          <div class="form-grid-2">
+            <div class="ctrl-group">
+              <label for="board-select" class="ctrl-label">{t('eligibility.form.board_label', undefined, 'ta')} <span class="req" aria-hidden="true">*</span></label>
+              <select id="board-select" name="board" class="ctrl-select" required>
+                <option value="CBSE">{t('eligibility.form.board_cbse', undefined, 'ta')}</option>
+                <option value="ISCE">{t('eligibility.form.board_isce', undefined, 'ta')}</option>
+                <option value="State board">{t('eligibility.form.board_state', undefined, 'ta')}</option>
+                <option value="NIOS">{t('eligibility.form.board_nios', undefined, 'ta')}</option>
+                <option value="IB">{t('eligibility.form.board_ib', undefined, 'ta')}</option>
+                <option value="GCE A-level">{t('eligibility.form.board_gce', undefined, 'ta')}</option>
+              </select>
+            </div>
+
+            <div class="ctrl-group">
+              <label for="status-select" class="ctrl-label">{t('eligibility.form.status_label', undefined, 'ta')} <span class="req" aria-hidden="true">*</span></label>
+              <select id="status-select" name="status" class="ctrl-select" required>
+                <option value="passed">{t('eligibility.form.status_passed', undefined, 'ta')}</option>
+                <option value="appearing">{t('eligibility.form.status_appearing', undefined, 'ta')}</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- 3. Class 12 Exam Year & Date of Birth -->
+          <div class="form-grid-2">
+            <div class="ctrl-group">
+              <label for="exam-year" class="ctrl-label">{t('eligibility.form.exam_year_label', undefined, 'ta')} <span class="req" aria-hidden="true">*</span></label>
+              <select id="exam-year" name="examYear" class="ctrl-select" required>
+                <option value="2026" selected>2026</option>
+                <option value="2027">2027</option>
+              </select>
+              <span class="field-hint">{t('eligibility.form.exam_year_hint', undefined, 'ta')}</span>
+            </div>
+
+            <div class="ctrl-group">
+              <label for="dob" class="ctrl-label">{t('eligibility.form.dob_label', undefined, 'ta')} <span class="req" aria-hidden="true">*</span></label>
+              <input
+                type="date"
+                id="dob"
+                name="dob"
+                class="ctrl-input"
+                required
+              />
+              <span id="dob-error" class="field-error-msg" hidden></span>
+              <span class="field-hint">{t('eligibility.form.dob_hint', undefined, 'ta')}</span>
+            </div>
+          </div>
+
+          <!-- 4. Programme Group -->
+          <div class="ctrl-group">
+            <label for="group-select" class="ctrl-label">{t('eligibility.form.group_label', undefined, 'ta')} <span class="req" aria-hidden="true">*</span></label>
+            <select id="group-select" name="programmeGroup" class="ctrl-select" required>
+              <option value="general">{t('eligibility.form.group_general', undefined, 'ta')}</option>
+              <option value="biotech">{t('eligibility.form.group_biotech', undefined, 'ta')}</option>
+            </select>
+          </div>
+
+          <!-- 5. Subjects behind Aggregate -->
+          <!-- For General Group -->
+          <div id="general-subjects-row" class="subjects-card">
+            <span class="ctrl-label">{t('eligibility.form.general_subjects_title', undefined, 'ta')}</span>
+            <p class="subjects-desc">
+              {t('eligibility.form.general_subjects_desc', undefined, 'ta')}
+            </p>
+            <div class="subject-checkboxes">
+              <label class="subject-checkbox-label">
+                <input type="checkbox" id="has-physics" name="hasPhysics" checked />
+                <span>{t('eligibility.form.physics_mandatory', undefined, 'ta')}</span>
+              </label>
+              <label class="subject-checkbox-label">
+                <input type="checkbox" id="has-math" name="hasMath" checked />
+                <span>{t('eligibility.form.math_mandatory', undefined, 'ta')}</span>
+              </label>
+            </div>
+            <div class="ctrl-group" style="margin-top: 14px;">
+              <label for="third-subject" class="ctrl-label">{t('eligibility.form.third_subject_label', undefined, 'ta')}</label>
+              <select id="third-subject" name="thirdSubject" class="ctrl-select">
+                <option value="Chemistry">{t('eligibility.form.subj_chemistry', undefined, 'ta')}</option>
+                <option value="Computer Science">{t('eligibility.form.subj_cs', undefined, 'ta')}</option>
+                <option value="Information Technology">{t('eligibility.form.subj_it', undefined, 'ta')}</option>
+                <option value="Informatics Practices">{t('eligibility.form.subj_ip', undefined, 'ta')}</option>
+                <option value="Biology">{t('eligibility.form.subj_biology', undefined, 'ta')}</option>
+                <option value="Biotechnology">{t('eligibility.form.subj_biotech', undefined, 'ta')}</option>
+                <option value="Engineering Graphics">{t('eligibility.form.subj_eg', undefined, 'ta')}</option>
+                <option value="Botany and Zoology">{t('eligibility.form.subj_botany_zoology', undefined, 'ta')}</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- For Biotech Group -->
+          <div id="biotech-subjects-row" class="subjects-card" hidden>
+            <label for="biotech-combo" class="ctrl-label">{t('eligibility.form.biotech_combo_label', undefined, 'ta')} <span class="req" aria-hidden="true">*</span></label>
+            <select id="biotech-combo" name="biotechCombo" class="ctrl-select">
+              <option value="PCM">{t('eligibility.form.combo_pcm', undefined, 'ta')}</option>
+              <option value="PMB">{t('eligibility.form.combo_pmb', undefined, 'ta')}</option>
+              <option value="PCB">{t('eligibility.form.combo_pcb', undefined, 'ta')}</option>
+              <option value="Z (Botany or Zoology)">{t('eligibility.form.combo_z', undefined, 'ta')}</option>
+            </select>
+            <span class="field-hint">{t('eligibility.form.biotech_hint', undefined, 'ta')}</span>
+          </div>
+
+          <!-- 6. Aggregate Percentage -->
+          <div class="ctrl-group">
+            <label for="aggregate" class="ctrl-label">{t('eligibility.form.aggregate_label', undefined, 'ta')} <span class="req" aria-hidden="true">*</span></label>
+            <input
+              type="number"
+              id="aggregate"
+              name="aggregate"
+              min="0"
+              max="100"
+              step="any"
+              placeholder={t('eligibility.form.aggregate_placeholder', undefined, 'ta')}
+              class="ctrl-input"
+              required
+            />
+            <span id="aggregate-error" class="field-error-msg" hidden></span>
+            <span class="field-hint">{t('eligibility.form.aggregate_hint', undefined, 'ta')}</span>
+          </div>
+
+          <!-- Action buttons -->
+          <div class="checker-actions">
+            <button type="submit" id="checker-submit-btn" class="btn p" disabled>{t('eligibility.form.submit_btn', undefined, 'ta')}</button>
+            <button type="button" id="checker-reset-btn" class="btn s">{t('eligibility.form.reset_btn', undefined, 'ta')}</button>
+          </div>
+        </form>
+
+        <!-- Result Mount Container -->
+        <div id="checker-result" class="checker-result-wrapper" role="region" aria-live="polite"></div>
+      </section>
+
+      <!-- Source Conflict Note -->
+      <div class="note">
+        <p>
+          <b>{t('eligibility.conflict.title', undefined, 'ta')}</b> {t('eligibility.conflict.body', { conflictCount, totalOfferings }, 'ta')}
+        </p>
+        <details>
+          <summary>{t('eligibility.conflict.summary', undefined, 'ta')}</summary>
+          <p set:html={t('eligibility.conflict.details', { link: linkHtml }, 'ta')}></p>
+        </details>
+      </div>
+
+      <!-- 2026-2027 Rule Breakdown Card -->
+      <div class="card">
+        <h2>{t('eligibility.breakdown.heading', undefined, 'ta')}</h2>
+        <ol class="st">
+          <li>
+            <strong>{t('eligibility.breakdown.rule1_label', undefined, 'ta')}</strong>
+            <div class="summary-box">
+              <span class="summary-badge">{t('eligibility.rules.summary_label', undefined, 'ta')}</span>
+              <p class="summary-text">{t('eligibility.rules.general_summary', undefined, 'ta')}</p>
+            </div>
+            <div class="verbatim-box" lang="en">
+              <span class="verbatim-badge">SRM Official English (Final)</span>
+              <blockquote class="verbatim-quote">{t('eligibility.rules.general')}</blockquote>
+            </div>
+          </li>
+          <li>
+            <strong>{t('eligibility.breakdown.rule2_label', undefined, 'ta')}</strong>
+            <div class="summary-box">
+              <span class="summary-badge">{t('eligibility.rules.summary_label', undefined, 'ta')}</span>
+              <p class="summary-text">{t('eligibility.rules.biotech_summary', undefined, 'ta')}</p>
+            </div>
+            <div class="verbatim-box" lang="en">
+              <span class="verbatim-badge">SRM Official English (Final)</span>
+              <blockquote class="verbatim-quote">{t('eligibility.rules.biotech')}</blockquote>
+            </div>
+          </li>
+          <li>
+            <strong>{t('eligibility.breakdown.rule3_label', undefined, 'ta')}</strong> {t('eligibility.breakdown.rule3_text', undefined, 'ta')}
+          </li>
+          <li>
+            <strong>{t('eligibility.breakdown.rule4_label', undefined, 'ta')}</strong> {t('eligibility.breakdown.rule4_text', undefined, 'ta')}
+          </li>
+        </ol>
+      </div>
+
+      <div class="btn-row">
+        <a class="btn p" href="/programmes">{t('eligibility.actions.programmes', undefined, 'ta')}</a>
+        <a class="btn s" href="/ta/apply">{t('eligibility.actions.apply', undefined, 'ta')}</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Client runner importing localized logic from src/lib/eligibility-ta -->
+  <script>
+    import { initEligibilityCheckerTa } from '../lib/eligibility-ta';
+    initEligibilityCheckerTa();
+  </script>
+</Layout>
+
+<style>
+  .checker-card {
+    background: var(--surface);
+    border: 2px solid var(--rule);
+    border-radius: 8px;
+    padding: 32px 24px;
+    margin: 24px 0 36px 0;
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow-x: hidden;
+  }
+
+  .checker-intro {
+    margin-bottom: 24px;
+  }
+
+  .checker-intro h2 {
+    font-size: 1.5rem;
+    margin: 0 0 8px 0;
+  }
+
+  .checker-desc {
+    font-size: 1rem;
+    color: var(--text);
+    margin: 0 0 14px 0;
+  }
+
+  .privacy-note {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--bg);
+    border: 1px solid var(--rule);
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-size: 0.88rem;
+    color: var(--muted);
+  }
+
+  .privacy-icon {
+    font-size: 1rem;
+  }
+
+  .noscript-banner {
+    background: #fff3cd;
+    border: 1px solid #ffeeba;
+    color: #856404;
+    padding: 12px 16px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    font-size: 0.92rem;
+  }
+
+  .checker-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .form-row {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .form-grid-2 {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 20px;
+    min-width: 0;
+  }
+
+  .ctrl-fieldset {
+    border: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .ctrl-group {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .ctrl-label {
+    font-size: 0.92rem;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: var(--ink);
+  }
+
+  .req {
+    color: #b91c1c;
+    font-weight: 700;
+  }
+
+  .ctrl-select,
+  .ctrl-input {
+    padding: 10px 12px;
+    font-size: 0.98rem;
+    border-radius: 6px;
+    border: 1px solid var(--rule);
+    background: var(--bg);
+    color: var(--ink);
+    min-height: 44px;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    text-overflow: ellipsis;
+  }
+
+  .ctrl-select:focus,
+  .ctrl-input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px rgba(11, 42, 74, 0.2);
+  }
+
+  .input-has-error {
+    border-color: #b91c1c !important;
+    background-color: rgba(185, 28, 28, 0.04);
+  }
+
+  .field-error-msg {
+    color: #b91c1c;
+    font-size: 0.82rem;
+    font-weight: 600;
+    margin-top: 4px;
+  }
+
+  .field-hint {
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+
+  .radio-options {
+    display: flex;
+    gap: 24px;
+    margin-top: 4px;
+  }
+
+  .radio-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    min-height: 44px;
+  }
+
+  .subjects-card {
+    background: var(--bg);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    padding: 18px;
+    max-width: 100%;
+    box-sizing: border-box;
+    min-width: 0;
+    overflow-x: hidden;
+  }
+
+  .subjects-desc {
+    font-size: 0.88rem;
+    color: var(--muted);
+    margin: 4px 0 12px 0;
+  }
+
+  .subject-checkboxes {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .subject-checkbox-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: 0.92rem;
+    min-height: 44px;
+  }
+
+  .checker-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 8px;
+  }
+
+  .checker-actions .btn {
+    min-height: 44px;
+    padding: 10px 24px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+  }
+
+  .btn.p {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+  }
+
+  .btn.s {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    color: var(--ink);
+  }
+
+  /* Rule breakdown card dual summaries */
+  .summary-box {
+    background: var(--bg);
+    border-left: 4px solid var(--accent);
+    padding: 10px 14px;
+    margin: 8px 0;
+    border-radius: 0 4px 4px 0;
+  }
+
+  .summary-badge {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 4px;
+  }
+
+  .summary-text {
+    margin: 0;
+    font-size: 0.92rem;
+    line-height: 1.5;
+  }
+
+  .verbatim-box {
+    background: var(--surface);
+    border: 1px dashed var(--rule);
+    padding: 10px 14px;
+    margin: 8px 0 16px 0;
+    border-radius: 4px;
+  }
+
+  .verbatim-badge {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .verbatim-quote {
+    margin: 0;
+    font-size: 0.88rem;
+    line-height: 1.45;
+    color: var(--text);
+  }
+
+  /* Result styling */
+  :global(.result-card) {
+    margin-top: 24px;
+    border: 2px solid var(--rule);
+    border-radius: 8px;
+    padding: 24px;
+    background: var(--surface);
+  }
+
+  :global(.verdict-meets) {
+    border-color: #15803d;
+  }
+
+  :global(.verdict-does-not-meet) {
+    border-color: #b91c1c;
+  }
+
+  :global(.verdict-refer) {
+    border-color: #0c4da2;
+  }
+
+  :global(.verdict-error) {
+    border-color: #b45309;
+  }
+
+  :global(.result-header) {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  :global(.result-badge) {
+    font-size: 0.82rem;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 12px;
+    color: #fff;
+    text-transform: uppercase;
+  }
+
+  :global(.verdict-meets .result-badge) {
+    background: #15803d;
+  }
+
+  :global(.verdict-does-not-meet .result-badge) {
+    background: #b91c1c;
+  }
+
+  :global(.verdict-refer .result-badge) {
+    background: #0c4da2;
+  }
+
+  :global(.verdict-error .result-badge) {
+    background: #b45309;
+  }
+
+  :global(.result-headline) {
+    font-size: 1.35rem;
+    margin: 0;
+  }
+
+  :global(.result-reasons) {
+    margin: 0 0 16px 0;
+    padding-left: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 0.98rem;
+    line-height: 1.5;
+  }
+
+  :global(.result-rule) {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    padding: 16px 18px;
+    margin-bottom: 18px;
+  }
+
+  :global(.result-rule h4) {
+    font-size: 0.88rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--muted);
+    margin: 0 0 10px 0;
+  }
+
+  :global(.rule-summary-callout) {
+    background: var(--bg);
+    border-left: 4px solid var(--accent);
+    padding: 10px 14px;
+    margin-bottom: 12px;
+    border-radius: 0 4px 4px 0;
+  }
+
+  :global(.summary-badge-inline) {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  :global(.rule-summary-text) {
+    margin: 0;
+    font-size: 0.92rem;
+    line-height: 1.5;
+  }
+
+  :global(.verbatim-srm-container) {
+    background: var(--surface);
+    border: 1px dashed var(--rule);
+    padding: 10px 14px;
+    margin-bottom: 12px;
+    border-radius: 4px;
+  }
+
+  :global(.verbatim-badge-inline) {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  :global(.rule-quote) {
+    font-size: 0.88rem;
+    line-height: 1.45;
+    margin: 0;
+    color: var(--ink);
+  }
+
+  :global(.rule-line) {
+    font-size: 0.88rem;
+    margin: 4px 0;
+    color: var(--ink);
+  }
+
+  :global(.result-source-row) {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px dashed var(--rule);
+    font-size: 0.85rem;
+  }
+
+  :global(.source-link) {
+    color: var(--link);
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  :global(.source-link:hover) {
+    text-decoration: underline;
+  }
+
+  :global(.result-disclaimer) {
+    font-size: 0.85rem;
+    color: var(--muted);
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+    padding-top: 12px;
+    margin-top: 14px;
+  }
+
+  :global(.result-disclaimer p) {
+    margin: 0;
+  }
+
+  :global(.result-privacy) {
+    margin-top: 8px;
+    color: var(--muted);
+  }
+
+  @media (max-width: 640px) {
+    .checker-card {
+      padding: 20px 14px;
+    }
+    .card {
+      padding: 20px 14px;
+      max-width: 100%;
+      box-sizing: border-box;
+      overflow-wrap: break-word;
+      word-break: break-word;
+    }
+    .card h2 {
+      font-size: 1.35rem;
+      overflow-wrap: break-word;
+      word-break: break-word;
+    }
+    .form-grid-2 {
+      grid-template-columns: 1fr;
+    }
+    .checker-actions {
+      flex-direction: column;
+    }
+    .checker-actions .btn {
+      width: 100%;
+    }
+  }
+</style>

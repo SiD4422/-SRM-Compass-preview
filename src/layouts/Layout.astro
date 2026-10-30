@@ -1,27 +1,42 @@
 ---
 import '../styles/tokens.css';
 import BrandCompass from '../components/BrandCompass.astro';
-import { t } from '../lib/i18n';
+import { t, isTamilEnabled } from '../lib/i18n';
 
 export interface Props {
   title?: string;
   description?: string;
   canonical?: string;
+  lang?: 'en' | 'ta';
 }
 
 const {
-  title = t('layout.default_title'),
-  description = t('layout.default_description'),
+  lang = 'en',
+  title = t('layout.default_title', undefined, lang),
+  description = t('layout.default_description', undefined, lang),
   canonical
 } = Astro.props;
 
 // Determine active pathname cleanly
 const pathname = Astro.url.pathname.replace(/\/$/, '') || '/';
 const canonicalUrl = canonical || (Astro.site ? new URL(Astro.url.pathname.endsWith('/') ? Astro.url.pathname : `${Astro.url.pathname}/`, Astro.site).href : undefined);
+
+const tamilActive = isTamilEnabled();
+const isTaPage = lang === 'ta';
+
+// Hreflang alternates only when TAMIL_ENABLED is true and page has an alternate
+const hasTamilAlternate = tamilActive && (pathname === '/eligibility' || pathname === '/apply' || pathname === '/ta/eligibility' || pathname === '/ta/apply');
+
+const englishCanonical = Astro.site ? new URL(pathname.replace(/^\/ta/, '') || '/', Astro.site).href : pathname.replace(/^\/ta/, '');
+const tamilCanonical = Astro.site ? new URL(`/ta${pathname.replace(/^\/ta/, '')}` || '/ta', Astro.site).href : `/ta${pathname.replace(/^\/ta/, '')}`;
+
+const toggleTarget = hasTamilAlternate ? (isTaPage ? pathname.replace(/^\/ta/, '') || '/' : `/ta${pathname}`) : '';
+const toggleText = isTaPage ? 'English' : 'தமிழ்';
+const toggleLang = isTaPage ? 'en' : 'ta';
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={lang}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
@@ -29,86 +44,123 @@ const canonicalUrl = canonical || (Astro.site ? new URL(Astro.url.pathname.endsW
     <title>{title}</title>
     <meta name="description" content={description} />
     {canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
+    {hasTamilAlternate && (
+      <>
+        <link rel="alternate" hreflang="en" href={englishCanonical} />
+        <link rel="alternate" hreflang="ta" href={tamilCanonical} />
+        <link rel="alternate" hreflang="x-default" href={englishCanonical} />
+      </>
+    )}
     <slot name="head" />
   </head>
   <body>
-    <a class="skip" href="#main-content">{t('layout.skip_to_content')}</a>
+    <a class="skip" href="#main-content">{t('layout.skip_to_content', undefined, lang)}</a>
+
+    {isTaPage && (
+      <div class="beta-banner" role="status" aria-label="Language notice">
+        <div class="w">
+          <span>{t('layout.beta_banner', undefined, 'ta')}</span>
+        </div>
+      </div>
+    )}
 
     <header class="top">
       <div class="w header-bar">
-        <a class="brand" href="/">
+        <a class="brand" href={isTaPage ? '/ta/eligibility' : '/'}>
           <BrandCompass size={26} class="brand-compass-icon" />
-          <span>{t('layout.brand_name')}</span>
+          <span>{t('layout.brand_name', undefined, lang)}</span>
         </a>
-        <nav class="nav-desktop" aria-label={t('layout.nav.main_aria')}>
+        <nav class="nav-desktop" aria-label={t('layout.nav.main_aria', undefined, lang)}>
           <a
             href="/programmes"
             aria-current={pathname === '/programmes' ? 'page' : undefined}
           >
-            {t('layout.nav.programmes')}
+            {isTaPage ? 'புரோகிராம்கள் (English)' : t('layout.nav.programmes', undefined, lang)}
           </a>
           <a
             href="/compare"
             aria-current={pathname === '/compare' ? 'page' : undefined}
           >
-            {t('layout.nav.compare')}
+            {isTaPage ? 'ஒப்பீடு (English)' : t('layout.nav.compare', undefined, lang)}
           </a>
           <a
-            href="/eligibility"
-            aria-current={pathname === '/eligibility' ? 'page' : undefined}
+            href={isTaPage ? '/ta/eligibility' : '/eligibility'}
+            aria-current={(pathname === '/eligibility' || pathname === '/ta/eligibility') ? 'page' : undefined}
           >
-            {t('layout.nav.eligibility')}
+            {t('layout.nav.eligibility', undefined, lang)}
           </a>
           <a
             href="/stories"
             aria-current={pathname.startsWith('/stories') ? 'page' : undefined}
           >
-            {t('layout.nav.stories')}
+            {isTaPage ? 'கதைகள் (English)' : t('layout.nav.stories', undefined, lang)}
           </a>
           <a
-            href="/apply"
-            aria-current={pathname === '/apply' ? 'page' : undefined}
+            href={isTaPage ? '/ta/apply' : '/apply'}
+            aria-current={(pathname === '/apply' || pathname === '/ta/apply') ? 'page' : undefined}
           >
-            {t('layout.nav.apply')}
+            {t('layout.nav.apply', undefined, lang)}
           </a>
+
+          {hasTamilAlternate && (
+            <a
+              href={toggleTarget}
+              class="lang-toggle-link"
+              hreflang={toggleLang}
+              lang={toggleLang}
+              aria-label={isTaPage ? "View in English" : "தமிழில் பார்க்கவும்"}
+            >
+              {toggleText}
+            </a>
+          )}
         </nav>
 
         <details class="mobile-nav-details" id="mobile-menu-details">
-          <summary class="mobile-nav-btn" aria-label={t('layout.nav.menu_btn_aria')} role="button">
-            <span class="menu-text">{t('layout.nav.menu_btn_text')}</span>
+          <summary class="mobile-nav-btn" aria-label={t('layout.nav.menu_btn_aria', undefined, lang)} role="button">
+            <span class="menu-text">{t('layout.nav.menu_btn_text', undefined, lang)}</span>
             <span class="menu-icon" aria-hidden="true">☰</span>
           </summary>
-          <nav class="mobile-nav-panel" aria-label={t('layout.nav.mobile_aria')}>
+          <nav class="mobile-nav-panel" aria-label={t('layout.nav.mobile_aria', undefined, lang)}>
             <a
               href="/programmes"
               aria-current={pathname === '/programmes' ? 'page' : undefined}
             >
-              {t('layout.nav.programmes')}
+              {isTaPage ? 'புரோகிராம்கள் (English)' : t('layout.nav.programmes', undefined, lang)}
             </a>
             <a
               href="/compare"
               aria-current={pathname === '/compare' ? 'page' : undefined}
             >
-              {t('layout.nav.compare')}
+              {isTaPage ? 'ஒப்பீடு (English)' : t('layout.nav.compare', undefined, lang)}
             </a>
             <a
-              href="/eligibility"
-              aria-current={pathname === '/eligibility' ? 'page' : undefined}
+              href={isTaPage ? '/ta/eligibility' : '/eligibility'}
+              aria-current={(pathname === '/eligibility' || pathname === '/ta/eligibility') ? 'page' : undefined}
             >
-              {t('layout.nav.eligibility')}
+              {t('layout.nav.eligibility', undefined, lang)}
             </a>
             <a
               href="/stories"
               aria-current={pathname.startsWith('/stories') ? 'page' : undefined}
             >
-              {t('layout.nav.stories')}
+              {isTaPage ? 'கதைகள் (English)' : t('layout.nav.stories', undefined, lang)}
             </a>
             <a
-              href="/apply"
-              aria-current={pathname === '/apply' ? 'page' : undefined}
+              href={isTaPage ? '/ta/apply' : '/apply'}
+              aria-current={(pathname === '/apply' || pathname === '/ta/apply') ? 'page' : undefined}
             >
-              {t('layout.nav.apply')}
+              {t('layout.nav.apply', undefined, lang)}
             </a>
+            {hasTamilAlternate && (
+              <a
+                href={toggleTarget}
+                class="lang-toggle-link mobile-lang-toggle"
+                hreflang={toggleLang}
+                lang={toggleLang}
+              >
+                {toggleText}
+              </a>
+            )}
           </nav>
         </details>
       </div>
@@ -121,14 +173,87 @@ const canonicalUrl = canonical || (Astro.site ? new URL(Astro.url.pathname.endsW
     <footer>
       <div class="w">
         <p>
-          {t('layout.footer.disclaimer')}
+          {t('layout.footer.disclaimer', undefined, lang)}
         </p>
-        <nav class="footer-links" aria-label={t('layout.footer.links_aria')}>
-          <a href="/evidence">{t('layout.footer.evidence_link')}</a>
+        <nav class="footer-links" aria-label={t('layout.footer.links_aria', undefined, lang)}>
+          <a href="/evidence">{t('layout.footer.evidence_link', undefined, lang)}</a>
           <span class="footer-sep" aria-hidden="true">&bull;</span>
-          <a href="/stories">{t('layout.footer.stories_link')}</a>
+          <a href="/stories">{t('layout.footer.stories_link', undefined, lang)}</a>
         </nav>
       </div>
     </footer>
   </body>
 </html>
+
+<style>
+  :global(.mobile-nav-details:not([open]) .mobile-nav-panel) {
+    display: none !important;
+  }
+
+  :global(:lang(ta)),
+  :global(:lang(ta) body),
+  :global(:lang(ta) input),
+  :global(:lang(ta) select),
+  :global(:lang(ta) textarea),
+  :global(:lang(ta) button) {
+    font-family: 'Nirmala UI', 'Noto Sans Tamil', 'Tamil Sangam MN', system-ui, sans-serif !important;
+    letter-spacing: 0 !important;
+    text-transform: none !important;
+    line-height: 1.6;
+    overflow-wrap: break-word;
+    word-break: break-word;
+  }
+
+  :global(:lang(ta) h1),
+  :global(:lang(ta) h2),
+  :global(:lang(ta) h3),
+  :global(:lang(ta) h4),
+  :global(:lang(ta) .brand-heading) {
+    font-family: 'Nirmala UI', 'Noto Sans Tamil', 'Tamil Sangam MN', system-ui, sans-serif !important;
+    line-height: 1.35 !important;
+    letter-spacing: 0 !important;
+    text-transform: none !important;
+    overflow-wrap: break-word;
+    word-break: break-word;
+  }
+
+  :global(:lang(ta) [lang="en"]) {
+    letter-spacing: normal !important;
+    text-transform: none !important;
+    overflow-wrap: break-word;
+    word-break: break-word;
+  }
+
+  .beta-banner {
+    background: #0b2a4a;
+    color: #e4b316;
+    padding: 8px 0;
+    font-size: 0.88rem;
+    font-weight: 600;
+    border-bottom: 1px solid rgba(228, 179, 22, 0.4);
+    text-align: center;
+  }
+
+  .lang-toggle-link {
+    font-size: 0.88rem;
+    font-weight: 600;
+    padding: 6px 12px;
+    border-radius: 4px;
+    border: 1px solid var(--rule);
+    background: var(--surface);
+    color: var(--ink);
+    text-decoration: none;
+    margin-left: 12px;
+    display: inline-block;
+  }
+
+  .lang-toggle-link:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .mobile-lang-toggle {
+    margin: 12px 0 4px 0;
+    text-align: center;
+  }
+</style>

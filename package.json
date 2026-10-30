@@ -9,7 +9,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "verify": "tsx scripts/verify.ts",
-    "test": "vitest run"
+    "test": "vitest run --fileParallelism=false"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",

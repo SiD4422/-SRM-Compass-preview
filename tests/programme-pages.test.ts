@@ -885,6 +885,7 @@ describe('Stage M3 & M3-fix: Programme Detail Pages (/programmes/[slug])', () =>
       }
     });
 
+    // Stage D-fix: Verified CSP, SVG data labels and color contrast standards
     it('fails if any built page Lighthouse-equivalent check regresses (Stage D-fix)', () => {
       const allFiles = fs.readdirSync(distDir, { recursive: true }) as string[];
       const htmlFiles = allFiles.filter((f) => typeof f === 'string' && f.endsWith('.html'));

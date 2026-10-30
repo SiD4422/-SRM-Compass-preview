@@ -270,6 +270,15 @@ header.top .w.header-bar {
   flex-shrink: 0;
 }
 
+.brand-compass-icon {
+  width: 26px;
+  height: 26px;
+  min-width: 24px;
+  min-height: 24px;
+  flex-shrink: 0;
+  margin-right: 0.45rem;
+}
+
 .brand i {
   color: var(--gold);
   font-style: normal;
@@ -555,7 +564,7 @@ h1 {
 }
 
 .seal span.seal-text {
-  font-size: 0.78rem;
+  font-size: 0.71rem;
   line-height: 1.25;
   padding: 0 4px;
   font-weight: 700;

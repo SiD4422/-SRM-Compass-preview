@@ -807,15 +807,80 @@ describe('Stage M3 & M3-fix: Programme Detail Pages (/programmes/[slug])', () =>
       }
     });
 
-    it('verifies no built page contains the word "official" next to Compass', () => {
+    it('verifies no built page has the word "official" directly beside the Compass name or seal (Stage D)', () => {
       const allFiles = fs.readdirSync(distDir, { recursive: true }) as string[];
       const htmlFiles = allFiles.filter((f) => typeof f === 'string' && f.endsWith('.html'));
 
       for (const relPath of htmlFiles) {
         const html = fs.readFileSync(path.join(distDir, relPath), 'utf-8');
-        expect(html).not.toMatch(/official\s+srm\s+compass/i);
-        expect(html).not.toMatch(/srm\s+compass\s+is\s+(an?\s+)?official/i);
-        expect(html).not.toMatch(/official\s+website\s+of\s+srm\s+compass/i);
+        // No "official" directly beside Compass
+        expect(html).not.toMatch(/compass\s+official/i);
+        expect(html).not.toMatch(/official\s+compass/i);
+        // No "official" directly beside seal
+        expect(html).not.toMatch(/seal[^\w<>]*official/i);
+        expect(html).not.toMatch(/official[^\w<>]*seal/i);
+        // Inside any seal element, official cannot appear
+        const sealBlocks = [...html.matchAll(/<div[^>]*class=["'][^"']*\bseal\b[^"']*["'][^>]*>([\s\S]*?)<\/div>/gi)];
+        for (const block of sealBlocks) {
+          expect(block[1]).not.toMatch(/official/i);
+        }
+      }
+    });
+
+    it('verifies "Fee by campus" chart appears only when offered at 2 or more campuses (Stage D)', () => {
+      const programmesPath = path.resolve(__dirname, '../data/programmes.json');
+      const programmesData = JSON.parse(fs.readFileSync(programmesPath, 'utf-8'));
+      const programmes = programmesData.programmes as { slug: string; campuses: string[] }[];
+
+      for (const prog of programmes) {
+        const pagePath = path.join(distDir, 'programmes', prog.slug, 'index.html');
+        if (!fs.existsSync(pagePath)) continue;
+        const html = fs.readFileSync(pagePath, 'utf-8');
+        if (prog.campuses.length >= 2) {
+          expect(html).toContain('Fee by campus');
+          expect(html).toContain('prog-fee-graphic-card');
+        } else {
+          expect(html).not.toContain('Fee by campus');
+          expect(html).not.toContain('prog-fee-graphic-card');
+        }
+      }
+    });
+
+    it('verifies compass mark is at 24px or larger in the header on every page and in hero seal (Stage D)', () => {
+      const allFiles = fs.readdirSync(distDir, { recursive: true }) as string[];
+      const htmlFiles = allFiles.filter((f) => typeof f === 'string' && f.endsWith('.html'));
+
+      for (const relPath of htmlFiles) {
+        const html = fs.readFileSync(path.join(distDir, relPath), 'utf-8');
+        // Header compass mark width & height >= 24
+        const headerMatch = html.match(/<header[\s\S]*?(<svg\b[^>]*\bclass=["'][^"']*brand-compass-svg[^"']*["'][^>]*>)/i);
+        if (headerMatch) {
+          const svgTag = headerMatch[1];
+          const widthMatch = svgTag.match(/\bwidth=["'](\d+)["']/i);
+          const heightMatch = svgTag.match(/\bheight=["'](\d+)["']/i);
+          expect(widthMatch).not.toBeNull();
+          expect(heightMatch).not.toBeNull();
+          if (widthMatch && heightMatch) {
+            expect(parseInt(widthMatch[1], 10)).toBeGreaterThanOrEqual(24);
+            expect(parseInt(heightMatch[1], 10)).toBeGreaterThanOrEqual(24);
+          }
+        }
+      }
+
+      // Hero seal compass mark width & height >= 24 on index.html
+      const homeHtml = fs.readFileSync(path.join(distDir, 'index.html'), 'utf-8');
+      const sealMatch = homeHtml.match(/<div[^>]*class=["'][^"']*\bseal\b[^"']*["'][\s\S]*?(<svg\b[^>]*\bclass=["'][^"']*brand-compass-svg[^"']*["'][^>]*>)/i);
+      expect(sealMatch).not.toBeNull();
+      if (sealMatch) {
+        const svgTag = sealMatch[1];
+        const widthMatch = svgTag.match(/\bwidth=["'](\d+)["']/i);
+        const heightMatch = svgTag.match(/\bheight=["'](\d+)["']/i);
+        expect(widthMatch).not.toBeNull();
+        expect(heightMatch).not.toBeNull();
+        if (widthMatch && heightMatch) {
+          expect(parseInt(widthMatch[1], 10)).toBeGreaterThanOrEqual(24);
+          expect(parseInt(heightMatch[1], 10)).toBeGreaterThanOrEqual(24);
+        }
       }
     });
   });

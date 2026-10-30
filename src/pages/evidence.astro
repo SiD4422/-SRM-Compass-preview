@@ -372,11 +372,11 @@ const reproductionSources = allSources.filter((s) => ['S1', 'S2', 'S3'].includes
       </div>
     </section>
 
-    <!-- PART 6: Sources List (S1 to S3, B1 to B3, C1 to C3) -->
+    <!-- PART 6: Sources List (S1 to S3, B1 to B3, C1 to C4) -->
     <section class="evidence-section" id="sources">
       <div class="section-title-wrap">
         <span class="part-badge">Part 6</span>
-        <h2>Sources list (S1 to S3, B1 to B3, C1 to C3)</h2>
+        <h2>Sources list (S1 to S3, B1 to B3, C1 to C4)</h2>
       </div>
       <p class="section-intro">
         Complete register of all {allSources.length} primary institutional and external sources cited throughout SRM Compass, with exact capture dates:
@@ -399,7 +399,13 @@ const reproductionSources = allSources.filter((s) => ['S1', 'S2', 'S3'].includes
                 <td>
                   <span class="src-title-text">{s.title}</span>
                   {s.kind && <span class="src-kind-badge">{s.kind}</span>}
-                  {s.note && <p class="src-note-text">{s.note}</p>}
+                  {s.id === 'C2' ? (
+                    <p class="src-note-text">
+                      <strong>Audit Note:</strong> The former C2 (SRM staging page) returned HTTP 503 on 30 Oct 2026 and was replaced by SRM Spectrum Vol 19 No 2 page 2. {s.note}
+                    </p>
+                  ) : (
+                    s.note && <p class="src-note-text">{s.note}</p>
+                  )}
                 </td>
                 <td class="src-date-cell">{formatDate(s.captured_on)}</td>
                 <td class="src-link-cell">

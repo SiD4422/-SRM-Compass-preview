@@ -437,6 +437,21 @@ describe('Stage M3 & M3-fix: Programme Detail Pages (/programmes/[slug])', () =>
       }
     });
 
+    it('verifies exact story counts on linked programme pages: mechanical 1 story, automobile 2, mechatronics 3, ECE 2', () => {
+      const counts: Record<string, number> = {
+        'mechanical-engineering': 1,
+        'automobile-engineering': 2,
+        'mechatronics-engineering': 3,
+        'electronics-and-communication-engineering': 2
+      };
+
+      for (const [slug, expectedCount] of Object.entries(counts)) {
+        const html = fs.readFileSync(path.join(distDir, `programmes/${slug}/index.html`), 'utf-8');
+        const matches = html.match(/class="[^"]*linked-story-card[^"]*"/g) || [];
+        expect(matches.length).toBe(expectedCount);
+      }
+    });
+
     it('verifies /stories index page lists all 7 stories', () => {
       const storiesHtml = fs.readFileSync(path.join(distDir, 'stories/index.html'), 'utf-8');
       const storiesData = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../data/stories.json'), 'utf-8'));
@@ -756,10 +771,10 @@ describe('Stage M3 & M3-fix: Programme Detail Pages (/programmes/[slug])', () =>
       expect(evidenceHtml).toContain('2026-27');
     });
 
-    it('verifies /evidence Part 6 lists all 9 sources (S1-S3, B1-B3, C1-C3) with capture dates', () => {
+    it('verifies /evidence Part 6 lists all 10 sources (S1-S3, B1-B3, C1-C4) with capture dates', () => {
       const evidenceHtml = fs.readFileSync(path.join(distDir, 'evidence/index.html'), 'utf-8');
 
-      const expectedIds = ['S1', 'S2', 'S3', 'B1', 'B2', 'B3', 'C1', 'C2', 'C3'];
+      const expectedIds = ['S1', 'S2', 'S3', 'B1', 'B2', 'B3', 'C1', 'C2', 'C3', 'C4'];
       for (const id of expectedIds) {
         expect(evidenceHtml).toContain(`[${id}]`);
       }

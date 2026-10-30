@@ -27,11 +27,11 @@
   },
   {
    "id": "C2",
-   "title": "SRMIST Department of Automobile Engineering, awards and accolades",
-   "url": "https://newsitepreview.srmist.edu.in/department/department-of-automobile-engineering/awards-accolades/",
-   "kind": "official page (staging)",
-   "captured_on": "2026-10-28",
-   "note": "Staging subdomain of srmist.edu.in; confirm on the live SRM site."
+   "title": "SRM Spectrum, Volume 19 Number 2 (2026), page 2: Team Camber Racing claims national title at Formula Bharat 2026",
+   "url": "https://webstor.srmist.edu.in/web_assets/downloads/2026/flipbook/spectrum-volume-19-2/files/basic-html/page2.html",
+   "kind": "official SRM publication",
+   "captured_on": "2026-10-30",
+   "note": "Names individual student leaders; this site records departments only."
   },
   {
    "id": "C3",
@@ -40,6 +40,14 @@
    "kind": "third-party page",
    "captured_on": "2026-10-28",
    "note": "Team description only."
+  },
+  {
+   "id": "C4",
+   "title": "SRM Spectrum, Volume 19 Number 1, page 12: Team Camber Racing at SUPRA SAEINDIA 2025",
+   "url": "https://webstor.srmist.edu.in/web_assets/spectrum/spectrum-volume-19-1/files/basic-html/page12.html",
+   "kind": "official SRM publication",
+   "captured_on": "2026-10-30",
+   "note": "Describes the team as the Formula Student combustion team from the Department of Automobile Engineering."
   }
  ],
  "stories": [
@@ -237,24 +245,38 @@
    "title": "Team Camber Racing: Formula Student",
    "kind": "team",
    "programme_slugs": [
-    "automobile-engineering"
+    "automobile-engineering",
+    "electronics-and-communication-engineering",
+    "mechatronics-engineering"
    ],
-   "link_basis": "SRM page places the team in the Department of Automobile Engineering. Other departments are NOT confirmed.",
+   "link_basis": "SRM Spectrum (Volume 19 Number 2) names student leaders from these three departments. No other departments are named.",
    "facts": [
     {
-     "text": "Won the Combustion category at Formula Bharat 2026, per Evo India.",
+     "text": "Named National Champion at Formula Bharat 2026, with first place in Endurance, Skidpad, Autocross, Acceleration, Engineering Design, Fuel Economy, and Sustainability & Best Practices.",
+     "source_id": "C2",
+     "captured_on": "2026-10-30",
+     "tier": "sourced"
+    },
+    {
+     "text": "Evo India reports that the team won the Combustion category at Formula Bharat 2026.",
      "source_id": "C1",
      "captured_on": "2026-10-28",
      "tier": "sourced"
     },
     {
-     "text": "Team Camber Racing is listed under the Department of Automobile Engineering.",
+     "text": "Student leaders named by SRM come from Electronics and Communication Engineering (captain), Mechatronics Engineering (vice captain) and Automobile Engineering (technical director, project manager, chief race driver).",
      "source_id": "C2",
-     "captured_on": "2026-10-28",
+     "captured_on": "2026-10-30",
      "tier": "sourced"
     },
     {
-     "text": "Formula Student Germany describes the team as undergraduates from a range of engineering disciplines (departments not named).",
+     "text": "The Formula Student combustion team sits within the Department of Automobile Engineering.",
+     "source_id": "C4",
+     "captured_on": "2026-10-30",
+     "tier": "sourced"
+    },
+    {
+     "text": "Formula Student Germany describes the team as undergraduates from a range of engineering disciplines.",
      "source_id": "C3",
      "captured_on": "2026-10-28",
      "tier": "sourced"

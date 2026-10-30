@@ -425,6 +425,11 @@ describe('M6 Stories Verification Suite (stories.json & programmes.json)', () =>
     expect(realStoriesData.stories).toHaveLength(7);
   });
 
+  it('contains exactly 6 sources in stories.json (B1, B2, C1, C2, C3, C4)', () => {
+    expect(realStoriesData.sources).toHaveLength(6);
+    expect(realStoriesData.sources.map((s) => s.id)).toEqual(['B1', 'B2', 'C1', 'C2', 'C3', 'C4']);
+  });
+
   it('verifies programmes with stories are exactly mechanical-engineering, automobile-engineering, mechatronics-engineering, electronics-and-communication-engineering', () => {
     const tiedSlugs = new Set<string>();
     for (const story of realStoriesData.stories) {
@@ -439,6 +444,26 @@ describe('M6 Stories Verification Suite (stories.json & programmes.json)', () =>
       'electronics-and-communication-engineering'
     ];
     expect(Array.from(tiedSlugs).sort()).toEqual(expected.sort());
+  });
+
+  it('verifies story counts per programme: mechanical 1 story, automobile 2, mechatronics 3, ECE 2', () => {
+    const progCounts: Record<string, number> = {
+      'mechanical-engineering': 0,
+      'automobile-engineering': 0,
+      'mechatronics-engineering': 0,
+      'electronics-and-communication-engineering': 0
+    };
+    for (const story of realStoriesData.stories) {
+      for (const slug of story.programme_slugs) {
+        if (slug in progCounts) {
+          progCounts[slug]++;
+        }
+      }
+    }
+    expect(progCounts['mechanical-engineering']).toBe(1);
+    expect(progCounts['automobile-engineering']).toBe(2);
+    expect(progCounts['mechatronics-engineering']).toBe(3);
+    expect(progCounts['electronics-and-communication-engineering']).toBe(2);
   });
 
   it('fails when a story fact has no source_id', () => {

@@ -1,0 +1,105 @@
+Skip to content
+ SRM Compass
+Programmes Compare Eligibility Stories Apply
+Menu ☰
+← All Programmes
+Mechanical Engineering
+
+Offered at 5 campuses (Kattankulathur, Ramapuram, Delhi-NCR, Vadapalani, Tiruchirappalli)
+
+Compare these campuses Showing the 3 lowest fees of 5
+Machines and vehicles
+Campus Availability:
+KTR Kattankulathur ₹2,75,000/yr
+RMP Ramapuram ₹1,75,000/yr
+Trichy Tiruchirappalli ₹1,50,000/yr
+VDP Vadapalani ₹1,00,000/yr
+NCR Delhi NCR ₹2,00,000/yr
+BAB Baburayanpettai Not offered
+Fees & Campuses Eligibility How to Apply Built at SRM Sources
+Fees & Campuses
+
+Fees range from ₹1,00,000 to ₹2,75,000 per year across 5 campuses.
+
+Fee by campus
+
+Comparing annual B.Tech tuition across all 5 offering campuses
+
+₹1L
+₹2L
+₹3L
+₹4L
+₹4.75L
+KTR
+Kattankulathur
+₹2,75,000
+RMP
+Ramapuram
+₹1,75,000
+NCR
+Delhi-NCR
+₹2,00,000
+VDP
+Vadapalani
+₹1,00,000
+Trichy
+Tiruchirappalli
+₹1,50,000
+Campus	Fee per year	Seats	Duration	Department
+Kattankulathur KTR	₹2,75,000verified on (26 Oct 2026)	240	4 years	Department of Mechanical Engineering
+Ramapuram RMP	₹1,75,000verified on (26 Oct 2026)	60	4 years	Department of Mechanical Engineering
+Delhi-NCR NCR	₹2,00,000verified on (26 Oct 2026)	30	4 years	Department of Mechanical Engineering
+Vadapalani VDP	₹1,00,000verified on (26 Oct 2026)	30	4 years	Department of Mechanical Engineering
+Tiruchirappalli Trichy	₹1,50,000verified on (26 Oct 2026)	60	4 years	Not confirmed in SRM's table
+Eligibility
+
+Min 60% aggregate (3 subjects) in Physics + Maths + one of Chemistry / Biotechnology / Biology / Computer Science / IT / Informatics Practices / Engineering Graphics / Botany & Zoology; age 16y6m on 31 July
+
+Source conflict. In 4 of 5 offerings of this programme, SRM's table still carries older text that says 50% (learn about this source conflict).
+
+How to Apply
+Check the official 2026-27 eligibility criteria on SRM’s engineering admissions page .
+Apply once on SRM’s official B.Tech application form .
+Choose your campus, programme and specialisation at counselling. Note: campus and programme are chosen at counselling; the application form collects preference for statistics only.
+Built at SRM
+
+Start-ups, engineering teams, and projects created by alumni and students of this programme:
+
+startup 4 documented facts
+Abhinava Rizel: EV motors
+
+Linkage: Brochure says the founders are alumni of the Mechanical and Automotive departments.
+
+Developed electric-vehicle motors using a hybrid radial-flux design between synchronous reluctance (SynRM) and permanent-magnet synchronous (PMSM) motors.
+Reports 8 patents filed and another 10 under filing for EV motor and powertrain technology.
+Secured an investment from MM Forgings Ltd.
+Founded by alumni of the Mechanical and Automotive departments.
+Read story & source evidence →
+Sources & Audit Trail
+[S1] SRMIST Programs Offered table (Engineering): official page (Captured on 2026-10-26).
+253-row table copied by the author on the capture date; fee, intake, duration, department columns used.
+[S2] SRMIST B.Tech / M.Tech Integrated eligibility criteria 2026-2027: official page (Captured on 2026-10-26).
+Eligibility section of the same page (screenshot captured by the author).
+[S3] SRMIST online application page for B.Tech: official page (Captured on 2026-10-26).
+Campus-wise programme list; says campus and programme are chosen at counselling.
+Exact table rows from SRM source
+Related Programmes
+Mechanical Engineering (Automation and Robotics)
+
+Offered at 1 campus (Kattankulathur)
+
+Mechanical Engineering W/S in Artificial Intelligence and Machine Learning
+
+Offered at 3 campuses (Kattankulathur, Delhi-NCR, Vadapalani)
+
+Aeronautical Engineering
+
+Offered at 1 campus (Kattankulathur)
+
+Aerospace Engineering
+
+Offered at 1 campus (Kattankulathur)
+
+Independent design entry for the SRM Next-Gen Website Design Challenge 2026 for the 2026-27 cycle; SRM may revise for 2027 entry. Not an official SRM site. Check each source link before relying on a number.
+
+Sources & verification methodology • Built at SRM stories

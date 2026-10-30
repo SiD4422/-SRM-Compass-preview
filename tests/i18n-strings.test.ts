@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import * as path from 'path';
+import * as fs from 'fs';
 import { spawnSync } from 'node:child_process';
 import en from '../src/i18n/en.json';
 import { t } from '../src/lib/i18n';
@@ -50,7 +51,7 @@ describe('Stage E-1: i18n String Extraction and Byte-Identical English Content',
     expect(() => t('non.existent.key')).toThrowError(/Missing translation key/);
   });
 
-  it('preserves official SRM rules text in English verbatim', () => {
+  it('preserves official SRM rules text in English verbatim and eliminates duplicate breakdown keys', () => {
     // 1. General B.Tech rule
     expect(en['eligibility.rules.general']).toBe(
       'Applicant should have passed in Higher Secondary examination (10+2 pattern) or appearing in Higher Secondary examination in the current academic year with a minimum of 60% aggregate (3 subjects) in Physics (mandatory), Mathematics (mandatory) and at least one of Chemistry / Biotechnology / Biology / Computer Science / Information Technology / Informatics Practices / Engineering Graphics / Botany and Zoology.'
@@ -85,15 +86,87 @@ describe('Stage E-1: i18n String Extraction and Byte-Identical English Content',
     );
     expect(MANDATORY_DISCLAIMER).toBe(en['eligibility.rules.disclaimer']);
 
-    // Breakdown cards in page
-    expect(en['eligibility.breakdown.rule1_text']).toBe(en['eligibility.rules.general']);
-    expect(en['eligibility.breakdown.rule2_text']).toBe(en['eligibility.rules.biotech']);
+    // Breakdown duplicate keys must be removed in favor of reusing rules keys
+    expect((en as Record<string, string>)['eligibility.breakdown.rule1_text']).toBeUndefined();
+    expect((en as Record<string, string>)['eligibility.breakdown.rule2_text']).toBeUndefined();
+
+    // Remaining breakdown cards
     expect(en['eligibility.breakdown.rule3_text']).toBe(
       'Resident Indian. Should have attained the age of 16 years and 6 months on the 31st July of the calendar year in which the 12th Board examination is held.'
     );
     expect(en['eligibility.breakdown.rule4_text']).toBe(
       'Admission is through the national-level entrance exam SRMJEEE (UG).'
     );
+  });
+
+  it('fails when two keys hold identical text unless allow-listed', () => {
+    // Explicit allow-list for cross-context identical labels (e.g. nav item vs page heading)
+    const ALLOW_LIST: Record<string, string[]> = {
+      'Eligibility': ['layout.nav.eligibility', 'eligibility.heading'],
+      'Apply': ['layout.nav.apply', 'apply.breadcrumb.apply'],
+      'Menu': ['layout.nav.menu_btn_aria', 'layout.nav.menu_btn_text'],
+      'How applying works': ['apply.heading', 'eligibility.actions.apply']
+    };
+
+    const valueToKeys: Record<string, string[]> = {};
+    for (const [key, value] of Object.entries(en)) {
+      if (!valueToKeys[value]) {
+        valueToKeys[value] = [];
+      }
+      valueToKeys[value].push(key);
+    }
+
+    const unallowedDuplicates: Array<{ value: string; keys: string[] }> = [];
+    for (const [value, keys] of Object.entries(valueToKeys)) {
+      if (keys.length > 1) {
+        const allowed = ALLOW_LIST[value];
+        if (!allowed || keys.some(k => !allowed.includes(k))) {
+          unallowedDuplicates.push({ value, keys });
+        }
+      }
+    }
+
+    expect(unallowedDuplicates).toEqual([]);
+  });
+
+  it('marks only verbatim SRM wording in verbatim_srm list and verifies audit/i18n_strings.csv', () => {
+    // Stage E-1-fix: Only verbatim SRM wording stays English: eligibility.rules.general and eligibility.rules.biotech
+    const VERBATIM_SRM_KEYS = new Set([
+      'eligibility.rules.general',
+      'eligibility.rules.biotech'
+    ]);
+
+    expect(VERBATIM_SRM_KEYS.size).toBe(2);
+
+    const csvPath = path.resolve(__dirname, '../audit/i18n_strings.csv');
+    expect(fs.existsSync(csvPath)).toBe(true);
+
+    const csvContent = fs.readFileSync(csvPath, 'utf-8');
+    const lines = csvContent.trim().split('\n');
+    expect(lines[0].replace(/\r$/, '')).toBe('key,english,variables,verbatim_srm,page_where_used,tamil');
+
+    let verbatimCount = 0;
+    let translatableCount = 0;
+
+    for (let i = 1; i < lines.length; i++) {
+      const line = lines[i];
+      // Match key at start
+      const keyMatch = line.match(/^([a-z0-9_.]+),/);
+      if (keyMatch) {
+        const key = keyMatch[1];
+        if (VERBATIM_SRM_KEYS.has(key)) {
+          expect(line).toMatch(/,yes,/);
+          verbatimCount++;
+        } else {
+          expect(line).toMatch(/,no,/);
+          translatableCount++;
+        }
+      }
+    }
+
+    expect(verbatimCount).toBe(2);
+    expect(translatableCount).toBe(149);
+    expect(verbatimCount + translatableCount).toBe(Object.keys(en).length);
   });
 
   it('renders dynamic eligibility evaluation results using i18n lookups', () => {

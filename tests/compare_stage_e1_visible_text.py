@@ -13,7 +13,10 @@ pages_to_verify = [
     ("programmes/index.html", "programmes_index.html.txt"),
     ("compare/index.html", "compare_index.html.txt"),
     ("evidence/index.html", "evidence_index.html.txt"),
-    ("stories/index.html", "stories_index.html.txt")
+    ("stories/index.html", "stories_index.html.txt"),
+    ("programmes/mechanical-engineering/index.html", "programmes_mechanical_engineering_index.html.txt"),
+    ("stories/camber-racing/index.html", "stories_camber_racing_index.html.txt"),
+    ("404.html", "404.html.txt")
 ]
 
 all_match = True

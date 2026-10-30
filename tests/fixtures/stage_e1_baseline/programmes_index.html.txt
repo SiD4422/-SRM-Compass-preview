@@ -1,0 +1,147 @@
+Skip to content
+ SRM Compass
+Programmes Compare Eligibility Stories Apply
+Menu ☰
+All 106 options across 48 programmes
+
+Search and filter across all 106 full-time B.Tech offerings at six SRMIST campuses. All 106 rows link directly to SRM’s official Programs Offered table.
+
+Filters
+Search programmes
+Field of interest
+Circuits and powerCode and AIMachines and vehiclesRobots and automationHealth and bioBuild and infrastructureData and businessMaterials and chemistry
+Campuses
+ Kattankulathur (KTR)  Ramapuram (RMP)  Tiruchirappalli (Trichy)  Delhi-NCR (NCR)  Vadapalani (VDP)  Baburayanpettai (BAB)
+Minimum Fee 
+No minimum
+₹1,00,000
+₹1,50,000
+₹2,00,000
+₹2,50,000
+₹3,00,000
+₹4,00,000
+Maximum Fee 
+No maximum
+₹1,00,000
+₹1,50,000
+₹2,00,000
+₹2,50,000
+₹3,00,000
+₹4,00,000
+Sort By 
+Programme A–Z (default)
+Fee (lowest first)
+Fee (highest first)
+Seats (highest first)
+Showing 106 of 106 offerings
+Compare	Programme	Campus	Fee per year	Seats	Department	Source check
+Compare	Aeronautical Engineering (B.Tech)	Kattankulathur KTR	₹4,00,000	60	Department of Aerospace Engineering	Verified 26 Oct 2026
+Compare	Aerospace Engineering (B.Tech)	Kattankulathur KTR	₹4,00,000	120	Department of Aerospace Engineering	Verified 26 Oct 2026 Eligibility note
+Compare	Artificial Intelligence (B.Tech)	Kattankulathur KTR	₹4,75,000	180	Department of Computational Intelligence	Verified 26 Oct 2026 Eligibility note
+Compare	Artificial Intelligence (B.Tech)	Ramapuram RMP	₹3,50,000	60	Not confirmed in SRM's table	Verified 26 Oct 2026
+Compare	Artificial Intelligence (B.Tech)	Tiruchirappalli Trichy	₹2,50,000	60	Department of Computational Intelligence	Verified 26 Oct 2026
+Compare	Artificial Intelligence (B.Tech)	Vadapalani VDP	₹3,00,000	30	Not confirmed in SRM's table	Verified 26 Oct 2026
+Compare	Artificial Intelligence & Future Technologies (B.Tech)	Tiruchirappalli Trichy	₹4,00,000	30	Not confirmed in SRM's table	Verified 26 Oct 2026
+Compare	Automation and Robotics (B.Tech)	Kattankulathur KTR	₹2,75,000	30	Department of Electronics and Communication Engineering	Verified 26 Oct 2026 Eligibility note
+Compare	Automobile Engineering (B.Tech)	Kattankulathur KTR	₹2,75,000	60	Department of Automobile Engineering	Verified 26 Oct 2026 Eligibility note
+Compare	Automobile Engineering (B.Tech)	Delhi-NCR NCR	₹2,00,000	30	Department of Automobile Engineering	Verified 26 Oct 2026 Eligibility note
+Compare	Automobile Engineering W/S in Automotive Electronics (B.Tech)	Kattankulathur KTR	₹2,75,000	30	Department of Automobile Engineering	Verified 26 Oct 2026 Eligibility note
+Compare	Biomedical Engineering (B.Tech)	Tiruchirappalli Trichy	₹1,50,000	60	Not confirmed in SRM's table	Verified 26 Oct 2026
+Compare	Biomedical Engineering (BME) (B.Tech)	Kattankulathur KTR	₹2,75,000	90	Department of Biomedical Engineering	Verified 26 Oct 2026 Eligibility note
+Compare	Biomedical Engineering (BME) (B.Tech)	Ramapuram RMP	₹2,50,000	60	Department of Biomedical Engineering	Verified 26 Oct 2026 Eligibility note
+Compare	Biomedical Engineering (Machine Intelligence) (B.Tech)	Kattankulathur KTR	₹2,75,000	30	Department of Biomedical Engineering	Verified 26 Oct 2026
+Compare	Biotechnology (B.Tech)	Kattankulathur KTR	₹2,75,000	300	Department of Biotechnology	Verified 26 Oct 2026 Eligibility note
+Compare	Biotechnology (B.Tech)	Ramapuram RMP	₹2,50,000	60	Department of Biotechnology	Verified 26 Oct 2026 Eligibility note
+Compare	Biotechnology (B.Tech)	Tiruchirappalli Trichy	₹1,75,000	60	Department of Biotechnology	Verified 26 Oct 2026 Eligibility note
+Compare	Biotechnology (Computational Biology) (B.Tech)	Kattankulathur KTR	₹2,75,000	30	Department of Biotechnology	Verified 26 Oct 2026
+Compare	Biotechnology (Food Technology) (B.Tech)	Kattankulathur KTR	₹2,75,000	30	Not confirmed in SRM's table	Verified 26 Oct 2026
+Compare	Biotechnology (Food Technology) (B.Tech)	Tiruchirappalli Trichy	₹1,75,000	30	Not confirmed in SRM's table	Verified 26 Oct 2026
+Compare	Biotechnology W/S in Genetic Engineering (B.Tech)	Kattankulathur KTR	₹2,75,000	90	Department of Biotechnology	Verified 26 Oct 2026 Eligibility note
+Compare	Biotechnology W/S in Regenerative Medicine (B.Tech)	Kattankulathur KTR	₹2,75,000	30	Department of Biotechnology	Verified 26 Oct 2026 Eligibility note
+Compare	Chemical Engineering (B.Tech)	Kattankulathur KTR	₹2,75,000	60	Department Chemical Engineering	Verified 26 Oct 2026 Eligibility note
+Compare	Civil Engineering (B.Tech)	Kattankulathur KTR	₹2,75,000	90	Department of Civil Engineering	Verified 26 Oct 2026 Eligibility note
+Compare	Civil Engineering (B.Tech)	Ramapuram RMP	₹1,75,000	30	Department of Biomedical Engineering	Verified 26 Oct 2026 Eligibility note
+Compare	Civil Engineering with Computer Applications (B.Tech)	Kattankulathur KTR	₹2,75,000	30	Department of Civil Engineering	Verified 26 Oct 2026 Eligibility note
+Compare	Computer Science and Business System (in partnership with TCS) (B.Tech)	Kattankulathur KTR	₹4,25,000	60	Department of Data Science and Business Systems	Verified 26 Oct 2026 Eligibility note
+Compare	Computer Science and Business System (with TCS partnership) (B.Tech)	Ramapuram RMP	₹3,00,000	60	Department of Data Science and Business Systems	Verified 26 Oct 2026 Eligibility note
+Compare	Computer science and Business systems (TCS) (B.Tech)	Tiruchirappalli Trichy	₹2,50,000	30	Department of Data Science and Business Systems	Verified 26 Oct 2026
+Compare	Computer Science and Engineering (B.Tech)	Baburayanpettai BAB	₹3,75,000	180	Department of Computer Science and Engineering	Verified 26 Oct 2026
+Compare	Computer Science and Engineering (B.Tech)	Kattankulathur KTR	₹4,75,000	1,140	Department of Computing Technologies	Verified 26 Oct 2026 Eligibility note
+Compare	Computer Science and Engineering (B.Tech)	Delhi-NCR NCR	₹3,50,000	540	Department of Computing Technologies	Verified 26 Oct 2026 Eligibility note
+Compare	Computer Science and Engineering (B.Tech)	Ramapuram RMP	₹3,50,000	900	Department of Computer Science Engineering	Verified 26 Oct 2026 Eligibility note
+Compare	Computer Science and Engineering (B.Tech)	Tiruchirappalli Trichy	₹2,50,000	510	Department of Computing Technologies	Verified 26 Oct 2026 Eligibility note
+Compare	Computer Science and Engineering (B.Tech)	Vadapalani VDP	₹3,50,000	120	Department of Computing Technologies	Verified 26 Oct 2026 Eligibility note
+Compare	Computer science and Engineering (Data science) (B.Tech)	Tiruchirappalli Trichy	₹2,50,000	60	Department of Data Science and Business Systems	Verified 26 Oct 2026
+Compare	Computer Science and Engineering (Data Science) (B.Tech)	Kattankulathur KTR	₹4,75,000	120	Department of Computing Technologies	Verified 26 Oct 2026 Eligibility note
+Compare	Computer Science and Engineering (Data Science) (B.Tech)	Delhi-NCR NCR	₹2,50,000	180	Department of Data Science and Business Systems	Verified 26 Oct 2026 Eligibility note
+Compare	Computer Science and Engineering (Data Science) (B.Tech)	Ramapuram RMP	₹3,00,000	60	Not confirmed in SRM's table	Verified 26 Oct 2026
+Compare	Computer Science and Engineering (DevSecOps) (B.Tech)	Kattankulathur KTR	₹4,25,000	60	Not confirmed in SRM's table	Verified 26 Oct 2026
+Compare	Computer Science and Engineering W/S Big Data Analytics (B.Tech)	Ramapuram RMP	₹3,00,000	120	Department of Data Science and Business Systems	Verified 26 Oct 2026 Eligibility note
+Compare	Computer Science and Engineering W/S in Artificial Intelligence and Machine Learning (B.Tech)	Kattankulathur KTR	₹4,75,000	420	Department of Computational Intelligence	Verified 26 Oct 2026 Eligibility note
+Compare	Computer Science and Engineering W/S in Artificial Intelligence and Machine Learning (B.Tech)	Delhi-NCR NCR	₹3,50,000	240	Department of Computational Intelligence	Verified 26 Oct 2026 Eligibility note
+Compare	Computer Science and Engineering W/S in Artificial Intelligence and Machine Learning (B.Tech)	Ramapuram RMP	₹3,75,000	360	Department of Computational Intelligence	Verified 26 Oct 2026 Eligibility note
+Compare	Computer Science and Engineering W/S in Artificial Intelligence and Machine Learning (B.Tech)	Tiruchirappalli Trichy	₹2,75,000	300	Department of Computational Intelligence	Verified 26 Oct 2026 Eligibility note
+Compare	Computer Science and Engineering W/S in Artificial Intelligence and Machine Learning (B.Tech)	Vadapalani VDP	₹3,50,000	120	Department of Computational Intelligence	Verified 26 Oct 2026 Eligibility note
+Compare	Computer Science and Engineering W/S in Big Data Analytics (B.Tech)	Kattankulathur KTR	₹4,25,000	180	Department of Data Science and Business Systems	Verified 26 Oct 2026 Eligibility note
+Compare	Computer Science and Engineering W/S in Big Data Analytics (B.Tech)	Tiruchirappalli Trichy	₹2,50,000	30	Department of Data Science and Business Systems	Verified 26 Oct 2026 Eligibility note
+Compare	Computer Science and Engineering W/S in Big Data Analytics (B.Tech)	Vadapalani VDP	₹3,00,000	30	Department of Data Science and Business Systems	Verified 26 Oct 2026 Eligibility note
+Compare	Computer Science and Engineering W/S in Block chain Technology (B.Tech)	Kattankulathur KTR	₹4,25,000	60	Department of Data Science and Business Systems	Verified 26 Oct 2026 Eligibility note
+Compare	Computer Science and Engineering W/S in Block chain Technology (B.Tech)	Tiruchirappalli Trichy	₹2,50,000	30	Department of Data Science and Business Systems	Verified 26 Oct 2026
+Compare	Computer Science and Engineering W/S in Cloud Computing (B.Tech)	Kattankulathur KTR	₹4,25,000	180	Department of Networking and Communication	Verified 26 Oct 2026 Eligibility note
+Compare	Computer Science and Engineering W/S in Cloud Computing (B.Tech)	Delhi-NCR NCR	₹2,00,000	30	Department of Networking and Communication	Verified 26 Oct 2026 Eligibility note
+Compare	Computer Science and Engineering W/S in Cloud Computing (B.Tech)	Ramapuram RMP	₹3,00,000	60	Department of Networking and Communication	Verified 26 Oct 2026 Eligibility note
+Compare	Computer Science and Engineering W/S in Cloud Computing (B.Tech)	Vadapalani VDP	₹2,50,000	30	Not confirmed in SRM's table	Verified 26 Oct 2026
+Compare	Computer Science and Engineering W/S in Computer Networking (B.Tech)	Kattankulathur KTR	₹4,25,000	60	Department of Networking and Communication	Verified 26 Oct 2026 Eligibility note
+Compare	Computer Science and Engineering W/S in Cyber Security (B.Tech)	Kattankulathur KTR	₹4,25,000	300	Department of Networking and Communication	Verified 26 Oct 2026 Eligibility note
+Compare	Computer Science and Engineering W/S in Cyber Security (B.Tech)	Delhi-NCR NCR	₹2,00,000	60	Department of Networking and Communication	Verified 26 Oct 2026 Eligibility note
+Compare	Computer Science and Engineering W/S in Cyber Security (B.Tech)	Ramapuram RMP	₹3,25,000	240	Department of Networking and Communication	Verified 26 Oct 2026 Eligibility note
+Compare	Computer Science and Engineering W/S in Cyber Security (B.Tech)	Tiruchirappalli Trichy	₹2,50,000	90	Department of Networking and Communication	Verified 26 Oct 2026 Eligibility note
+Compare	Computer Science and Engineering W/S in Cyber Security (B.Tech)	Vadapalani VDP	₹3,00,000	60	Not confirmed in SRM's table	Verified 26 Oct 2026
+Compare	Computer Science and Engineering W/S in Gaming Technology (B.Tech)	Kattankulathur KTR	₹4,25,000	60	Department of Data Science and Business Systems	Verified 26 Oct 2026 Eligibility note
+Compare	Computer Science and Engineering W/S in Gaming Technology (B.Tech)	Ramapuram RMP	₹2,75,000	60	Department of Data Science and Business Systems	Verified 26 Oct 2026 Eligibility note
+Compare	Computer Science and Engineering W/S in Information Technology (B.Tech)	Kattankulathur KTR	₹4,25,000	120	Department of Networking and Communication	Verified 26 Oct 2026 Eligibility note
+Compare	Computer Science and Engineering W/S in Internet of Things (IOT) (B.Tech)	Kattankulathur KTR	₹4,25,000	60	Department of Networking and Communication	Verified 26 Oct 2026 Eligibility note
+Compare	Computer Science and Engineering W/S in Internet of Things (IOT) (B.Tech)	Ramapuram RMP	₹3,00,000	60	Department of Networking and Communication	Verified 26 Oct 2026 Eligibility note
+Compare	Computer Science and Engineering W/S in IOT (B.Tech)	Tiruchirappalli Trichy	₹2,50,000	30	Not confirmed in SRM's table	Verified 26 Oct 2026
+Compare	Computer Science and Engineering W/S in Medical Engineering (B.Tech)	Tiruchirappalli Trichy	₹2,50,000	30	Not confirmed in SRM's table	Verified 26 Oct 2026
+Compare	Computer Science and Engineering W/S in Software Engineering (B.Tech)	Kattankulathur KTR	₹4,25,000	180	Department of Computational Intelligence	Verified 26 Oct 2026 Eligibility note
+Compare	Electrical and Electronics Engineering (B.Tech)	Kattankulathur KTR	₹2,75,000	240	Department of Electrical and Electronics Engineering	Verified 26 Oct 2026 Eligibility note
+Compare	Electrical and Electronics Engineering (B.Tech)	Ramapuram RMP	₹2,00,000	30	Department of Electrical and Electronics Engineering	Verified 26 Oct 2026 Eligibility note
+Compare	Electrical and Electronics Engineering (B.Tech)	Tiruchirappalli Trichy	₹1,50,000	60	Electrical and Electronics Engineering	Verified 26 Oct 2026
+Compare	Electronic and Communication Engineering W/S in Data Science (B.Tech)	Kattankulathur KTR	₹2,75,000	60	Department of Electronics and Communication Engineering	Verified 26 Oct 2026 Eligibility note
+Compare	Electronics and Communication Engineering (B.Tech)	Baburayanpettai BAB	₹2,75,000	120	Department of Computer Science and Engineering	Verified 26 Oct 2026
+Compare	Electronics and Communication Engineering (B.Tech)	Kattankulathur KTR	₹2,75,000	480	Department of Electronics and Communication Engineering	Verified 26 Oct 2026 Eligibility note
+Compare	Electronics and Communication Engineering (B.Tech)	Delhi-NCR NCR	₹2,00,000	30	Department of Electronics and Communication Engineering	Verified 26 Oct 2026 Eligibility note
+Compare	Electronics and Communication Engineering (B.Tech)	Ramapuram RMP	₹2,50,000	240	Department of Electronics and Communication Engineering	Verified 26 Oct 2026 Eligibility note
+Compare	Electronics and Communication Engineering (B.Tech)	Tiruchirappalli Trichy	₹1,75,000	120	Department of Electronics and Communication Engineering	Verified 26 Oct 2026 Eligibility note
+Compare	Electronics and Communication Engineering (B.Tech)	Vadapalani VDP	₹2,00,000	120	Department of Electronics and Communication Engineering	Verified 26 Oct 2026 Eligibility note
+Compare	Electronics and Communication Engineering W/S in Cyber Physical Systems (B.Tech)	Kattankulathur KTR	₹2,75,000	30	Department of Electronics and Communication Engineering	Verified 26 Oct 2026 Eligibility note
+Compare	Electronics and Communication Engineering w/s in Data Science (B.Tech)	Delhi-NCR NCR	₹2,00,000	30	Department of Electronics and Communication Engineering	Verified 26 Oct 2026
+Compare	Electronics and Communication Engineering W/S in Data Science (B.Tech)	Vadapalani VDP	₹1,50,000	60	Department of Electronics and Communication Engineering	Verified 26 Oct 2026 Eligibility note
+Compare	Electronics and communication Engineering W/S in Data Science - Full Time (B.Tech)	Ramapuram RMP	₹2,75,000	60	Electronics and communication Engineering	Verified 26 Oct 2026
+Compare	Electronics and Communication Engineering with specialization in Data Science (B.Tech)	Tiruchirappalli Trichy	₹1,75,000	60	Not confirmed in SRM's table	Verified 26 Oct 2026
+Compare	Electronics and Computer Engineering (B.Tech)	Kattankulathur KTR	₹2,75,000	60	Department of Electronics and Communication Engineering	Verified 26 Oct 2026 Eligibility note
+Compare	Electronics and Instrumentation Engineering (B.Tech)	Kattankulathur KTR	₹2,75,000	30	Department of Electronics and Instrumentation Engineering	Verified 26 Oct 2026 Eligibility note
+Compare	Electronics Engineering (VLSI Design and Technology) (B.Tech)	Kattankulathur KTR	₹2,75,000	30	Department of Electronics and Instrumentation Engineering	Verified 26 Oct 2026 Eligibility note
+Compare	Electronics Engineering (VLSI Design and Technology) (B.Tech)	Delhi-NCR NCR	₹2,00,000	30	Not confirmed in SRM's table	Verified 26 Oct 2026
+Compare	Electronics Engineering (VLSI Design and Technology) (B.Tech)	Vadapalani VDP	₹1,50,000	30	Not confirmed in SRM's table	Verified 26 Oct 2026
+Compare	Information Technology (B.Tech)	Ramapuram RMP	₹2,50,000	240	Department of Networking and Communication	Verified 26 Oct 2026 Eligibility note
+Compare	Information Technology (B.Tech)	Tiruchirappalli Trichy	₹2,00,000	120	Department of Networking and Communication	Verified 26 Oct 2026 Eligibility note
+Compare	Mathematics and Computing (B.Tech)	Kattankulathur KTR	₹4,25,000	30	Not confirmed in SRM's table	Verified 26 Oct 2026
+Compare	Mechanical Engineering (B.Tech)	Kattankulathur KTR	₹2,75,000	240	Department of Mechanical Engineering	Verified 26 Oct 2026 Eligibility note
+Compare	Mechanical Engineering (B.Tech)	Delhi-NCR NCR	₹2,00,000	30	Department of Mechanical Engineering	Verified 26 Oct 2026 Eligibility note
+Compare	Mechanical Engineering (B.Tech)	Ramapuram RMP	₹1,75,000	60	Department of Mechanical Engineering	Verified 26 Oct 2026 Eligibility note
+Compare	Mechanical Engineering (B.Tech)	Tiruchirappalli Trichy	₹1,50,000	60	Not confirmed in SRM's table	Verified 26 Oct 2026
+Compare	Mechanical Engineering (B.Tech)	Vadapalani VDP	₹1,00,000	30	Department of Mechanical Engineering	Verified 26 Oct 2026 Eligibility note
+Compare	Mechanical Engineering (Automation and Robotics) (B.Tech)	Kattankulathur KTR	₹2,75,000	30	Department of Mechanical Engineering	Verified 26 Oct 2026
+Compare	Mechanical Engineering W/S in Artificial Intelligence and Machine Learning (B.Tech)	Kattankulathur KTR	₹2,75,000	60	Department of Mechanical Engineering	Verified 26 Oct 2026 Eligibility note
+Compare	Mechanical Engineering W/S in Artificial Intelligence and Machine Learning (B.Tech)	Vadapalani VDP	₹1,00,000	30	Department of Mechanical Engineering	Verified 26 Oct 2026 Eligibility note
+Compare	Mechanical Engineering with specialization in Artificial Intelligence and Machine Learning (B.Tech)	Delhi-NCR NCR	₹2,00,000	30	Department of Mechanical Engineering	Verified 26 Oct 2026 Eligibility note
+Compare	Mechatronics Engineering (B.Tech)	Kattankulathur KTR	₹2,75,000	120	Department of Mechatronics Engineering	Verified 26 Oct 2026 Eligibility note
+Compare	Mechatronics Engineering W/S in Robotics (B.Tech)	Kattankulathur KTR	₹2,75,000	60	Department of Mechatronics Engineering	Verified 26 Oct 2026 Eligibility note
+Compare	Nanotechnology (B.Tech)	Kattankulathur KTR	₹4,00,000	30	Department of Physics and Nanotechnology	Verified 26 Oct 2026 Eligibility note
+Compare	Software product Engineering (B.Tech)	Tiruchirappalli Trichy	₹4,00,000	30	Not confirmed in SRM's table	Verified 26 Oct 2026
+
+Independent design entry for the SRM Next-Gen Website Design Challenge 2026 for the 2026-27 cycle; SRM may revise for 2027 entry. Not an official SRM site. Check each source link before relying on a number.
+
+Sources & verification methodology • Built at SRM stories

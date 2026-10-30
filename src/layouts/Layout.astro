@@ -1,6 +1,7 @@
 ---
 import '../styles/tokens.css';
 import BrandCompass from '../components/BrandCompass.astro';
+import { t } from '../lib/i18n';
 
 export interface Props {
   title?: string;
@@ -9,8 +10,8 @@ export interface Props {
 }
 
 const {
-  title = 'SRM Compass: find your SRM programme',
-  description = 'Find the SRM programme that fits you. Fees, seats and departments from SRM’s official table, each linked to its source.',
+  title = t('layout.default_title'),
+  description = t('layout.default_description'),
   canonical
 } = Astro.props;
 
@@ -31,82 +32,82 @@ const canonicalUrl = canonical || (Astro.site ? new URL(Astro.url.pathname.endsW
     <slot name="head" />
   </head>
   <body>
-    <a class="skip" href="#main-content">Skip to content</a>
+    <a class="skip" href="#main-content">{t('layout.skip_to_content')}</a>
 
     <header class="top">
       <div class="w header-bar">
         <a class="brand" href="/">
           <BrandCompass size={26} class="brand-compass-icon" />
-          <span>SRM Compass</span>
+          <span>{t('layout.brand_name')}</span>
         </a>
-        <nav class="nav-desktop" aria-label="Main">
+        <nav class="nav-desktop" aria-label={t('layout.nav.main_aria')}>
           <a
             href="/programmes"
             aria-current={pathname === '/programmes' ? 'page' : undefined}
           >
-            Programmes
+            {t('layout.nav.programmes')}
           </a>
           <a
             href="/compare"
             aria-current={pathname === '/compare' ? 'page' : undefined}
           >
-            Compare
+            {t('layout.nav.compare')}
           </a>
           <a
             href="/eligibility"
             aria-current={pathname === '/eligibility' ? 'page' : undefined}
           >
-            Eligibility
+            {t('layout.nav.eligibility')}
           </a>
           <a
             href="/stories"
             aria-current={pathname.startsWith('/stories') ? 'page' : undefined}
           >
-            Stories
+            {t('layout.nav.stories')}
           </a>
           <a
             href="/apply"
             aria-current={pathname === '/apply' ? 'page' : undefined}
           >
-            Apply
+            {t('layout.nav.apply')}
           </a>
         </nav>
 
         <details class="mobile-nav-details" id="mobile-menu-details">
-          <summary class="mobile-nav-btn" aria-label="Menu" role="button">
-            <span class="menu-text">Menu</span>
+          <summary class="mobile-nav-btn" aria-label={t('layout.nav.menu_btn_aria')} role="button">
+            <span class="menu-text">{t('layout.nav.menu_btn_text')}</span>
             <span class="menu-icon" aria-hidden="true">☰</span>
           </summary>
-          <nav class="mobile-nav-panel" aria-label="Mobile Navigation">
+          <nav class="mobile-nav-panel" aria-label={t('layout.nav.mobile_aria')}>
             <a
               href="/programmes"
               aria-current={pathname === '/programmes' ? 'page' : undefined}
             >
-              Programmes
+              {t('layout.nav.programmes')}
             </a>
             <a
               href="/compare"
               aria-current={pathname === '/compare' ? 'page' : undefined}
             >
-              Compare
+              {t('layout.nav.compare')}
             </a>
             <a
               href="/eligibility"
               aria-current={pathname === '/eligibility' ? 'page' : undefined}
             >
-              Eligibility
+              {t('layout.nav.eligibility')}
             </a>
             <a
               href="/stories"
               aria-current={pathname.startsWith('/stories') ? 'page' : undefined}
             >
-              Stories
+              {t('layout.nav.stories')}
             </a>
             <a
               href="/apply"
               aria-current={pathname === '/apply' ? 'page' : undefined}
             >
-              Apply
+              {t('layout.nav.apply')}
             </a>
           </nav>
         </details>
@@ -120,12 +121,12 @@ const canonicalUrl = canonical || (Astro.site ? new URL(Astro.url.pathname.endsW
     <footer>
       <div class="w">
         <p>
-          Independent design entry for the SRM Next-Gen Website Design Challenge 2026 for the 2026-27 cycle; SRM may revise for 2027 entry. Not an official SRM site. Check each source link before relying on a number.
+          {t('layout.footer.disclaimer')}
         </p>
-        <nav class="footer-links" aria-label="Footer links">
-          <a href="/evidence">Sources &amp; verification methodology</a>
+        <nav class="footer-links" aria-label={t('layout.footer.links_aria')}>
+          <a href="/evidence">{t('layout.footer.evidence_link')}</a>
           <span class="footer-sep" aria-hidden="true">&bull;</span>
-          <a href="/stories">Built at SRM stories</a>
+          <a href="/stories">{t('layout.footer.stories_link')}</a>
         </nav>
       </div>
     </footer>

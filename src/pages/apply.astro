@@ -1,6 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import applyRoutesData from '../../data/apply_routes.json';
+import { t } from '../lib/i18n';
 
 interface RouteItem {
   id: string;
@@ -27,49 +28,45 @@ const applyData = applyRoutesData as {
 ---
 
 <Layout
-  title="How applying works: entrance routes & application guide — SRM Compass"
-  description="Verified entrance examination routes, counselling steps, helpline contacts, and official application portals for SRMIST admissions."
+  title={t('apply.meta.title')}
+  description={t('apply.meta.description')}
 >
   <div class="w page-container">
-    <nav class="breadcrumb" aria-label="Breadcrumb">
-      <a href="/">Home</a>
+    <nav class="breadcrumb" aria-label={t('apply.breadcrumb.aria')}>
+      <a href="/">{t('apply.breadcrumb.home')}</a>
       <span aria-hidden="true">&rsaquo;</span>
-      <span aria-current="page">Apply</span>
+      <span aria-current="page">{t('apply.breadcrumb.apply')}</span>
     </nav>
 
     <header class="apply-header">
-      <div class="eyebrow">Admissions Guide &amp; Entrance Routes</div>
-      <h1>How applying works</h1>
-      <p class="lead">
-        A guide built from SRM's published pages and 2026-27 brochure.
-      </p>
+      <div class="eyebrow">{t('apply.eyebrow')}</div>
+      <h1>{t('apply.heading')}</h1>
+      <p class="lead" set:html={t('apply.lead')}></p>
     </header>
 
     <!-- 1. B.Tech Three-Step Overview -->
     <section class="steps-section">
-      <h2>Apply once, choose later (B.Tech)</h2>
-      <p class="section-desc">
-        For B.Tech admission, one application covers the campuses listed on SRM's form, including these six. You do not lock in your campus or specialisation on the form.
-      </p>
+      <h2>{t('apply.steps.heading')}</h2>
+      <p class="section-desc" set:html={t('apply.steps.description')}></p>
       
       <ol class="st-cards">
         <li class="st-card">
           <div class="st-number">1</div>
           <div class="st-body">
-            <h3>Check minimum criteria</h3>
+            <h3>{t('apply.steps.step1_title')}</h3>
             <p>
-              Verify that you meet the 60% aggregate threshold across Physics, Mathematics, and one qualifying subject, and the age requirement (16y 6m by 31 July).
+              {t('apply.steps.step1_text')}
             </p>
-            <a href="/eligibility#check" class="st-link">Check eligibility instantly &rarr;</a>
+            <a href="/eligibility#check" class="st-link">{t('apply.steps.step1_link')}</a>
           </div>
         </li>
 
         <li class="st-card">
           <div class="st-number">2</div>
           <div class="st-body">
-            <h3>Apply once for SRMJEEE (B.Tech)</h3>
+            <h3>{t('apply.steps.step2_title')}</h3>
             <p>
-              Register for SRMJEEE (B.Tech) on SRM’s official portal. The branch preference collected on the application form is used for statistics only.
+              {t('apply.steps.step2_text')}
             </p>
             <a
               href="https://applications.srmist.edu.in/btech"
@@ -77,7 +74,7 @@ const applyData = applyRoutesData as {
               rel="noopener noreferrer"
               class="st-link"
             >
-              Open official B.Tech portal &#x2197;
+              {t('apply.steps.step2_link')}
             </a>
           </div>
         </li>
@@ -85,11 +82,11 @@ const applyData = applyRoutesData as {
         <li class="st-card">
           <div class="st-number">3</div>
           <div class="st-body">
-            <h3>Choose campus and branch at counselling</h3>
+            <h3>{t('apply.steps.step3_title')}</h3>
             <p>
-              After exam ranks are published, you select your campus, programme, and specialisation during counselling.
+              {t('apply.steps.step3_text')}
             </p>
-            <a href="/programmes" class="st-link">Explore all 106 campus options &rarr;</a>
+            <a href="/programmes" class="st-link">{t('apply.steps.step3_link')}</a>
           </div>
         </li>
       </ol>
@@ -98,16 +95,16 @@ const applyData = applyRoutesData as {
     <!-- 2. Which route fits you? (Progressive Enhancement) -->
     <section class="routes-section" id="routes">
       <div class="routes-header">
-        <h2>Which route fits you?</h2>
+        <h2>{t('apply.routes.heading')}</h2>
         <p class="routes-intro">
-          Select your discipline below to check the entrance exam, application steps, helpline contact, and direct portal link as published in the SRM 2026-27 admission brochure.
+          {t('apply.routes.intro')}
         </p>
       </div>
 
       <!-- Interactive Switcher (Client JS enabled) -->
       <div class="route-switcher-wrap" id="route-switcher-container">
         <label for="route-select" class="route-select-label">
-          <strong>Select discipline / programme level:</strong>
+          <strong>{t('apply.routes.select_label')}</strong>
         </label>
         <select id="route-select" class="ctrl-select">
           {applyData.routes.map((route, idx) => (
@@ -128,31 +125,31 @@ const applyData = applyRoutesData as {
           >
             <summary class="route-summary">
               <span class="route-summary-title">{route.label}</span>
-              <span class="route-summary-exam">Exam: {route.exam}</span>
+              <span class="route-summary-exam">{t('apply.routes.exam_badge', { exam: route.exam })}</span>
             </summary>
 
             <div class="route-card-content">
               <div class="route-grid">
                 <div class="route-info-col">
                   <div class="route-field">
-                    <span class="field-label">Discipline / Scope:</span>
+                    <span class="field-label">{t('apply.routes.field_discipline')}</span>
                     <p class="field-value">{route.label}</p>
                   </div>
 
                   <div class="route-field">
-                    <span class="field-label">Required Entrance Examination:</span>
+                    <span class="field-label">{t('apply.routes.field_exam')}</span>
                     <p class="field-value exam-highlight">{route.exam}</p>
                   </div>
 
                   <div class="route-field">
-                    <span class="field-label">Admission Procedure &amp; Steps:</span>
+                    <span class="field-label">{t('apply.routes.field_procedure')}</span>
                     <p class="field-value">{route.steps}</p>
                   </div>
                 </div>
 
                 <div class="route-contact-col">
                   <div class="contact-box">
-                    <h3>Direct Application &amp; Support</h3>
+                    <h3>{t('apply.routes.support_heading')}</h3>
                     
                     <a
                       href={route.link}
@@ -160,11 +157,11 @@ const applyData = applyRoutesData as {
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      Apply on Official Portal &#x2197;
+                      {t('apply.routes.apply_btn')}
                     </a>
 
                     <div class="support-item">
-                      <span class="support-label">Helpline:</span>
+                      <span class="support-label">{t('apply.routes.helpline_label')}</span>
                       <a href={`tel:${applyData.helpline.replace(/\s+/g, '')}`} class="support-val">
                         {applyData.helpline}
                       </a>
@@ -172,18 +169,18 @@ const applyData = applyRoutesData as {
                     </div>
 
                     <div class="support-item">
-                      <span class="support-label">Admissions Email:</span>
+                      <span class="support-label">{t('apply.routes.email_label')}</span>
                       <a href={`mailto:${applyData.email}`} class="support-val">
                         {applyData.email}
                       </a>
                     </div>
 
                     <div class="support-source-stamp">
-                      <span>Source [{applyData.source.id}]: </span>
+                      <span>{t('apply.routes.source_prefix', { id: applyData.source.id })}</span>
                       <a href={applyData.source.url} target="_blank" rel="noopener noreferrer">
                         {applyData.source.title}
                       </a>
-                      <span class="stamp-date"> (Captured {applyData.source.captured_on})</span>
+                      <span class="stamp-date">{t('apply.routes.captured_date', { date: applyData.source.captured_on })}</span>
                     </div>
                   </div>
                 </div>
@@ -196,16 +193,16 @@ const applyData = applyRoutesData as {
       <!-- No-JS Explanatory note -->
       <noscript>
         <p class="noscript-note">
-          All 8 entrance routes are listed above in expandable sections.
+          {t('apply.routes.noscript_note')}
         </p>
       </noscript>
     </section>
 
     <!-- Bottom Actions -->
     <div class="apply-bottom-actions">
-      <a class="btn p" href="/programmes">Browse all 106 B.Tech options</a>
-      <a class="btn s" href="/eligibility#check">Test minimum eligibility</a>
-      <a class="btn s" href="/stories">See what students built at SRM</a>
+      <a class="btn p" href="/programmes">{t('apply.actions.browse_options')}</a>
+      <a class="btn s" href="/eligibility#check">{t('apply.actions.test_eligibility')}</a>
+      <a class="btn s" href="/stories">{t('apply.actions.student_stories')}</a>
     </div>
   </div>
 </Layout>
@@ -273,110 +270,91 @@ const applyData = applyRoutesData as {
     text-decoration: underline;
   }
   .apply-header {
-    margin-bottom: 36px;
+    margin-bottom: 32px;
   }
   .eyebrow {
-    font-size: 0.85rem;
+    font-size: 0.82rem;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.08em;
     color: var(--navy);
-    margin-bottom: 8px;
+    margin-bottom: 6px;
   }
   .apply-header h1 {
-    font-size: 2.3rem;
-    line-height: 1.2;
-    margin: 0 0 14px 0;
-    color: var(--navy);
-    font-family: Charter, "Iowan Old Style", Georgia, serif;
-    font-weight: 700;
+    font-size: clamp(2rem, 4vw, 2.75rem);
+    margin: 0 0 10px 0;
+    line-height: 1.15;
   }
   .lead {
     font-size: 1.15rem;
-    line-height: 1.5;
-    color: var(--text-muted);
-    max-width: 75ch;
+    color: var(--muted);
+    max-width: 720px;
+    margin: 0;
   }
 
-  /* Three-Step Overview Cards */
+  /* Three-step visual cards */
   .steps-section {
     margin-bottom: 48px;
-    border-bottom: 1px solid var(--rule);
-    padding-bottom: 40px;
-  }
-  .steps-section h2 {
-    font-size: 1.6rem;
-    color: var(--navy);
-    font-family: Charter, "Iowan Old Style", Georgia, serif;
-    margin: 0 0 8px 0;
-  }
-  .section-desc {
-    font-size: 1rem;
-    color: var(--text-muted);
-    margin: 0 0 24px 0;
-  }
-  .st-cards {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 20px;
-  }
-  .st-card {
     background: var(--surface);
     border: 1px solid var(--rule);
     border-radius: 8px;
-    padding: 24px;
+    padding: 28px 24px;
+  }
+  .steps-section h2 {
+    font-size: 1.5rem;
+    margin: 0 0 8px 0;
+  }
+  .section-desc {
+    color: var(--muted);
+    margin: 0 0 24px 0;
+    font-size: 0.98rem;
+    max-width: 800px;
+  }
+  .st-cards {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  .st-card {
+    background: var(--surface-alt);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    padding: 20px;
     display: flex;
-    gap: 16px;
+    flex-direction: column;
+    position: relative;
   }
   .st-number {
-    width: 38px;
-    height: 38px;
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
-    background: #0B2A4A;
-    color: #ffffff;
-    border: 2px solid var(--gold);
-    display: grid;
-    place-content: center;
+    background: var(--navy);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     font-weight: 700;
-    font-size: 1.15rem;
-    flex-shrink: 0;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-  }
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) .st-number {
-      background: #E4B316;
-      color: #0B2A4A;
-      border: 2px solid #ffffff;
-    }
-  }
-  :root[data-theme="dark"] .st-number {
-    background: #E4B316;
-    color: #0B2A4A;
-    border: 2px solid #ffffff;
-  }
-  .st-body {
-    flex-grow: 1;
+    font-size: 1rem;
+    margin-bottom: 14px;
   }
   .st-body h3 {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     margin: 0 0 8px 0;
-    color: var(--navy);
-    font-family: Charter, "Iowan Old Style", Georgia, serif;
+    line-height: 1.3;
   }
   .st-body p {
-    font-size: 0.95rem;
+    font-size: 0.92rem;
+    color: var(--muted);
     line-height: 1.5;
-    color: var(--text);
-    margin: 0 0 12px 0;
+    margin: 0 0 16px 0;
   }
   .st-link {
-    display: inline-flex;
-    align-items: center;
-    min-height: 44px;
-    font-size: 0.9rem;
+    display: inline-block;
+    margin-top: auto;
+    font-size: 0.88rem;
     font-weight: 600;
     color: var(--link);
     text-decoration: none;
@@ -385,47 +363,50 @@ const applyData = applyRoutesData as {
     text-decoration: underline;
   }
 
-  /* Which route fits you section */
+  /* Routes Section */
   .routes-section {
     margin-bottom: 48px;
   }
+  .routes-header {
+    margin-bottom: 20px;
+  }
   .routes-header h2 {
-    font-size: 1.8rem;
-    color: var(--navy);
-    font-family: Charter, "Iowan Old Style", Georgia, serif;
+    font-size: 1.6rem;
     margin: 0 0 8px 0;
   }
   .routes-intro {
-    font-size: 1.05rem;
-    color: var(--text-muted);
-    max-width: 75ch;
-    margin: 0 0 24px 0;
+    color: var(--muted);
+    font-size: 1rem;
+    margin: 0;
+    max-width: 800px;
   }
 
   .route-switcher-wrap {
-    background: var(--surface-alt);
+    background: var(--surface);
     border: 1px solid var(--rule);
-    border-radius: 8px;
     padding: 16px 20px;
-    margin-bottom: 24px;
-    max-width: 680px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
   }
   .route-select-label {
-    display: block;
     font-size: 0.95rem;
-    color: var(--navy);
-    margin-bottom: 8px;
+    color: var(--ink);
   }
   .ctrl-select {
-    width: 100%;
-    padding: 10px 14px;
     font-size: 1rem;
-    border-radius: 6px;
+    padding: 10px 14px;
     border: 1px solid var(--rule);
+    border-radius: 6px;
     background: var(--surface);
-    color: var(--text);
+    color: var(--ink);
+    max-width: 100%;
+    cursor: pointer;
   }
 
+  /* Route Details & Cards */
   .routes-cards-list {
     display: flex;
     flex-direction: column;
@@ -440,106 +421,107 @@ const applyData = applyRoutesData as {
   }
   .route-details-item[open] {
     border-color: var(--navy);
-    box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   }
   .route-summary {
     padding: 16px 20px;
+    font-weight: 600;
     cursor: pointer;
-    background: var(--surface);
-    font-size: 1.1rem;
     display: flex;
-    flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
-    gap: 8px 16px;
+    gap: 12px;
+    background: var(--surface-alt);
+    border-bottom: 1px solid transparent;
     user-select: none;
   }
-  .route-summary:hover {
-    background: var(--surface-alt);
+  .route-details-item[open] .route-summary {
+    border-bottom-color: var(--rule);
   }
   .route-summary-title {
-    font-weight: 700;
-    color: var(--navy);
-    font-family: Charter, "Iowan Old Style", Georgia, serif;
+    font-size: 1.05rem;
+    color: var(--ink);
   }
   .route-summary-exam {
-    font-size: 0.88rem;
-    color: var(--text-muted);
-    background: var(--surface-alt);
-    border: 1px solid var(--rule);
-    padding: 3px 10px;
-    border-radius: 999px;
+    font-size: 0.85rem;
+    background: rgba(12, 77, 162, 0.1);
+    color: var(--navy);
+    padding: 4px 8px;
+    border-radius: 4px;
     font-weight: 600;
   }
 
   .route-card-content {
-    border-top: 1px solid var(--rule);
     padding: 24px 20px;
-    background: var(--surface);
   }
   .route-grid {
     display: grid;
-    grid-template-columns: 1fr;
-    gap: 24px;
+    grid-template-columns: 3fr 2fr;
+    gap: 28px;
   }
-  @media (min-width: 760px) {
-    .route-grid {
-      grid-template-columns: 1.2fr 0.8fr;
-    }
+  .route-info-col {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
   }
-
   .route-field {
-    margin-bottom: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
   }
   .field-label {
-    display: block;
-    font-size: 0.8rem;
+    font-size: 0.82rem;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    color: var(--text-muted);
+    color: var(--muted);
     font-weight: 700;
-    margin-bottom: 4px;
   }
   .field-value {
-    font-size: 1.05rem;
-    line-height: 1.5;
-    color: var(--text);
     margin: 0;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: var(--ink);
   }
   .exam-highlight {
     font-weight: 700;
     color: var(--navy);
+    font-size: 1.15rem;
   }
 
+  .route-contact-col {
+    display: flex;
+    flex-direction: column;
+  }
   .contact-box {
     background: var(--surface-alt);
     border: 1px solid var(--rule);
-    border-radius: 8px;
+    border-radius: 6px;
     padding: 20px;
-  }
-  .contact-box h3,
-  .contact-box h4 {
-    font-size: 1.05rem;
-    margin: 0 0 14px 0;
-    color: var(--navy);
-    font-family: Charter, "Iowan Old Style", Georgia, serif;
-  }
-  .btn-apply-portal {
-    width: 100%;
-    margin-bottom: 16px;
-    text-align: center;
-  }
-  .support-item {
-    margin-bottom: 10px;
-    font-size: 0.9rem;
     display: flex;
     flex-direction: column;
+    gap: 14px;
+  }
+  .contact-box h3 {
+    margin: 0;
+    font-size: 1.05rem;
+    color: var(--ink);
+  }
+  .btn-apply-portal {
+    display: inline-flex;
+    justify-content: center;
+    text-align: center;
+    padding: 10px 16px;
+    font-size: 0.95rem;
+  }
+  .support-item {
+    display: flex;
+    flex-direction: column;
+    font-size: 0.88rem;
     gap: 2px;
   }
   .support-label {
+    color: var(--muted);
     font-weight: 600;
-    color: var(--text-muted);
-    font-size: 0.8rem;
   }
   .support-val {
     color: var(--link);
@@ -551,14 +533,14 @@ const applyData = applyRoutesData as {
   }
   .support-hours {
     font-size: 0.8rem;
-    color: var(--text-muted);
+    color: var(--muted);
   }
   .support-source-stamp {
-    border-top: 1px solid var(--rule);
+    margin-top: 6px;
     padding-top: 10px;
-    margin-top: 14px;
+    border-top: 1px dashed var(--rule);
     font-size: 0.78rem;
-    color: var(--text-muted);
+    color: var(--muted);
     line-height: 1.4;
   }
   .support-source-stamp a {
@@ -570,16 +552,28 @@ const applyData = applyRoutesData as {
   }
 
   .noscript-note {
-    font-size: 0.9rem;
-    color: var(--text-muted);
+    font-size: 0.88rem;
+    color: var(--muted);
     margin-top: 12px;
+    font-style: italic;
   }
 
+  /* Bottom Actions */
   .apply-bottom-actions {
     display: flex;
     flex-wrap: wrap;
     gap: 12px;
+    padding-top: 12px;
     border-top: 1px solid var(--rule);
-    padding-top: 24px;
+  }
+
+  @media (max-width: 840px) {
+    .st-cards {
+      grid-template-columns: 1fr;
+    }
+    .route-grid {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
   }
 </style>

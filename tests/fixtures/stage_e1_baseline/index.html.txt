@@ -1,0 +1,186 @@
+Skip to content
+ SRM Compass
+Programmes Compare Eligibility Stories Apply
+Menu ☰
+Find the SRM programme that fits you.
+
+Fees, seats and departments for B.Tech at six SRMIST campuses, copied from SRM’s official Programs Offered table on 26 Oct 2026 for the 2026-27 cycle; SRM may revise for 2027 entry. All 106 rows link to their source.
+
+Search programmes, campuses, or departments
+ Search
+Explore by field:
+Circuits and power Code and AI Machines and vehicles Robots and automation Health and bio Build and infrastructure Data and business Materials and chemistry
+Browse all 106 options → How applying works Can I apply?
+Checked against SRM's table,
+26 Oct 2026
+106 options, 6 campuses
+Instant Checker
+Can I apply?
+
+Check if your Class 12 marks, subjects, and date of birth satisfy SRM’s published minimum criteria for 2026-27 admission. Evaluated instantly in your browser with zero data sent or stored.
+
+60% aggregate in Physics, Mathematics & 1 qualifying subject
+Age 16y 6m cutoff on 31 July of examination year
+Admission via SRMJEEE (UG); SRM decides final selection
+Check your eligibility → View all criteria & source conflicts
+Built at SRM
+
+Start-ups, engineering teams, and projects created by alumni and students of SRM.
+
+Browse all 7 stories →
+startup 4 facts
+Abhinava Rizel: EV motors
+
+Brochure says the founders are alumni of the Mechanical and Automotive departments.
+
+“Developed electric-vehicle motors using a hybrid radial-flux design between synchronous reluctance (SynRM) and permanent-magnet synchronous (PMSM) motors.”
+
+Read story & primary sources →
+startup 4 facts
+Torus Robotics: defence ground vehicles
+
+Brochure says the founders are alumni of the Mechatronics department.
+
+“Designs and delivers fully electric unmanned ground vehicles with a 6-degree-of-freedom robotic arm for Indian defence services.”
+
+Read story & primary sources →
+startup 4 facts
+Neur Industries: AR/VR, motors and actuators
+
+Brochure says the founders are alumni of the Mechatronics department.
+
+“Works on AR/VR, motors and actuators; its Neur XR Studios builds enterprise XR solutions.”
+
+Read story & primary sources →
+Six campuses, one entrance form
+
+All 106 B.Tech options across SRMIST’s six campuses with official fee ranges.
+
+Filter all 106 options →
+KTR 44 options
+Kattankulathur
+Annual fee range ₹2,75,000 – ₹4,75,000
+View campus options →
+RMP 18 options
+Ramapuram
+Annual fee range ₹1,75,000 – ₹3,75,000
+View campus options →
+Trichy 20 options
+Tiruchirappalli
+Annual fee range ₹1,50,000 – ₹4,00,000
+View campus options →
+VDP 11 options
+Vadapalani
+Annual fee range ₹1,00,000 – ₹3,50,000
+View campus options →
+NCR 11 options
+Delhi-NCR
+Annual fee range ₹2,00,000 – ₹3,50,000
+View campus options →
+BAB 2 options
+Baburayanpettai
+Annual fee range ₹2,75,000 – ₹3,75,000
+View campus options →
+Fee range by campus
+
+Annual B.Tech tuition spectrum from SRM’s official table (₹1.00L to ₹4.75L)
+
+₹1L
+₹2L
+₹3L
+₹4L
+₹5L
+KTR
+Kattankulathur
+₹2.75L–4.75L
+RMP
+Ramapuram
+₹1.75L–3.75L
+Trichy
+Tiruchirappalli
+₹1.50L–4L
+VDP
+Vadapalani
+₹1L–3.50L
+NCR
+Delhi-NCR
+₹2L–3.50L
+BAB
+Baburayanpettai
+₹2.75L–3.75L
+View text table: Fee range by campus
+Options by campus
+
+Distribution of all 106 B.Tech programme offerings across campuses
+
+0
+10
+20
+30
+40
+44
+KTR
+Kattankulathur
+44 (42%)
+RMP
+Ramapuram
+18 (17%)
+Trichy
+Tiruchirappalli
+20 (19%)
+VDP
+Vadapalani
+11 (10%)
+NCR
+Delhi-NCR
+11 (10%)
+BAB
+Baburayanpettai
+2 (2%)
+View text table: Options by campus
+Apply once, choose later
+
+How the official SRM B.Tech admission process works.
+
+Step 1
+Check minimum criteria
+
+Confirm at least 60% aggregate across PCM/qualifying subjects and minimum age 16y 6m.
+
+Step 2
+Single entrance application
+
+Register for SRMJEEE (B.Tech); one application covers the campuses listed on SRM's form, including these six. Branch preferences are for statistics only.
+
+Step 3
+Select at counselling
+
+Campus, branch, and specialisation are selected at counselling after ranks are announced.
+
+Read complete application & entrance routes guide →
+Examples you can check yourself
+
+Each row links to the exact SRM page it came from.
+
+Electrical and Electronics Engineering
+Campus	Fee per year	Seats	Department	Source check
+Kattankulathur	₹2,75,000	240	Department of Electrical and Electronics Engineering	Verified 26 Oct 2026 Eligibility note
+Ramapuram	₹2,00,000	30	Department of Electrical and Electronics Engineering	Verified 26 Oct 2026 Eligibility note
+Tiruchirappalli	₹1,50,000	60	Electrical and Electronics Engineering	Verified 26 Oct 2026
+Computer Science and Engineering
+Campus	Fee per year	Seats	Department	Source check
+Kattankulathur	₹4,75,000	1,140	Department of Computing Technologies	Verified 26 Oct 2026 Eligibility note
+Ramapuram	₹3,50,000	900	Department of Computer Science Engineering	Verified 26 Oct 2026 Eligibility note
+Automobile Engineering
+Campus	Fee per year	Seats	Department	Source check
+Kattankulathur	₹2,75,000	60	Department of Automobile Engineering	Verified 26 Oct 2026 Eligibility note
+Mechatronics Engineering
+Campus	Fee per year	Seats	Department	Source check
+Kattankulathur	₹2,75,000	120	Department of Mechatronics Engineering	Verified 26 Oct 2026 Eligibility note
+Biotechnology
+Campus	Fee per year	Seats	Department	Source check
+Kattankulathur	₹2,75,000	300	Department of Biotechnology	Verified 26 Oct 2026 Eligibility note
+
+Independent design entry for the SRM Next-Gen Website Design Challenge 2026 for the 2026-27 cycle; SRM may revise for 2027 entry. Not an official SRM site. Check each source link before relying on a number.
+
+Sources & verification methodology • Built at SRM stories

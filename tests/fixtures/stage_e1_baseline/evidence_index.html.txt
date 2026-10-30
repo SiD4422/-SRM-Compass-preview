@@ -1,0 +1,224 @@
+Skip to content
+ SRM Compass
+Programmes Compare Eligibility Stories Apply
+Menu ☰
+Home › Evidence
+Empirical Verification & Methodology
+Evidence, Audit & Data Integrity
+
+An audit of SRMIST's published admissions data (reproducible; steps below), empirical Lighthouse measurements, identified contradictions, and dataset verification reports. Every number on this page is read directly from automated test results or computed from primary datasets.
+
+106 Campus Offerings
+
+Total individual B.Tech campus offerings parsed and verified from SRM’s official Programs Offered table.
+
+48 Distinct Programmes
+
+Distinct engineering degree specialisations across all 6 campuses, with 23 multi-campus.
+
+6 SRMIST Campuses
+
+Kattankulathur, Ramapuram, Tiruchirappalli, Vadapalani, Delhi NCR, and Baburayanpettai on 1 entrance form.
+
+75 Eligibility Conflicts
+
+Offerings where SRM’s row states 50% aggregate (SRMJEEE 2022) but general criteria mandate 60%.
+
+Part 1
+What we measured on SRM's homepage
+
+Audit executed using Lighthouse 13.6.0 and Chrome DevTools Lighthouse 13.5.0 with Moto G Power mobile profile and simulated Slow 4G (1.6 Mbps down, 750 Kbps up, 150ms round-trip). Figures represent the medians of consecutive runs. When two runners disagree for the same page, both are reported below.
+
+Page Under Audit	Runner	Version	Runs	Performance	Accessibility	Best Practices	SEO	LCP (Median)	FCP (Median)	TBT (Median)	Page Weight
+SRM Homepage Live Production Server Inspect live ↗	Chrome DevTools (Author)	13.5.0	single run	40	81	96	85	12.4s	3.8s	750ms	9.9 MB (10,167 KiB)
+SRM Homepage Live Production Server Inspect live ↗	Lighthouse CLI (Automated)	13.6.0	median of 3 runs	34	81	77	83	30.1s	15.8s	958ms	9.6 MB (9,840 KiB)
+SRM Compass Home Compass Prototype (Edge) Open page →	Lighthouse CLI (Automated)	13.6.0	median of 3 runs	98	100	100	100	887ms	887ms	105ms	12 KiB
+SRM Compass Mechanical Engineering Compass Prototype (Edge) Open page →	Lighthouse CLI (Automated)	13.6.0	median of 3 runs	99	100	100	100	945ms	945ms	8ms	12 KiB
+Methodology Note: SRM's live site measurements reflect production server latency and third-party script overhead; Compass figures represent an optimized pre-rendered prototype running on Cloudflare edge. Both DevTools and CLI runner measurements are reported when runners disagree.
+Part 2
+Contradictions in SRM's own pages
+
+Direct discrepancies discovered during primary source extraction, verified by inspecting live DOM elements, published brochures, and official admission application forms.
+
+Eligibility Criteria: 60% vs 50% Threshold
+Official Statement A
+
+Minimum 60% aggregate in Physics, Mathematics, and one qualifying subject for B.Tech admission (2026-27 criteria).
+
+[S2] Primary link ↗ Captured 26 Oct 2026
+vs
+Conflicting Statement B
+
+Minimum 50% aggregate citing historical SRMJEEE 2022 rules printed directly inside the active Programs Offered table.
+
+[S1] Primary link ↗ Captured 26 Oct 2026
+Scope: 75 of 106 offering rows carry this discrepancy in SRM's own published tables.
+Compass Handling: SRM Compass flags each row as a conflict, warns applicants, and links directly to both sections on SRM's site.
+Programme Nomenclature: Engineering vs Intelligence
+Official Statement A
+
+Claim A: "Artificial Engineering & Future Technologies" appears in the 2026-27 brochure (B3) and SRM's B.Tech application page (S3).
+
+[B3, S3] Primary link ↗ Captured 28 Oct 2026
+vs
+Conflicting Statement B
+
+Claim B: "Artificial Intelligence & Future Technologies" appears in the Programs Offered table (S1).
+
+[S1] Primary link ↗ Captured 26 Oct 2026
+Scope: 1 offering, Tiruchirappalli
+Compass Handling: Compass indexes both names so student search queries succeed regardless of which variant is typed.
+Institutional Ranking: NIRF 2025 vs 2024 Ranking
+Official Statement A
+
+Prominently marketed as NIRF 2025 Ranked 11th in the 2026-2027 Admission Brochure.
+
+[B3] Primary link ↗ Captured 28 Oct 2026
+vs
+Conflicting Statement B
+
+Displayed as NIRF Ranked 12th in the 2024 University category on the live online B.Tech application portal.
+
+[S3] Primary link ↗ Captured 26 Oct 2026
+Scope: Institutional marketing banner across prospectus vs online application portal.
+Compass Handling: Documented with exact capture timestamps to clarify ranking edition and category differences for prospective students.
+Placement Statistics: 14,030+ vs 5,700+ Offers Without Stated Scope
+Official Statement A
+
+Headlined as "14,030+ Job Offers" in brochure overview marketing without specifying graduating batch year or campus boundary.
+
+[B3] Primary link ↗ Captured 28 Oct 2026
+vs
+Conflicting Statement B
+
+Displayed as "5,700+ Job Offers" on the current B.Tech application header banner with no cohort or scope specified.
+
+[S3] Primary link ↗ Captured 26 Oct 2026
+Scope: Campus-wide career marketing claims seen by prospective applicants.
+Compass Handling: Compass highlights that neither number specifies whether it includes off-campus offers, non-engineering faculties, or multi-campus aggregates.
+Part 3
+Data Doctor report from data
+
+Automated structural audit computed directly across the entire SRM Compass offerings dataset (106 campus offerings and 48 degree programmes):
+
+106
+Campus Offerings
+
+Total individual B.Tech campus offerings parsed from SRM's Programs Offered table.
+
+48
+Distinct Programmes
+
+Distinct engineering degree titles across all 6 campuses, with 23 taught at more than one campus.
+
+75
+Eligibility Conflicts
+
+Offerings where SRM's row states 50% aggregate (SRMJEEE 2022) but general criteria mandate 60%.
+
+18
+Blank Departments
+
+Offerings where SRM left the department column blank, flagged as unverified with explanatory notes.
+
+7
+Programmes with Name Variants
+
+Programmes carrying multiple spelling aliases across SRM tables, aliased for robust search.
+
+58
+Rows with Quality Notes
+
+Offering records annotated with specific data-quality observations for candidate awareness.
+
+Part 4
+How to reproduce
+
+Any auditor or juror can independently reproduce every assertion, calculation, and schema guard:
+
+1. The Automated Verification Command
+
+Run the verification script to re-audit all 106 offerings and stories against their source schemas:
+
+npm run verify
+
+Executes scripts/verify.ts, validating required facts, source timestamps, and conflict markers.
+
+2. Cryptographic Hash Guard
+
+Every underlying data file is guarded by a SHA-256 hash in data/HASHES.json, tested automatically on every run:
+
+npm test
+
+The Vitest suite confirms that zero bytes in data/ or data/evidence/lighthouse.json have been altered without audit trail.
+
+3. Primary Source Links
+
+Inspect the three fundamental official sources from which the core engineering dataset is derived:
+
+[S1] SRMIST Programs Offered table (Engineering): https://www.srmist.edu.in/admission-india/engineering/ ↗ (Captured 26 Oct 2026)
+[S2] SRMIST B.Tech / M.Tech Integrated eligibility criteria 2026-2027: https://www.srmist.edu.in/admission-india/engineering/ ↗ (Captured 26 Oct 2026)
+[S3] SRMIST online application page for B.Tech: https://applications.srmist.edu.in/btech ↗ (Captured 26 Oct 2026)
+Part 5
+Limits of this evidence
+Single Machine Lighthouse Benchmarks: All Lighthouse runs were executed on a single host machine with Chrome DevTools simulated mobile throttling (Moto G Power, Slow 4G). Real-world user metrics vary based on cellular connectivity, device hardware, and CDN cache state.
+Prototype Status & Usability Testing: SRM Compass is an independent prototype design entry. While automated Axe-core accessibility (0 violations) and keyboard navigation audits are strictly verified, extensive 5-person real-user lab usability trials remain to be conducted by human evaluators.
+Sourced vs. Verified Tiers: Data points are strictly partitioned into verified (mathematically validated from official tables) and sourced (as published by SRM; not independently checked).
+Admissions Cycle Scope: All data was captured on 26 October 2026 for the 2026-27 admission cycle. SRMIST retains administrative authority to update fees, seat capacities, and eligibility rules for 2027 entry.
+Part 6
+Sources list (S1 to S3, B1 to B3, C1 to C4)
+
+Complete register of all 10 primary institutional and external sources cited throughout SRM Compass, with exact capture dates:
+
+Source ID	Document / Publication Title	Captured On	Direct Link
+[B1]	SRMIST Admission Brochure 2026-2027, Start-ups in campus section official brochure
+
+Founder and company facts are as published by SRM. Not independently checked.
+
+	28 Oct 2026	Open source ↗
+[B2]	SRMIST Admission Brochure 2026-2027, accreditation section official brochure
+
+Text layout is garbled in extraction; confirm against the page image before use.
+
+	28 Oct 2026	Open source ↗
+[B3]	SRMIST Admission Brochure 2026-2027	28 Oct 2026	Open source ↗
+[C1]	Formula Bharat 2026 news, Evo India news
+
+Reports the Combustion category result.
+
+	28 Oct 2026	Open source ↗
+[C2]	SRM Spectrum, Volume 19 Number 2 (2026), page 2: Team Camber Racing claims national title at Formula Bharat 2026 official SRM publication
+
+Audit Note: The former C2 (SRM staging page) returned HTTP 503 on 30 Oct 2026 and was replaced by SRM Spectrum Vol 19 No 2 page 2. Names individual student leaders; this site records departments only.
+
+	30 Oct 2026	Open source ↗
+[C3]	Formula Student Germany team page for Camber Racing third-party page
+
+Team description only.
+
+	28 Oct 2026	Open source ↗
+[C4]	SRM Spectrum, Volume 19 Number 1, page 12: Team Camber Racing at SUPRA SAEINDIA 2025 official SRM publication
+
+Describes the team as the Formula Student combustion team from the Department of Automobile Engineering.
+
+	30 Oct 2026	Open source ↗
+[S1]	SRMIST Programs Offered table (Engineering) official page
+
+253-row table copied by the author on the capture date; fee, intake, duration, department columns used.
+
+	26 Oct 2026	Open source ↗
+[S2]	SRMIST B.Tech / M.Tech Integrated eligibility criteria 2026-2027 official page
+
+Eligibility section of the same page (screenshot captured by the author).
+
+	26 Oct 2026	Open source ↗
+[S3]	SRMIST online application page for B.Tech official page
+
+Campus-wise programme list; says campus and programme are chosen at counselling.
+
+	26 Oct 2026	Open source ↗
+Explore all 106 campus options Test eligibility checker
+
+Independent design entry for the SRM Next-Gen Website Design Challenge 2026 for the 2026-27 cycle; SRM may revise for 2027 entry. Not an official SRM site. Check each source link before relying on a number.
+
+Sources & verification methodology • Built at SRM stories

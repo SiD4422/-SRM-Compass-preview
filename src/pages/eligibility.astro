@@ -1,45 +1,47 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import offeringsData from '../../data/offerings.json';
+import { t } from '../lib/i18n';
 
 const totalOfferings = offeringsData.length;
 const conflictCount = offeringsData.filter(
   (o) => o.eligibility?.status === 'conflict'
 ).length;
+
+const linkHtml = `<a href="https://www.srmist.edu.in/admission-india/engineering/" rel="noopener" target="_blank">the same SRM page</a>`;
+const methodHtml = `<code>method="post"</code>`;
 ---
 
 <Layout
-  title="Eligibility Criteria & Checker — SRM Compass"
-  description="Check your B.Tech admission eligibility against SRM's official 2026-27 rules. 100% private in-browser evaluation with source citations."
+  title={t('eligibility.meta.title')}
+  description={t('eligibility.meta.description')}
 >
   <section class="blk">
     <div class="w">
-      <h1>Eligibility</h1>
+      <h1>{t('eligibility.heading')}</h1>
       <p class="lede">
-        Official admission requirements for B.Tech programmes across SRMIST campuses for the 2026–2027 academic cycle (for the 2026-27 cycle; SRM may revise for 2027 entry).
+        {t('eligibility.lede')}
       </p>
 
       <!-- Interactive Eligibility Checker Tool (id 'check') -->
       <section id="check" class="checker-card" aria-labelledby="checker-title">
         <div class="checker-intro">
-          <h2 id="checker-title">Check your B.Tech eligibility</h2>
+          <h2 id="checker-title">{t('eligibility.checker.title')}</h2>
           <p class="checker-desc">
-            Check your marks, age, subjects, and board against SRM’s published 2026–2027 minimum admission criteria for the 2026-27 cycle; SRM may revise for 2027 entry.
+            {t('eligibility.checker.description')}
           </p>
           <div class="privacy-note" role="note">
             <span class="privacy-icon" aria-hidden="true">🔒</span>
             <span>
-              <strong>Privacy guarantee:</strong> Nothing is sent, stored or put in the URL. All evaluation runs 100% locally in your browser.
+              <strong>{t('eligibility.checker.privacy_label')}</strong> {t('eligibility.checker.privacy_text')}
             </span>
           </div>
         </div>
 
         <noscript>
           <div class="noscript-banner" role="alert">
-            <strong>JavaScript is required for interactive eligibility checking.</strong>
-            <span>
-              SRM Compass evaluates marks and date of birth 100% locally in your browser. This form uses <code>method="post"</code> to ensure that student marks and dates of birth can never be leaked into the URL. Submit is disabled until JavaScript initialises. Please review the complete 2026–2027 rule breakdown below.
-            </span>
+            <strong>{t('eligibility.checker.noscript_title')}</strong>
+            <span set:html={t('eligibility.checker.noscript_text', { method: methodHtml })}></span>
           </div>
         </noscript>
 
@@ -47,15 +49,15 @@ const conflictCount = offeringsData.filter(
           <!-- 1. Resident Indian (yes/no) -->
           <div class="form-row">
             <fieldset class="ctrl-fieldset">
-              <legend class="ctrl-label">Are you a resident Indian? <span class="req" aria-hidden="true">*</span></legend>
+              <legend class="ctrl-label">{t('eligibility.form.resident_legend')} <span class="req" aria-hidden="true">*</span></legend>
               <div class="radio-options">
                 <label class="radio-label">
                   <input type="radio" name="resident" value="yes" checked />
-                  <span>Yes, Resident Indian</span>
+                  <span>{t('eligibility.form.resident_yes')}</span>
                 </label>
                 <label class="radio-label">
                   <input type="radio" name="resident" value="no" />
-                  <span>No (NRI / International candidate)</span>
+                  <span>{t('eligibility.form.resident_no')}</span>
                 </label>
               </div>
             </fieldset>
@@ -64,22 +66,22 @@ const conflictCount = offeringsData.filter(
           <!-- 2. Qualifying Board & Class 12 Status -->
           <div class="form-grid-2">
             <div class="ctrl-group">
-              <label for="board-select" class="ctrl-label">Qualifying board <span class="req" aria-hidden="true">*</span></label>
+              <label for="board-select" class="ctrl-label">{t('eligibility.form.board_label')} <span class="req" aria-hidden="true">*</span></label>
               <select id="board-select" name="board" class="ctrl-select" required>
-                <option value="CBSE">CBSE (Central Board of Secondary Education)</option>
-                <option value="ISCE">ISCE / ISC (Council for the Indian School Certificate Examinations)</option>
-                <option value="State board">State board</option>
-                <option value="NIOS">NIOS (National Institute of Open Schooling)</option>
-                <option value="IB">IB (International Baccalaureate)</option>
-                <option value="GCE A-level">GCE A-level</option>
+                <option value="CBSE">{t('eligibility.form.board_cbse')}</option>
+                <option value="ISCE">{t('eligibility.form.board_isce')}</option>
+                <option value="State board">{t('eligibility.form.board_state')}</option>
+                <option value="NIOS">{t('eligibility.form.board_nios')}</option>
+                <option value="IB">{t('eligibility.form.board_ib')}</option>
+                <option value="GCE A-level">{t('eligibility.form.board_gce')}</option>
               </select>
             </div>
 
             <div class="ctrl-group">
-              <label for="status-select" class="ctrl-label">Class 12 status <span class="req" aria-hidden="true">*</span></label>
+              <label for="status-select" class="ctrl-label">{t('eligibility.form.status_label')} <span class="req" aria-hidden="true">*</span></label>
               <select id="status-select" name="status" class="ctrl-select" required>
-                <option value="passed">Passed Class 12 (10+2 pattern)</option>
-                <option value="appearing">Appearing in the exam year</option>
+                <option value="passed">{t('eligibility.form.status_passed')}</option>
+                <option value="appearing">{t('eligibility.form.status_appearing')}</option>
               </select>
             </div>
           </div>
@@ -87,16 +89,16 @@ const conflictCount = offeringsData.filter(
           <!-- 3. Class 12 Exam Year & Date of Birth -->
           <div class="form-grid-2">
             <div class="ctrl-group">
-              <label for="exam-year" class="ctrl-label">Class 12 exam year <span class="req" aria-hidden="true">*</span></label>
+              <label for="exam-year" class="ctrl-label">{t('eligibility.form.exam_year_label')} <span class="req" aria-hidden="true">*</span></label>
               <select id="exam-year" name="examYear" class="ctrl-select" required>
                 <option value="2026" selected>2026</option>
                 <option value="2027">2027</option>
               </select>
-              <span class="field-hint">Choice of 2026 or 2027 admission exam cycle</span>
+              <span class="field-hint">{t('eligibility.form.exam_year_hint')}</span>
             </div>
 
             <div class="ctrl-group">
-              <label for="dob" class="ctrl-label">Date of birth <span class="req" aria-hidden="true">*</span></label>
+              <label for="dob" class="ctrl-label">{t('eligibility.form.dob_label')} <span class="req" aria-hidden="true">*</span></label>
               <input
                 type="date"
                 id="dob"
@@ -105,66 +107,66 @@ const conflictCount = offeringsData.filter(
                 required
               />
               <span id="dob-error" class="field-error-msg" hidden></span>
-              <span class="field-hint">Must be at least 16y 6m on 31 July of exam year</span>
+              <span class="field-hint">{t('eligibility.form.dob_hint')}</span>
             </div>
           </div>
 
           <!-- 4. Programme Group -->
           <div class="ctrl-group">
-            <label for="group-select" class="ctrl-label">Programme group <span class="req" aria-hidden="true">*</span></label>
+            <label for="group-select" class="ctrl-label">{t('eligibility.form.group_label')} <span class="req" aria-hidden="true">*</span></label>
             <select id="group-select" name="programmeGroup" class="ctrl-select" required>
-              <option value="general">General (CSE, EEE, ECE, Mechanical, Civil, Aerospace, AI, etc.)</option>
-              <option value="biotech">Biotechnology, Genetic Engineering or Biomedical</option>
+              <option value="general">{t('eligibility.form.group_general')}</option>
+              <option value="biotech">{t('eligibility.form.group_biotech')}</option>
             </select>
           </div>
 
           <!-- 5. Subjects behind Aggregate -->
           <!-- For General Group -->
           <div id="general-subjects-row" class="subjects-card">
-            <span class="ctrl-label">Mandatory &amp; qualifying subjects</span>
+            <span class="ctrl-label">{t('eligibility.form.general_subjects_title')}</span>
             <p class="subjects-desc">
-              Physics and Mathematics are mandatory for General B.Tech programmes. Unticked means you do not meet minimum criteria.
+              {t('eligibility.form.general_subjects_desc')}
             </p>
             <div class="subject-checkboxes">
               <label class="subject-checkbox-label">
                 <input type="checkbox" id="has-physics" name="hasPhysics" checked />
-                <span>Physics (mandatory)</span>
+                <span>{t('eligibility.form.physics_mandatory')}</span>
               </label>
               <label class="subject-checkbox-label">
                 <input type="checkbox" id="has-math" name="hasMath" checked />
-                <span>Mathematics (mandatory)</span>
+                <span>{t('eligibility.form.math_mandatory')}</span>
               </label>
             </div>
             <div class="ctrl-group" style="margin-top: 14px;">
-              <label for="third-subject" class="ctrl-label">Third qualifying subject</label>
+              <label for="third-subject" class="ctrl-label">{t('eligibility.form.third_subject_label')}</label>
               <select id="third-subject" name="thirdSubject" class="ctrl-select">
-                <option value="Chemistry">Chemistry</option>
-                <option value="Computer Science">Computer Science</option>
-                <option value="Information Technology">Information Technology</option>
-                <option value="Informatics Practices">Informatics Practices</option>
-                <option value="Biology">Biology</option>
-                <option value="Biotechnology">Biotechnology</option>
-                <option value="Engineering Graphics">Engineering Graphics</option>
-                <option value="Botany and Zoology">Botany and Zoology</option>
+                <option value="Chemistry">{t('eligibility.form.subj_chemistry')}</option>
+                <option value="Computer Science">{t('eligibility.form.subj_cs')}</option>
+                <option value="Information Technology">{t('eligibility.form.subj_it')}</option>
+                <option value="Informatics Practices">{t('eligibility.form.subj_ip')}</option>
+                <option value="Biology">{t('eligibility.form.subj_biology')}</option>
+                <option value="Biotechnology">{t('eligibility.form.subj_biotech')}</option>
+                <option value="Engineering Graphics">{t('eligibility.form.subj_eg')}</option>
+                <option value="Botany and Zoology">{t('eligibility.form.subj_botany_zoology')}</option>
               </select>
             </div>
           </div>
 
           <!-- For Biotech Group -->
           <div id="biotech-subjects-row" class="subjects-card" hidden>
-            <label for="biotech-combo" class="ctrl-label">Three subjects combination <span class="req" aria-hidden="true">*</span></label>
+            <label for="biotech-combo" class="ctrl-label">{t('eligibility.form.biotech_combo_label')} <span class="req" aria-hidden="true">*</span></label>
             <select id="biotech-combo" name="biotechCombo" class="ctrl-select">
-              <option value="PCM">PCM (Physics, Chemistry, Mathematics)</option>
-              <option value="PMB">PMB (Physics, Mathematics, Biology / Biotechnology)</option>
-              <option value="PCB">PCB (Physics, Chemistry, Biology / Biotechnology) — additional 4-credit course in Mathematics required</option>
-              <option value="Z (Botany or Zoology)">Z (Botany or Zoology) — additional 4-credit course in Mathematics required</option>
+              <option value="PCM">{t('eligibility.form.combo_pcm')}</option>
+              <option value="PMB">{t('eligibility.form.combo_pmb')}</option>
+              <option value="PCB">{t('eligibility.form.combo_pcb')}</option>
+              <option value="Z (Botany or Zoology)">{t('eligibility.form.combo_z')}</option>
             </select>
-            <span class="field-hint">Candidates without 10+2 Mathematics must take an additional 4-credit course in Mathematics in year 1.</span>
+            <span class="field-hint">{t('eligibility.form.biotech_hint')}</span>
           </div>
 
           <!-- 6. Aggregate Percentage -->
           <div class="ctrl-group">
-            <label for="aggregate" class="ctrl-label">Aggregate percent across the 3 subjects (0 to 100, one decimal at most) <span class="req" aria-hidden="true">*</span></label>
+            <label for="aggregate" class="ctrl-label">{t('eligibility.form.aggregate_label')} <span class="req" aria-hidden="true">*</span></label>
             <input
               type="number"
               id="aggregate"
@@ -172,18 +174,18 @@ const conflictCount = offeringsData.filter(
               min="0"
               max="100"
               step="any"
-              placeholder="e.g. 60.0"
+              placeholder={t('eligibility.form.aggregate_placeholder')}
               class="ctrl-input"
               required
             />
             <span id="aggregate-error" class="field-error-msg" hidden></span>
-            <span class="field-hint">Published minimum threshold is at least 60.0% aggregate across the 3 subjects. Evaluated without rounding.</span>
+            <span class="field-hint">{t('eligibility.form.aggregate_hint')}</span>
           </div>
 
           <!-- Action buttons -->
           <div class="checker-actions">
-            <button type="submit" id="checker-submit-btn" class="btn p" disabled>Check eligibility</button>
-            <button type="button" id="checker-reset-btn" class="btn s">Reset</button>
+            <button type="submit" id="checker-submit-btn" class="btn p" disabled>{t('eligibility.form.submit_btn')}</button>
+            <button type="button" id="checker-reset-btn" class="btn s">{t('eligibility.form.reset_btn')}</button>
           </div>
         </form>
 
@@ -194,46 +196,36 @@ const conflictCount = offeringsData.filter(
       <!-- Source Conflict Note -->
       <div class="note">
         <p>
-          <b>Source conflict.</b> We show SRM’s 2026-27 rule (for the 2026-27 cycle; SRM may revise for 2027 entry): at least 60% aggregate in Physics, Mathematics and one more qualifying subject. Biotechnology and biomedical programmes need 60% in PCM, PMB, PCB or similar combinations. In {conflictCount} of the {totalOfferings} offerings in SRM’s fee table, older text still says 50% and cites SRMJEEE (UG) 2022.
+          <b>{t('eligibility.conflict.title')}</b> {t('eligibility.conflict.body', { conflictCount, totalOfferings })}
         </p>
         <details>
-          <summary>See both versions</summary>
-          <p>
-            2026-27 criteria section: 60% aggregate (3 subjects). Fee table eligibility column: 50% aggregate, 2022 wording. Both are on{' '}
-            <a
-              href="https://www.srmist.edu.in/admission-india/engineering/"
-              rel="noopener"
-              target="_blank"
-            >
-              the same SRM page
-            </a>
-            . Confirm on SRM’s page before you rely on either.
-          </p>
+          <summary>{t('eligibility.conflict.summary')}</summary>
+          <p set:html={t('eligibility.conflict.details', { link: linkHtml })}></p>
         </details>
       </div>
 
       <!-- 2026-2027 Rule Breakdown Card -->
       <div class="card">
-        <h2>2026–2027 Rule Breakdown (for the 2026-27 cycle; SRM may revise for 2027 entry)</h2>
+        <h2>{t('eligibility.breakdown.heading')}</h2>
         <ol class="st">
           <li>
-            <strong>Qualifying Examination:</strong> Applicant should have passed in Higher Secondary examination (10+2 pattern) or appearing in Higher Secondary examination in the current academic year with a <strong>minimum of 60% aggregate</strong> (3 subjects) in Physics (mandatory), Mathematics (mandatory) and at least one of Chemistry / Biotechnology / Biology / Computer Science / Information Technology / Informatics Practices / Engineering Graphics / Botany and Zoology.
+            <strong>{t('eligibility.breakdown.rule1_label')}</strong> {t('eligibility.breakdown.rule1_text')}
           </li>
           <li>
-            <strong>Biotechnology &amp; Biomedical:</strong> Minimum 60% aggregate in PCM / PMB / PCB / PCB or Z (Botany or Zoology). Students who have not studied Mathematics in 10+2 must undertake an additional 4-credit course in Mathematics during the first year.
+            <strong>{t('eligibility.breakdown.rule2_label')}</strong> {t('eligibility.breakdown.rule2_text')}
           </li>
           <li>
-            <strong>Nationality and Age:</strong> Resident Indian. Should have attained the age of 16 years and 6 months on the 31st July of the calendar year in which the 12th Board examination is held.
+            <strong>{t('eligibility.breakdown.rule3_label')}</strong> {t('eligibility.breakdown.rule3_text')}
           </li>
           <li>
-            <strong>Entrance Exam:</strong> Admission is through the national-level entrance exam <strong>SRMJEEE (UG)</strong>.
+            <strong>{t('eligibility.breakdown.rule4_label')}</strong> {t('eligibility.breakdown.rule4_text')}
           </li>
         </ol>
       </div>
 
       <div class="btn-row">
-        <a class="btn p" href="/programmes">See programmes</a>
-        <a class="btn s" href="/apply">How applying works</a>
+        <a class="btn p" href="/programmes">{t('eligibility.actions.programmes')}</a>
+        <a class="btn s" href="/apply">{t('eligibility.actions.apply')}</a>
       </div>
     </div>
   </section>
@@ -300,7 +292,7 @@ const conflictCount = offeringsData.filter(
 
   .privacy-icon {
     font-size: 1.1rem;
-    flex-shrink: 0;
+    line-height: 1;
   }
 
   .checker-form {
@@ -309,16 +301,15 @@ const conflictCount = offeringsData.filter(
     gap: 20px;
   }
 
-  .form-grid-2 {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 18px;
+  .form-row {
+    display: flex;
+    flex-direction: column;
   }
 
-  @media (min-width: 680px) {
-    .form-grid-2 {
-      grid-template-columns: 1fr 1fr;
-    }
+  .form-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
   }
 
   .ctrl-fieldset {
@@ -327,155 +318,107 @@ const conflictCount = offeringsData.filter(
     margin: 0;
   }
 
+  .ctrl-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
   .ctrl-label {
-    display: block;
     font-weight: 600;
-    margin-bottom: 6px;
-    color: var(--ink);
     font-size: 0.95rem;
+    color: var(--ink);
   }
 
   .req {
-    color: #c93b2b;
-    font-weight: bold;
-  }
-
-  .field-hint {
-    display: block;
-    font-size: 0.82rem;
-    color: var(--muted);
-    margin-top: 4px;
+    color: var(--danger);
   }
 
   .radio-options {
     display: flex;
     flex-wrap: wrap;
-    gap: 16px;
-    margin-top: 6px;
+    gap: 20px;
+    margin-top: 8px;
   }
 
   .radio-label {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    font-size: 0.95rem;
     cursor: pointer;
-    min-height: 48px;
-    padding: 4px 8px;
+    font-size: 0.95rem;
   }
 
-  .radio-label input[type="radio"] {
-    width: 20px;
-    height: 20px;
-    accent-color: #0c4da2;
-    cursor: pointer;
+  .ctrl-select,
+  .ctrl-input {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    background: var(--surface);
+    color: var(--ink);
+    font-size: 1rem;
+  }
+
+  .ctrl-select:focus,
+  .ctrl-input:focus {
+    outline: none;
+    border-color: var(--navy);
+    box-shadow: 0 0 0 3px rgba(12, 77, 162, 0.2);
+  }
+
+  .input-has-error {
+    border-color: var(--danger) !important;
+    background: rgba(197, 48, 48, 0.04);
+  }
+
+  .field-hint {
+    font-size: 0.82rem;
+    color: var(--muted);
+    line-height: 1.3;
+  }
+
+  .field-error-msg {
+    font-size: 0.85rem;
+    color: var(--danger);
+    font-weight: 600;
   }
 
   .subjects-card {
-    background: rgba(0, 0, 0, 0.02);
-    border: 1px dashed var(--rule);
+    background: var(--surface-alt);
+    border: 1px solid var(--rule);
     border-radius: 6px;
-    padding: 16px 20px;
+    padding: 18px 20px;
   }
 
   .subjects-desc {
-    font-size: 0.9rem;
+    font-size: 0.88rem;
     color: var(--muted);
-    margin: 4px 0 10px 0;
-  }
-
-  .subject-badges {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 12px;
+    margin: 4px 0 14px 0;
   }
 
   .subject-checkboxes {
     display: flex;
     flex-wrap: wrap;
-    align-items: center;
-    gap: 12px;
+    gap: 24px;
   }
 
   .subject-checkbox-label {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    background: var(--surface);
-    border: 1px solid var(--rule);
-    padding: 6px 12px;
-    border-radius: 4px;
-    font-weight: 600;
-    font-size: 0.88rem;
-    color: var(--ink);
     cursor: pointer;
-    min-height: 38px;
-  }
-
-  .subject-checkbox-label input[type="checkbox"] {
-    width: 18px;
-    height: 18px;
-    accent-color: #0c4da2;
-    cursor: pointer;
-  }
-
-  .field-error-msg {
-    color: #c93b2b;
-    font-size: 0.82rem;
-    font-weight: 600;
-    margin-top: 4px;
-    display: block;
-  }
-
-  .input-has-error {
-    border-color: #c93b2b !important;
-    outline: 2px solid rgba(201, 59, 43, 0.25) !important;
-  }
-
-  .fixed-pill {
-    display: inline-flex;
-    align-items: center;
-    background: var(--surface);
-    border: 1px solid var(--rule);
-    padding: 6px 12px;
-    border-radius: 4px;
-    font-weight: 600;
-    font-size: 0.88rem;
-    color: var(--ink);
-    min-height: 38px;
-  }
-
-  .math-checkbox-label {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background: var(--surface);
-    border: 1px solid var(--rule);
-    padding: 6px 12px;
-    border-radius: 4px;
-    font-weight: 600;
-    font-size: 0.88rem;
-    color: var(--ink);
-    cursor: pointer;
-    min-height: 38px;
-  }
-
-  .math-checkbox-label input[type="checkbox"] {
-    width: 18px;
-    height: 18px;
-    accent-color: #0c4da2;
-    cursor: pointer;
+    font-size: 0.95rem;
+    font-weight: 500;
   }
 
   .checker-actions {
     display: flex;
-    flex-wrap: wrap;
     gap: 12px;
-    margin-top: 8px;
+    margin-top: 10px;
   }
 
-  /* Result Box Styles */
+  /* Result Container Styling */
   .checker-result-wrapper {
     margin-top: 28px;
   }
@@ -483,193 +426,178 @@ const conflictCount = offeringsData.filter(
   :global(.result-card) {
     border-radius: 8px;
     padding: 24px;
-    border: 2px solid;
-    background: var(--surface);
+    border: 2px solid transparent;
   }
 
-  :global(.result-card.verdict-meets) {
-    border-color: var(--ok);
-    background: rgba(27, 127, 92, 0.05);
+  :global(.verdict-meets) {
+    background: rgba(22, 101, 52, 0.06);
+    border-color: #15803d;
   }
 
-  :global(.result-card.verdict-fails) {
-    border-color: #c93b2b;
-    background: rgba(201, 59, 43, 0.05);
+  :global(.verdict-fails) {
+    background: rgba(185, 28, 28, 0.06);
+    border-color: #b91c1c;
   }
 
-  :global(.result-card.verdict-error) {
-    border-color: #c93b2b;
-    background: rgba(201, 59, 43, 0.06);
+  :global(.verdict-refer) {
+    background: rgba(12, 77, 162, 0.06);
+    border-color: #0c4da2;
   }
 
-  :global(.verdict-error .result-badge) {
-    background: #c93b2b;
-  }
-
-  :global(.error-intro) {
-    font-size: 0.95rem;
-    color: #c93b2b;
-    font-weight: 600;
-    margin: 0 0 10px 0;
-  }
-
-  :global(.error-reasons) {
-    color: #c93b2b;
-  }
-
-  :global(.rule-line) {
-    margin: 4px 0;
-    font-size: 0.88rem;
-    color: var(--text);
-  }
-
-  :global(.result-card.verdict-refer) {
-    border-color: var(--gold);
-    background: #FFF8E6;
+  :global(.verdict-error) {
+    background: rgba(180, 83, 9, 0.08);
+    border-color: #b45309;
   }
 
   :global(.result-header) {
     display: flex;
     align-items: center;
     gap: 12px;
-    margin-bottom: 14px;
+    margin-bottom: 16px;
   }
 
   :global(.result-badge) {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
     width: 32px;
     height: 32px;
     border-radius: 50%;
-    font-weight: bold;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
     font-size: 1.1rem;
-    color: #ffffff;
-    flex-shrink: 0;
+    color: #fff;
   }
 
   :global(.verdict-meets .result-badge) {
-    background: var(--ok);
+    background: #15803d;
   }
 
   :global(.verdict-fails .result-badge) {
-    background: #c93b2b;
+    background: #b91c1c;
   }
 
   :global(.verdict-refer .result-badge) {
-    background: var(--gold);
-    color: #5C3800;
+    background: #0c4da2;
+  }
+
+  :global(.verdict-error .result-badge) {
+    background: #b45309;
   }
 
   :global(.result-headline) {
     font-size: 1.35rem;
     margin: 0;
-    color: var(--ink);
   }
 
   :global(.result-reasons) {
     margin: 0 0 16px 0;
-    padding-left: 24px;
+    padding-left: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 0.98rem;
     line-height: 1.5;
   }
 
-  :global(.result-reasons li) {
-    margin-bottom: 6px;
-    font-size: 0.95rem;
+  :global(.error-intro) {
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 10px;
+  }
+
+  :global(.error-reasons) {
+    color: var(--danger);
   }
 
   :global(.result-math-note) {
-    background: rgba(228, 179, 22, 0.15);
-    border-left: 4px solid var(--gold);
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-left: 4px solid #b45309;
+    border-radius: 4px;
     padding: 12px 16px;
-    margin-bottom: 16px;
-    border-radius: 0 6px 6px 0;
-    font-size: 0.95rem;
-  }
-
-  :global(.result-math-note strong) {
-    display: block;
-    margin-bottom: 4px;
-    color: #5C3800;
+    margin-bottom: 18px;
+    font-size: 0.92rem;
   }
 
   :global(.result-math-note p) {
-    margin: 0;
+    margin: 4px 0 0 0;
   }
 
   :global(.result-rule) {
     background: var(--surface);
     border: 1px solid var(--rule);
-    padding: 14px 18px;
     border-radius: 6px;
-    margin-bottom: 14px;
+    padding: 16px 18px;
+    margin-bottom: 18px;
   }
 
   :global(.result-rule h4) {
-    margin: 0 0 6px 0;
-    font-size: 0.9rem;
+    font-size: 0.88rem;
     text-transform: uppercase;
     letter-spacing: 0.05em;
     color: var(--muted);
+    margin: 0 0 10px 0;
   }
 
   :global(.rule-quote) {
-    font-style: italic;
-    font-size: 0.9rem;
-    line-height: 1.45;
-    margin: 0 0 10px 0;
-    color: var(--text);
+    font-size: 0.92rem;
+    line-height: 1.5;
+    margin: 0 0 12px 0;
+    color: var(--ink);
+  }
+
+  :global(.rule-line) {
+    font-size: 0.88rem;
+    margin: 4px 0;
+    color: var(--ink);
   }
 
   :global(.result-source-row) {
     display: flex;
-    flex-wrap: wrap;
     align-items: center;
     gap: 12px;
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px dashed var(--rule);
+    font-size: 0.85rem;
   }
 
   :global(.source-link) {
-    font-size: 0.88rem;
     color: var(--link);
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  :global(.source-link:hover) {
     text-decoration: underline;
   }
 
   :global(.result-disclaimer) {
-    font-size: 0.88rem;
+    font-size: 0.85rem;
     color: var(--muted);
-    border-top: 1px solid var(--rule);
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
     padding-top: 12px;
-    margin-bottom: 8px;
-    line-height: 1.4;
+    margin-top: 14px;
+  }
+
+  :global(.result-disclaimer p) {
+    margin: 0;
   }
 
   :global(.result-privacy) {
-    font-size: 0.82rem;
+    margin-top: 8px;
     color: var(--muted);
   }
 
-  /* Dark mode overrides */
-  @media (prefers-color-scheme: dark) {
-    :global(:root:not([data-theme="light"])) :global(.result-card.verdict-refer) {
-      background: #242014;
-      border-color: #E4B316;
+  @media (max-width: 640px) {
+    .form-grid-2 {
+      grid-template-columns: 1fr;
     }
-    :global(:root:not([data-theme="light"])) :global(.result-math-note) {
-      background: rgba(228, 179, 22, 0.12);
+    .checker-actions {
+      flex-direction: column;
     }
-    :global(:root:not([data-theme="light"])) :global(.result-math-note strong) {
-      color: #F2B766;
+    .checker-actions .btn {
+      width: 100%;
     }
-  }
-
-  :global(:root[data-theme="dark"]) :global(.result-card.verdict-refer) {
-    background: #242014;
-    border-color: #E4B316;
-  }
-  :global(:root[data-theme="dark"]) :global(.result-math-note) {
-    background: rgba(228, 179, 22, 0.12);
-  }
-  :global(:root[data-theme="dark"]) :global(.result-math-note strong) {
-    color: #F2B766;
   }
 </style>

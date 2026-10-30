@@ -295,7 +295,7 @@ describe('M2 Programme Finder Filter & Search Engine', () => {
       );
       expect(eligibilityContent).toContain("import offeringsData from '../../data/offerings.json'");
       expect(eligibilityContent).not.toContain("offerings.m1.json");
-      expect(eligibilityContent).toContain('href="/programmes">See programmes</a>');
+      expect(eligibilityContent).toMatch(/href="\/programmes">(See programmes|\{t\('eligibility\.actions\.programmes'\)\})<\/a>/);
       expect(eligibilityContent).not.toContain('Compare programmes');
     });
   });

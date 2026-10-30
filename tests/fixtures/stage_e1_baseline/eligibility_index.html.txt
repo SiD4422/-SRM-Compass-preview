@@ -1,0 +1,63 @@
+Skip to content
+ SRM Compass
+Programmes Compare Eligibility Stories Apply
+Menu ☰
+Eligibility
+
+Official admission requirements for B.Tech programmes across SRMIST campuses for the 2026–2027 academic cycle (for the 2026-27 cycle; SRM may revise for 2027 entry).
+
+Check your B.Tech eligibility
+
+Check your marks, age, subjects, and board against SRM’s published 2026–2027 minimum admission criteria for the 2026-27 cycle; SRM may revise for 2027 entry.
+
+🔒 Privacy guarantee: Nothing is sent, stored or put in the URL. All evaluation runs 100% locally in your browser.
+Are you a resident Indian? *
+ Yes, Resident Indian  No (NRI / International candidate)
+Qualifying board * 
+CBSE (Central Board of Secondary Education)
+ISCE / ISC (Council for the Indian School Certificate Examinations)
+State board
+NIOS (National Institute of Open Schooling)
+IB (International Baccalaureate)
+GCE A-level
+Class 12 status * 
+Passed Class 12 (10+2 pattern)
+Appearing in the exam year
+Class 12 exam year * 
+2026
+2027
+ Choice of 2026 or 2027 admission exam cycle
+Date of birth *  Must be at least 16y 6m on 31 July of exam year
+Programme group * 
+General (CSE, EEE, ECE, Mechanical, Civil, Aerospace, AI, etc.)
+Biotechnology, Genetic Engineering or Biomedical
+Mandatory & qualifying subjects
+
+Physics and Mathematics are mandatory for General B.Tech programmes. Unticked means you do not meet minimum criteria.
+
+ Physics (mandatory)  Mathematics (mandatory)
+Third qualifying subject 
+Chemistry
+Computer Science
+Information Technology
+Informatics Practices
+Biology
+Biotechnology
+Engineering Graphics
+Botany and Zoology
+Aggregate percent across the 3 subjects (0 to 100, one decimal at most) *  Published minimum threshold is at least 60.0% aggregate across the 3 subjects. Evaluated without rounding.
+Check eligibility Reset
+
+Source conflict. We show SRM’s 2026-27 rule (for the 2026-27 cycle; SRM may revise for 2027 entry): at least 60% aggregate in Physics, Mathematics and one more qualifying subject. Biotechnology and biomedical programmes need 60% in PCM, PMB, PCB or similar combinations. In 75 of the 106 offerings in SRM’s fee table, older text still says 50% and cites SRMJEEE (UG) 2022.
+
+See both versions
+2026–2027 Rule Breakdown (for the 2026-27 cycle; SRM may revise for 2027 entry)
+Qualifying Examination: Applicant should have passed in Higher Secondary examination (10+2 pattern) or appearing in Higher Secondary examination in the current academic year with a minimum of 60% aggregate (3 subjects) in Physics (mandatory), Mathematics (mandatory) and at least one of Chemistry / Biotechnology / Biology / Computer Science / Information Technology / Informatics Practices / Engineering Graphics / Botany and Zoology.
+Biotechnology & Biomedical: Minimum 60% aggregate in PCM / PMB / PCB / PCB or Z (Botany or Zoology). Students who have not studied Mathematics in 10+2 must undertake an additional 4-credit course in Mathematics during the first year.
+Nationality and Age: Resident Indian. Should have attained the age of 16 years and 6 months on the 31st July of the calendar year in which the 12th Board examination is held.
+Entrance Exam: Admission is through the national-level entrance exam SRMJEEE (UG).
+See programmes How applying works
+
+Independent design entry for the SRM Next-Gen Website Design Challenge 2026 for the 2026-27 cycle; SRM may revise for 2027 entry. Not an official SRM site. Check each source link before relying on a number.
+
+Sources & verification methodology • Built at SRM stories

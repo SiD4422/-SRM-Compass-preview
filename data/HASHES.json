@@ -1,7 +1,5 @@
 {
   "apply_routes.json": "a72d8b0288ec12a55743a395124be72dc48c9ccf61c38199a5a56bc9a29e34a5",
-  "data/evidence/lighthouse.json": "263bea310e4866b828a8a10dc560da5060ea4cf98b22d0bd29426be3be355306",
-  "data/source/programs_offered_table_all_254_rows.csv": "c70ee52275d940e0e6d3a5847c1c845b92e1a5512c4b6b5db32f2bd3d84a4df8",
   "evidence/lighthouse.json": "5ffefbaf3bf224690496dc62665b798926156f54472eade04161e133dc17e8b3",
   "offerings.json": "d6c35aeb80e5c5ca9ed3b9b594ae29350e3befa37af48115c2c491dea096c9af",
   "offerings.m1.json": "b708c3db0db241e58caa98c1ba8da3d87c0fa7957ca6c6eec6eb7ff2d0f8b37d",

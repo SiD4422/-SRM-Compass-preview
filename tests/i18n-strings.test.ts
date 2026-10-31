@@ -54,13 +54,13 @@ describe('Stage E-1: i18n String Extraction and Byte-Identical English Content',
   it('preserves official SRM rules text in English verbatim and eliminates duplicate breakdown keys', () => {
     // 1. General B.Tech rule
     expect(en['eligibility.rules.general']).toBe(
-      'Applicant should have passed in Higher Secondary examination (10+2 pattern) or appearing in Higher Secondary examination in the current academic year with a minimum of 60% aggregate (3 subjects) in Physics (mandatory), Mathematics (mandatory) and at least one of Chemistry / Biotechnology / Biology / Computer Science / Information Technology / Informatics Practices / Engineering Graphics / Botany and Zoology.'
+      'Applicant should have passed in Higher secondary examination (10 +2 pattern) or appearing in Higher Secondary examination in the current academic year with a minimum of 60% aggregate (3 subjects) in Physics (mandatory), Mathematics (mandatory) and at least one of Chemistry / Biotechnology / Biology / Computer Science / Information Technology / Informatics Practices / Engineering Graphics / Botany and Zoology as major subjects in regular subjects in regular stream from any board within India, CBSE, ISCE, IB or NIOS.'
     );
     expect(RULE_TEXT_GENERAL).toBe(en['eligibility.rules.general']);
 
     // 2. Biotech rule
     expect(en['eligibility.rules.biotech']).toBe(
-      'Minimum 60% aggregate in PCM / PMB / PCB / PCB or Z (Botany or Zoology). Students who have not studied Mathematics in 10+2 must undertake an additional 4-credit course in Mathematics during the first year.'
+      'For B.Tech Programs offered by the Department of Biotechnology, Department of Genetic Engineering and Department of Biomedical Engineering \u2013 minimum 60% aggregate in PCM / PMB/PCB/PCB or Z (Botany or Zoology). Students admitted for the above programs and who have not studied Mathematics as one of the major subjects in 10+2 must undertake an additional 4-credit course in Mathematics during the First Year of B.Tech.'
     );
     expect(RULE_TEXT_BIOTECH).toBe(en['eligibility.rules.biotech']);
 
@@ -96,6 +96,15 @@ describe('Stage E-1: i18n String Extraction and Byte-Identical English Content',
     );
     expect(en['eligibility.breakdown.rule4_text']).toBe(
       'Admission is through the national-level entrance exam SRMJEEE (UG).'
+    );
+
+    // 7. Informational checker notes and capture note
+    expect(en['eligibility.rules.capture_note']).toBe("Text re-read on SRM's page 31 Oct 2026");
+    expect(en['eligibility.notes.chemistry_bridge']).toBe(
+      'Students who have not studied Chemistry in +2 level should undergo a bridge course in Chemistry in the first year.'
+    );
+    expect(en['eligibility.notes.nios_schooling']).toBe(
+      'Students who have completed 10+2 under NIOS must have completed the 10th standard from regular schooling or vice versa.'
     );
   });
 
@@ -165,7 +174,7 @@ describe('Stage E-1: i18n String Extraction and Byte-Identical English Content',
     }
 
     expect(verbatimCount).toBe(2);
-    expect(translatableCount).toBe(149);
+    expect(translatableCount).toBe(153);
     expect(verbatimCount + translatableCount).toBe(Object.keys(en).length);
   });
 

@@ -1,0 +1,237 @@
+{
+  "home": {
+    "runs": [
+      {
+        "run": 1,
+        "performance": 100,
+        "accessibility": 100,
+        "best_practices": 100,
+        "seo": 100,
+        "fcp_ms": 1207,
+        "lcp_ms": 1207,
+        "tbt_ms": 0,
+        "cls": 0
+      },
+      {
+        "run": 2,
+        "performance": 100,
+        "accessibility": 100,
+        "best_practices": 100,
+        "seo": 100,
+        "fcp_ms": 1206,
+        "lcp_ms": 1206,
+        "tbt_ms": 0,
+        "cls": 0
+      },
+      {
+        "run": 3,
+        "performance": 100,
+        "accessibility": 100,
+        "best_practices": 100,
+        "seo": 100,
+        "fcp_ms": 1249,
+        "lcp_ms": 1249,
+        "tbt_ms": 0,
+        "cls": 0
+      }
+    ],
+    "median": {
+      "performance": 100,
+      "accessibility": 100,
+      "best_practices": 100,
+      "seo": 100,
+      "fcp_ms": 1207,
+      "lcp_ms": 1207,
+      "tbt_ms": 0,
+      "cls": 0
+    }
+  },
+  "compare": {
+    "runs": [
+      {
+        "run": 1,
+        "performance": 100,
+        "accessibility": 100,
+        "best_practices": 100,
+        "seo": 100,
+        "fcp_ms": 1204,
+        "lcp_ms": 1204,
+        "tbt_ms": 0,
+        "cls": 0
+      },
+      {
+        "run": 2,
+        "performance": 100,
+        "accessibility": 100,
+        "best_practices": 100,
+        "seo": 100,
+        "fcp_ms": 1204,
+        "lcp_ms": 1204,
+        "tbt_ms": 0,
+        "cls": 0
+      },
+      {
+        "run": 3,
+        "performance": 100,
+        "accessibility": 100,
+        "best_practices": 100,
+        "seo": 100,
+        "fcp_ms": 1205,
+        "lcp_ms": 1355,
+        "tbt_ms": 0,
+        "cls": 0
+      }
+    ],
+    "median": {
+      "performance": 100,
+      "accessibility": 100,
+      "best_practices": 100,
+      "seo": 100,
+      "fcp_ms": 1204,
+      "lcp_ms": 1204,
+      "tbt_ms": 0,
+      "cls": 0
+    }
+  },
+  "eligibility": {
+    "runs": [
+      {
+        "run": 1,
+        "performance": 100,
+        "accessibility": 100,
+        "best_practices": 100,
+        "seo": 100,
+        "fcp_ms": 1052,
+        "lcp_ms": 1052,
+        "tbt_ms": 0,
+        "cls": 0
+      },
+      {
+        "run": 2,
+        "performance": 100,
+        "accessibility": 100,
+        "best_practices": 100,
+        "seo": 100,
+        "fcp_ms": 1053,
+        "lcp_ms": 1355,
+        "tbt_ms": 0,
+        "cls": 0
+      },
+      {
+        "run": 3,
+        "performance": 100,
+        "accessibility": 100,
+        "best_practices": 100,
+        "seo": 100,
+        "fcp_ms": 1053,
+        "lcp_ms": 1053,
+        "tbt_ms": 0,
+        "cls": 0
+      }
+    ],
+    "median": {
+      "performance": 100,
+      "accessibility": 100,
+      "best_practices": 100,
+      "seo": 100,
+      "fcp_ms": 1053,
+      "lcp_ms": 1053,
+      "tbt_ms": 0,
+      "cls": 0
+    }
+  },
+  "apply": {
+    "runs": [
+      {
+        "run": 1,
+        "performance": 100,
+        "accessibility": 100,
+        "best_practices": 100,
+        "seo": 100,
+        "fcp_ms": 1053,
+        "lcp_ms": 1053,
+        "tbt_ms": 0,
+        "cls": 0
+      },
+      {
+        "run": 2,
+        "performance": 100,
+        "accessibility": 100,
+        "best_practices": 100,
+        "seo": 100,
+        "fcp_ms": 1053,
+        "lcp_ms": 1053,
+        "tbt_ms": 0,
+        "cls": 0
+      },
+      {
+        "run": 3,
+        "performance": 100,
+        "accessibility": 100,
+        "best_practices": 100,
+        "seo": 100,
+        "fcp_ms": 1052,
+        "lcp_ms": 1052,
+        "tbt_ms": 0,
+        "cls": 0
+      }
+    ],
+    "median": {
+      "performance": 100,
+      "accessibility": 100,
+      "best_practices": 100,
+      "seo": 100,
+      "fcp_ms": 1053,
+      "lcp_ms": 1053,
+      "tbt_ms": 0,
+      "cls": 0
+    }
+  },
+  "compare_with_ids": {
+    "runs": [
+      {
+        "run": 1,
+        "performance": 100,
+        "accessibility": 100,
+        "best_practices": 100,
+        "seo": 100,
+        "fcp_ms": 1204,
+        "lcp_ms": 1204,
+        "tbt_ms": 0,
+        "cls": 0
+      },
+      {
+        "run": 2,
+        "performance": 100,
+        "accessibility": 100,
+        "best_practices": 100,
+        "seo": 100,
+        "fcp_ms": 1205,
+        "lcp_ms": 1355,
+        "tbt_ms": 0,
+        "cls": 0
+      },
+      {
+        "run": 3,
+        "performance": 100,
+        "accessibility": 100,
+        "best_practices": 100,
+        "seo": 100,
+        "fcp_ms": 1204,
+        "lcp_ms": 1354,
+        "tbt_ms": 0,
+        "cls": 0
+      }
+    ],
+    "median": {
+      "performance": 100,
+      "accessibility": 100,
+      "best_practices": 100,
+      "seo": 100,
+      "fcp_ms": 1204,
+      "lcp_ms": 1354,
+      "tbt_ms": 0,
+      "cls": 0
+    }
+  }
+}

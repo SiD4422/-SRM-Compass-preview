@@ -131,7 +131,7 @@ const stories = getAllStories();
   }
   .stories-list-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
     gap: 24px;
   }
   .story-list-card {
@@ -141,6 +141,8 @@ const stories = getAllStories();
     padding: 22px;
     display: flex;
     flex-direction: column;
+    max-width: 100%;
+    min-width: 0;
     transition: transform 0.15s ease, box-shadow 0.15s ease;
   }
   .story-list-card:hover {

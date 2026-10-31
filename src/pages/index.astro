@@ -605,9 +605,13 @@ function countToWidth(count: number): number {
   /* Hero wrapper tightening */
   .hero-grid-wrapper {
     display: grid;
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: 28px;
     align-items: center;
+  }
+  .hero-main-content {
+    min-width: 0;
+    max-width: 100%;
   }
   @media (min-width: 860px) {
     .hero-grid-wrapper {
@@ -947,7 +951,7 @@ function countToWidth(count: number): number {
   /* Campus Data Graphics (Stage C) */
   .campus-graphics-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
     gap: 24px;
     margin-top: 32px;
   }
@@ -959,6 +963,8 @@ function countToWidth(count: number): number {
     padding: 24px;
     display: flex;
     flex-direction: column;
+    max-width: 100%;
+    min-width: 0;
   }
   .graphic-header {
     margin-bottom: 16px;

@@ -70,7 +70,7 @@ describe('Stage E-2: Tamil Beta, Dual-Build Flag, and Localized Layout', () => {
 
     // 5. Wrap each verbatim SRM English text on Tamil pages in lang="en"
     expect(eligHtml).toMatch(/<div[^>]*lang="en"[^>]*>[\s\S]*?Applicant should have passed[\s\S]*?<\/div>/);
-    expect(eligHtml).toMatch(/<div[^>]*lang="en"[^>]*>[\s\S]*?Minimum 60% aggregate in PCM[\s\S]*?<\/div>/);
+    expect(eligHtml).toMatch(/<div[^>]*lang="en"[^>]*>[\s\S]*?For B\.Tech Programs offered by the Department of Biotechnology[\s\S]*?<\/div>/);
 
     // 6. Check short Tamil summary beside verbatim rules
     expect(eligHtml).toContain('எங்கள் சுருக்கம்; SRM-இன் ஆங்கில உரையே இறுதியானது');

@@ -56,7 +56,8 @@ export interface EligibilityInput {
   thirdSubject?: GeneralElectiveSubject | string;
   subjectCombination?: BiotechSubjectCombination | string;
   subjects?: string[]; // Optional explicit list of subjects
-  aggregatePercent: number; // 0 to 100
+  aggregatePercent: number | string; // 0 to 100
+  aggregateRaw?: string; // Optional raw string before numeric conversion
 }
 
 export type EligibilityStatus =
@@ -85,6 +86,7 @@ export interface EligibilityResult {
   };
   hasMathNote: boolean;
   mathNote?: string;
+  informationalNotes?: string[];
   disclaimer: string;
   privacyNotice: string;
 }
@@ -100,10 +102,18 @@ export const NON_RESIDENT_PORTAL_URL =
   'https://intlapplications.srmist.edu.in/international-application-2026';
 
 export const RULE_TEXT_GENERAL =
-  'Applicant should have passed in Higher Secondary examination (10+2 pattern) or appearing in Higher Secondary examination in the current academic year with a minimum of 60% aggregate (3 subjects) in Physics (mandatory), Mathematics (mandatory) and at least one of Chemistry / Biotechnology / Biology / Computer Science / Information Technology / Informatics Practices / Engineering Graphics / Botany and Zoology.';
+  'Applicant should have passed in Higher secondary examination (10 +2 pattern) or appearing in Higher Secondary examination in the current academic year with a minimum of 60% aggregate (3 subjects) in Physics (mandatory), Mathematics (mandatory) and at least one of Chemistry / Biotechnology / Biology / Computer Science / Information Technology / Informatics Practices / Engineering Graphics / Botany and Zoology as major subjects in regular subjects in regular stream from any board within India, CBSE, ISCE, IB or NIOS.';
 
 export const RULE_TEXT_BIOTECH =
-  'Minimum 60% aggregate in PCM / PMB / PCB / PCB or Z (Botany or Zoology). Students who have not studied Mathematics in 10+2 must undertake an additional 4-credit course in Mathematics during the first year.';
+  'For B.Tech Programs offered by the Department of Biotechnology, Department of Genetic Engineering and Department of Biomedical Engineering \u2013 minimum 60% aggregate in PCM / PMB/PCB/PCB or Z (Botany or Zoology). Students admitted for the above programs and who have not studied Mathematics as one of the major subjects in 10+2 must undertake an additional 4-credit course in Mathematics during the First Year of B.Tech.';
+
+export const CHEMISTRY_BRIDGE_NOTE =
+  'Students who have not studied Chemistry in +2 level should undergo a bridge course in Chemistry in the first year.';
+
+export const NIOS_SCHOOLING_NOTE =
+  'Students who have completed 10+2 under NIOS must have completed the 10th standard from regular schooling or vice versa.';
+
+export const CAPTURE_NOTE = "Text re-read on SRM's page 31 Oct 2026";
 
 export const NATIONALITY_RULE = 'Resident Indian only.';
 
@@ -180,19 +190,43 @@ export function checkEligibility(input: EligibilityInput): EligibilityResult {
     examYear?: string;
   } = {};
 
+  // Decimal format validation: accept only digits with an optional single decimal point (/^\d+(\.\d+)?$/)
+  let rawStr = '';
+  if (input.aggregateRaw !== undefined) {
+    rawStr = String(input.aggregateRaw);
+  } else if (typeof input.aggregatePercent === 'string') {
+    rawStr = input.aggregatePercent;
+  }
+
+  let numericAggregate = NaN;
+
+  if (rawStr !== '') {
+    if (!/^\d+(\.\d+)?$/.test(rawStr)) {
+      fieldErrors.aggregate =
+        'Aggregate percentage must contain only digits with an optional single decimal point.';
+    } else {
+      numericAggregate = Number(rawStr);
+    }
+  } else if (typeof input.aggregatePercent === 'number') {
+    numericAggregate = input.aggregatePercent;
+  }
+
   // Aggregate validation: finite number, 0 to 100
   if (
     input.aggregatePercent === undefined ||
     input.aggregatePercent === null ||
-    typeof input.aggregatePercent !== 'number' ||
-    !Number.isFinite(input.aggregatePercent) ||
-    Number.isNaN(input.aggregatePercent)
+    (typeof input.aggregatePercent === 'string' && input.aggregatePercent.trim() === '')
   ) {
     fieldErrors.aggregate =
       'Aggregate percentage must be a valid finite number.';
-  } else if (input.aggregatePercent < 0 || input.aggregatePercent > 100) {
-    fieldErrors.aggregate =
-      'Aggregate percentage must be between 0.0 and 100.0.';
+  } else if (!fieldErrors.aggregate) {
+    if (!Number.isFinite(numericAggregate) || Number.isNaN(numericAggregate)) {
+      fieldErrors.aggregate =
+        'Aggregate percentage must be a valid finite number.';
+    } else if (numericAggregate < 0 || numericAggregate > 100) {
+      fieldErrors.aggregate =
+        'Aggregate percentage must be between 0.0 and 100.0.';
+    }
   }
 
   // Date of birth validation: required and real calendar date
@@ -220,6 +254,34 @@ export function checkEligibility(input: EligibilityInput): EligibilityResult {
     };
   }
 
+  // Informational notes (never change a verdict)
+  const informationalNotes: string[] = [];
+
+  // If the third subject is not Chemistry, show SRM's note
+  const thirdSub = (input.thirdSubject || '').trim();
+  if (!isBiotech) {
+    if (thirdSub && thirdSub.toLowerCase() !== 'chemistry') {
+      informationalNotes.push(CHEMISTRY_BRIDGE_NOTE);
+    }
+  } else {
+    const combo = (input.subjectCombination || '').toUpperCase().trim();
+    if (
+      combo === 'PMB' ||
+      combo === 'Z' ||
+      combo === 'Z (BOTANY OR ZOOLOGY)' ||
+      combo === 'BOTANY AND ZOOLOGY' ||
+      (thirdSub && thirdSub.toLowerCase() !== 'chemistry')
+    ) {
+      informationalNotes.push(CHEMISTRY_BRIDGE_NOTE);
+    }
+  }
+
+  // If the board is NIOS, show SRM's note
+  const normalizedBoard = (input.qualifyingBoard || '').trim();
+  if (normalizedBoard.toUpperCase() === 'NIOS') {
+    informationalNotes.push(NIOS_SCHOOLING_NOTE);
+  }
+
   // 2. Check for "Check SRM's page" conditions:
   // Non-resident Indian, IB, GCE A-level
   if (!input.residentIndian) {
@@ -239,12 +301,12 @@ export function checkEligibility(input: EligibilityInput): EligibilityResult {
         captureDate: '2026-10-26'
       },
       hasMathNote: false,
+      informationalNotes: informationalNotes.length > 0 ? informationalNotes : undefined,
       disclaimer: MANDATORY_DISCLAIMER,
       privacyNotice: PRIVACY_NOTICE
     };
   }
 
-  const normalizedBoard = (input.qualifyingBoard || '').trim();
   if (normalizedBoard === 'IB' || normalizedBoard === 'GCE A-level') {
     return {
       status: 'check_srm_page',
@@ -257,6 +319,7 @@ export function checkEligibility(input: EligibilityInput): EligibilityResult {
       ageRuleText: AGE_RULE,
       sourceStamp: OFFICIAL_SOURCE,
       hasMathNote: false,
+      informationalNotes: informationalNotes.length > 0 ? informationalNotes : undefined,
       disclaimer: MANDATORY_DISCLAIMER,
       privacyNotice: PRIVACY_NOTICE
     };
@@ -266,9 +329,9 @@ export function checkEligibility(input: EligibilityInput): EligibilityResult {
   const failedRules: string[] = [];
 
   // Marks check: DO NOT ROUND; compare directly to 60
-  if (input.aggregatePercent < 60) {
+  if (numericAggregate < 60) {
     failedRules.push(
-      `Aggregate percentage: ${input.aggregatePercent}% is below SRM's minimum required threshold of 60.0% across the 3 qualifying subjects.`
+      `Aggregate percentage: ${numericAggregate}% is below SRM's minimum required threshold of 60.0% across the 3 qualifying subjects.`
     );
   }
 
@@ -334,6 +397,7 @@ export function checkEligibility(input: EligibilityInput): EligibilityResult {
       ageRuleText: AGE_RULE,
       sourceStamp: OFFICIAL_SOURCE,
       hasMathNote: false,
+      informationalNotes: informationalNotes.length > 0 ? informationalNotes : undefined,
       disclaimer: MANDATORY_DISCLAIMER,
       privacyNotice: PRIVACY_NOTICE
     };
@@ -349,7 +413,7 @@ export function checkEligibility(input: EligibilityInput): EligibilityResult {
     status: 'meets',
     headline: "You meet SRM's published minimum criteria",
     reasons: [
-      `Your aggregate score of ${input.aggregatePercent}%, qualifying board (${normalizedBoard}), status (${statusNote}), and date of birth satisfy SRM's published minimum thresholds.`
+      `Your aggregate score of ${numericAggregate}%, qualifying board (${normalizedBoard}), status (${statusNote}), and date of birth satisfy SRM's published minimum thresholds.`
     ],
     ruleText,
     nationalityText: NATIONALITY_RULE,
@@ -357,6 +421,7 @@ export function checkEligibility(input: EligibilityInput): EligibilityResult {
     sourceStamp: OFFICIAL_SOURCE,
     hasMathNote: requiresMathBridge,
     mathNote: requiresMathBridge ? ADDITIONAL_MATH_COURSE_NOTE : undefined,
+    informationalNotes: informationalNotes.length > 0 ? informationalNotes : undefined,
     disclaimer: MANDATORY_DISCLAIMER,
     privacyNotice: PRIVACY_NOTICE
   };
@@ -426,6 +491,17 @@ export function renderEligibilityResult(result: EligibilityResult): string {
     </div>`
       : '';
 
+  const infoNotesBlock =
+    result.informationalNotes && result.informationalNotes.length > 0
+      ? `
+    <div class="result-info-notes" role="note" aria-label="Important Information Notes">
+      <strong>Important Notes:</strong>
+      <ul class="info-notes-list">
+        ${result.informationalNotes.map((n) => `<li>${escapeHtml(n)}</li>`).join('')}
+      </ul>
+    </div>`
+      : '';
+
   return `
     <div class="result-card ${statusClass}">
       <div class="result-header">
@@ -438,6 +514,7 @@ export function renderEligibilityResult(result: EligibilityResult): string {
       </ul>
 
       ${mathNoteBlock}
+      ${infoNotesBlock}
 
       <div class="result-rule">
         <h4>SRM's rule, summarised</h4>
@@ -561,7 +638,8 @@ export function initEligibilityChecker(): void {
       hasMathematics,
       thirdSubject,
       subjectCombination: subjectCombo,
-      aggregatePercent
+      aggregatePercent,
+      aggregateRaw: aggregateStr
     };
 
     const result = checkEligibility(input);

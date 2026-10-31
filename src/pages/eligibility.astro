@@ -207,6 +207,7 @@ const methodHtml = `<code>method="post"</code>`;
       <!-- 2026-2027 Rule Breakdown Card -->
       <div class="card">
         <h2>{t('eligibility.breakdown.heading')}</h2>
+        <p class="capture-note" style="margin-top: -6px; margin-bottom: 16px; font-size: 0.88rem; color: var(--muted);">{t('eligibility.rules.capture_note')}</p>
         <ol class="st">
           <li>
             <strong>{t('eligibility.breakdown.rule1_label')}</strong> {t('eligibility.rules.general')}
@@ -410,6 +411,14 @@ const methodHtml = `<code>method="post"</code>`;
     cursor: pointer;
     font-size: 0.95rem;
     font-weight: 500;
+    min-height: 44px;
+    user-select: none;
+  }
+
+  .subject-checkbox-label input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
   }
 
   .checker-actions {

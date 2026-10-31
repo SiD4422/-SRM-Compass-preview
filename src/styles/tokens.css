@@ -241,6 +241,12 @@ a:focus-visible, summary:focus-visible, button:focus-visible {
   width: 100%;
 }
 
+@media (max-width: 340px) {
+  :root {
+    --container-padding: 12px;
+  }
+}
+
 /* Header & Nav */
 header.top {
   background: #0B2A4A;
@@ -339,6 +345,9 @@ header.top .w.header-bar {
   }
   .mobile-nav-details {
     display: block;
+    border-top: none !important;
+    margin-top: 0 !important;
+    padding-top: 0 !important;
   }
   .mobile-nav-btn {
     display: inline-flex;
@@ -605,8 +614,13 @@ h3 {
   line-height: 1.3;
 }
 
-.grp {
+.grp,
+.table-container {
   margin: 0 0 36px;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 /* Tables */
@@ -860,7 +874,7 @@ th {
   margin-bottom: 0;
 }
 
-details {
+details:not(.mobile-nav-details) {
   margin-top: 12px;
   border-top: 1px dashed var(--rule);
   padding-top: 12px;
@@ -975,6 +989,19 @@ footer p {
   display: flex;
   gap: 8px;
   align-items: stretch;
+}
+
+@media (max-width: 360px) {
+  .search-input-wrap {
+    flex-direction: column;
+  }
+  .search-input-wrap input[type="search"] {
+    width: 100%;
+    min-width: 0;
+  }
+  .search-input-wrap button {
+    width: 100%;
+  }
 }
 
 .search-input-wrap input[type="search"],
@@ -1110,7 +1137,8 @@ input[type="checkbox"]:focus-visible {
   margin-top: 4px;
 }
 
-.checkbox-label {
+.checkbox-label,
+.subject-checkbox-label {
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -1120,7 +1148,8 @@ input[type="checkbox"]:focus-visible {
   user-select: none;
 }
 
-.checkbox-label input[type="checkbox"] {
+.checkbox-label input[type="checkbox"],
+.subject-checkbox-label input[type="checkbox"] {
   width: 20px;
   height: 20px;
   accent-color: #0C4DA2;

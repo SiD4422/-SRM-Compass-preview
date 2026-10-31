@@ -165,6 +165,7 @@ Single Machine Lighthouse Benchmarks: All Lighthouse runs were executed on a sin
 Prototype Status & Usability Testing: SRM Compass is an independent prototype design entry. While automated Axe-core accessibility (0 violations) and keyboard navigation audits are strictly verified, extensive 5-person real-user lab usability trials remain to be conducted by human evaluators.
 Sourced vs. Verified Tiers: Data points are strictly partitioned into verified (mathematically validated from official tables) and sourced (as published by SRM; not independently checked).
 Admissions Cycle Scope: All data was captured on 26 October 2026 for the 2026-27 admission cycle. SRMIST retains administrative authority to update fees, seat capacities, and eligibility rules for 2027 entry.
+Rule Text Correction: The earlier rule text was abridged and was corrected on 31 Oct 2026.
 Part 6
 Sources list (S1 to S3, B1 to B3, C1 to C4)
 

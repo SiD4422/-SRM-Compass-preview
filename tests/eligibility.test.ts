@@ -10,7 +10,10 @@ import {
   ADDITIONAL_MATH_COURSE_NOTE,
   OFFICIAL_SOURCE,
   NON_RESIDENT_PORTAL_URL,
-  MANDATORY_DISCLAIMER
+  MANDATORY_DISCLAIMER,
+  CHEMISTRY_BRIDGE_NOTE,
+  NIOS_SCHOOLING_NOTE,
+  CAPTURE_NOTE
 } from '../src/lib/eligibility';
 
 describe('Stage M5-fix: B.Tech Eligibility Evaluation Engine (src/lib/eligibility.ts)', () => {
@@ -95,6 +98,98 @@ describe('Stage M5-fix: B.Tech Eligibility Evaluation Engine (src/lib/eligibilit
     });
     expect(resultNeg1.status).toBe('error');
     expect(resultNeg1.fieldErrors?.aggregate).toBeDefined();
+  });
+
+  // Stage G Task 3: Reject non-decimal formats such as 1e2 or 6e1
+  it('rejects non-decimal formats (e.g. 1e2, 6e1, 0x10, abc) and accepts only digits with optional single decimal point', () => {
+    const nonDecimalInputs = ['1e2', '6e1', '0x10', '1E2', '60%', '1.2.3', 'abc', ' 60 ', '60.0.0'];
+    for (const val of nonDecimalInputs) {
+      const res = checkEligibility({
+        ...baseInput,
+        aggregatePercent: val as any
+      });
+      expect(res.status).toBe('error');
+      expect(res.fieldErrors?.aggregate).toBe(
+        'Aggregate percentage must contain only digits with an optional single decimal point.'
+      );
+
+      // Also when passed via aggregateRaw
+      const resRaw = checkEligibility({
+        ...baseInput,
+        aggregatePercent: 100,
+        aggregateRaw: val
+      });
+      expect(resRaw.status).toBe('error');
+      expect(resRaw.fieldErrors?.aggregate).toBe(
+        'Aggregate percentage must contain only digits with an optional single decimal point.'
+      );
+    }
+
+    // Accepts valid decimal formats
+    const validDecimals = ['60', '60.0', '59.95', '100', '0', '75.5'];
+    for (const val of validDecimals) {
+      const res = checkEligibility({
+        ...baseInput,
+        aggregatePercent: val as any
+      });
+      expect(res.status).not.toBe('error');
+      expect(res.fieldErrors?.aggregate).toBeUndefined();
+    }
+  });
+
+  // Stage G Task 2: Checker notes (informational, never change a verdict)
+  describe('Stage G Task 2: Informational Checker Notes', () => {
+    it('shows Chemistry bridge course note when third subject is not Chemistry, without changing verdict', () => {
+      // 1. General programme with third subject Computer Science
+      const resCS = checkEligibility({
+        ...baseInput,
+        thirdSubject: 'Computer Science',
+        aggregatePercent: 75.0
+      });
+      expect(resCS.status).toBe('meets');
+      expect(resCS.headline).toBe("You meet SRM's published minimum criteria");
+      expect(resCS.informationalNotes).toContain(CHEMISTRY_BRIDGE_NOTE);
+
+      // 2. Does not meet marks, but still gets informational note without altering verdict
+      const resFail = checkEligibility({
+        ...baseInput,
+        thirdSubject: 'Biology',
+        aggregatePercent: 45.0
+      });
+      expect(resFail.status).toBe('does_not_meet');
+      expect(resFail.informationalNotes).toContain(CHEMISTRY_BRIDGE_NOTE);
+
+      // 3. Chemistry studied -> no bridge note
+      const resChem = checkEligibility({
+        ...baseInput,
+        thirdSubject: 'Chemistry',
+        aggregatePercent: 75.0
+      });
+      expect(resChem.informationalNotes).toBeUndefined();
+    });
+
+    it('shows NIOS schooling note when board is NIOS, without changing verdict', () => {
+      const resNIOS = checkEligibility({
+        ...baseInput,
+        qualifyingBoard: 'NIOS',
+        aggregatePercent: 80.0
+      });
+      expect(resNIOS.status).toBe('meets');
+      expect(resNIOS.informationalNotes).toContain(NIOS_SCHOOLING_NOTE);
+    });
+
+    it('shows both notes when third subject is not Chemistry and board is NIOS', () => {
+      const resBoth = checkEligibility({
+        ...baseInput,
+        qualifyingBoard: 'NIOS',
+        thirdSubject: 'Information Technology',
+        aggregatePercent: 80.0
+      });
+      expect(resBoth.status).toBe('meets');
+      expect(resBoth.informationalNotes).toHaveLength(2);
+      expect(resBoth.informationalNotes).toContain(CHEMISTRY_BRIDGE_NOTE);
+      expect(resBoth.informationalNotes).toContain(NIOS_SCHOOLING_NOTE);
+    });
   });
 
   // 5. Hand-written Test: no Physics = does not meet

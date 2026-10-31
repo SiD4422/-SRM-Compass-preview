@@ -86,16 +86,19 @@ const minimalOfferings: CompareOffering[] = offeringsData.map((o) => ({
         </div>
       </noscript>
 
-      <!-- Container where comparison grid/table is mounted -->
-      <div id="compare-container"></div>
+      <!-- Stage wrapper reserving vertical space so the footer never shifts -->
+      <div id="compare-app-stage" class="compare-app-stage">
+        <!-- Container where comparison grid/table is mounted -->
+        <div id="compare-container"></div>
 
-      <!-- Empty state -->
-      <div id="compare-empty" class="empty-state" hidden>
-        <div class="card empty-card">
-          <h2>No options selected for comparison</h2>
-          <p>You can select up to 3 options to compare fees, four-year cost estimates, seats, and departments side by side.</p>
-          <div class="empty-actions">
-            <a href="/programmes" class="btn p">Browse all 106 options</a>
+        <!-- Empty state (rendered in SSR so footer never shifts on mount) -->
+        <div id="compare-empty" class="empty-state">
+          <div class="card empty-card">
+            <h2>No options selected for comparison</h2>
+            <p>You can select up to 3 options to compare fees, four-year cost estimates, seats, and departments side by side.</p>
+            <div class="empty-actions">
+              <a href="/programmes" class="btn p">Browse all 106 options</a>
+            </div>
           </div>
         </div>
       </div>
@@ -113,6 +116,10 @@ const minimalOfferings: CompareOffering[] = offeringsData.map((o) => ({
 </Layout>
 
 <style>
+  .compare-app-stage {
+    min-height: 520px;
+  }
+
   .compare-page {
     padding-top: 24px;
     padding-bottom: 64px;

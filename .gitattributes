@@ -1,8 +1,8 @@
-# Preserve exact byte-for-byte cryptographic hashes across all operating systems
+# Line ending rules for cryptographic hash validation across all platforms
 * text=auto
 
-# JSON data files must strictly use LF
+# JSON data files must strictly use LF line endings
 *.json text eol=lf
 
-# Captured raw source CSV is preserved byte-for-byte as originally captured
-data/source/programs_offered_table_all_254_rows.csv -text
+# Captured raw source CSV must strictly preserve CRLF line endings to match its cryptographic baseline
+data/source/programs_offered_table_all_254_rows.csv text eol=crlf

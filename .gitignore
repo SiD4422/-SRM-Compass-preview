@@ -17,3 +17,12 @@ pnpm-debug.log*
 
 # macOS-specific files
 .DS_Store
+
+# audit large files & run outputs
+audit/raw/
+audit/shots/
+audit/final/
+audit/*.zip
+audit/*.pdf
+audit/AUDIT_REPORT.md
+*.zip

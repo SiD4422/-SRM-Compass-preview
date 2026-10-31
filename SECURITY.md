@@ -1,16 +1,14 @@
-# Security Policy & Vulnerability Audit Analysis
+# Security Policy & Dependency Audit Analysis
 
 ## Overview
 
-SRM Compass is architected as an offline-first, pure Static Site Generated (SSG) web application (`output: "static"` in `astro.config.mjs`). It is deployed to Cloudflare Workers / Cloudflare Pages as pre-rendered static HTML, CSS, JavaScript, and SVG assets. It has no backend API, no Node.js server in production, and accepts no user file uploads.
+SRM Compass is an offline-first, pure Static Site Generated (SSG) web application (`output: "static"` in `astro.config.mjs`). It is deployed to Cloudflare Pages as pre-rendered static HTML, CSS, JavaScript, and SVG assets. It has no backend API, no Node.js runtime in production, and accepts no user file uploads.
 
 ---
 
-## Dependency Vulnerability Audit (`npm audit`)
+## Dependency Audit (`npm audit`)
 
-As part of the Stage A Security Verification, `npm audit` was evaluated. Eight vulnerability advisories were identified in build-time and development tooling. A dedicated upgrade branch (`deps-upgrade`) was tested with major version bumps (`astro@7.4.4`, `vitest@5.0.5`). While all 166 automated tests passed, the major framework upgrade altered HTML rendering semantics (whitespace minification, asset bundle hashes, internal data attributes) across all 62 static pages. Per project policy, zero unintended HTML churn is permitted.
-
-Below is an engineering analysis detailing each advisory and why it poses **zero threat** to the static production deployment:
+As part of security auditing, `npm audit` was evaluated. Eight vulnerability advisories exist in build-time and development tooling:
 
 ### 1. Vitest & Tinypool Tooling
 - **Advisories:**
@@ -18,8 +16,8 @@ Below is an engineering analysis detailing each advisory and why it poses **zero
   - `GHSA-qxg6-89mg-rqv8` (Code injection via manual mock registration)
   - `GHSA-5gmw-xhrv-c9v3` (Tinypool prototype pollution in worker options)
   - `GHSA-85c8-ppgw-ccpr` (Tinypool prototype pollution in `run()` options)
-- **Classification:** Development / CI toolchain only (`devDependencies`).
-- **Why it does not affect production:** Vitest and Tinypool run strictly during local testing (`npm test`) and in CI pipelines. They are never compiled, packaged, or shipped in the production `dist/` directory. Zero lines of Vitest or Tinypool code are executed by Cloudflare or served to website visitors.
+- **Classification:** Development and CI toolchain only (`devDependencies`).
+- **Production Assessment:** Vitest and Tinypool run only during local testing (`npm test`) and in CI pipelines. They are not bundled into `dist/`. No lines of Vitest or Tinypool code execute at the edge or run in user browsers.
 
 ### 2. Astro Framework Core
 - **Advisories:**
@@ -32,45 +30,53 @@ Below is an engineering analysis detailing each advisory and why it poses **zero
   - `GHSA-26w7-cxv4-gfx2` (Remote code execution through AVIF image optimization)
   - `GHSA-376h-93r7-7g6f` (Authorization bypass when stripping base URL)
   - `GHSA-98hj-9722-w3j8` (XSS via unescaped script/style in JSX/MDX)
-- **Classification:** Server-side runtime & SSR-specific features.
-- **Why it does not affect production:**
-  1. **Pure Static SSG:** SRM Compass operates in 100% static mode. There is no active Node.js server, no Astro SSR runtime adapter, and no server-side route handling in production.
-  2. **No Server Islands:** The application does not use Astro Server Islands (`server:defer`) or server-side encrypted cookies/parameters.
-  3. **No Dynamic Prop Reflection:** Dynamic user input is never interpolated into template prop names, component slot names, or `define:vars`. All templates use static props or local JSON datasets (`data/offerings.json`, `data/sources.json`, `data/programmes.json`).
-  4. **No User Media Ingestion:** No user-submitted AVIF or external image assets are processed. All site media consist of audited, version-controlled static SVGs and images.
-  5. **Client-Side Defense-in-Depth:** All dynamic client features (Search, Campus Filters, Compare Matrix, Eligibility Calculator) execute in the browser using explicit sanitization (`escapeHtml()` in `src/lib/compare.ts` and `textContent` in `src/lib/eligibility.ts`).
+- **Classification:** Server-side runtime and dynamic SSR features.
+- **Production Assessment:**
+  1. **Static Pre-Rendering:** SRM Compass runs in static mode. There is no active Node.js server, no Astro SSR adapter, and no dynamic server-side route handling in production.
+  2. **No Server Islands:** The application does not use server islands or server-side cookies.
+  3. **No Dynamic Prop Reflection:** Dynamic user input is never interpolated into template prop names or component slot names.
+  4. **No External Media Processing:** No user-submitted image assets are processed.
+  5. **Client Sanitization:** Client utilities run in the browser using explicit sanitization (`escapeHtml()` in `src/lib/compare.ts` and `textContent` in `src/lib/eligibility.ts`).
 
-### 3. esbuild Dev Server
+### 3. Development Server (`esbuild`)
 - **Advisories:** `GHSA-g7r4-m6w7-qqqr` (Arbitrary file read on Windows development server).
 - **Classification:** Local development web server.
-- **Why it does not affect production:** This vulnerability only affects `astro dev` running locally on a developer's machine when exposed to untrusted local networks. The production build uses pre-compiled static files hosted on Cloudflare's global edge network.
+- **Production Assessment:** Affects `astro dev` on local machines when exposed to local networks. The production build serves static files from the edge.
 
 ### 4. Sharp & Image Dependencies
 - **Advisories:**
   - `CVE-2026-33327`, `CVE-2026-33328`, `CVE-2026-35590`, `CVE-2026-35591` (libvips)
   - `GHSA-g89c-p67h-r497`, `GHSA-2jg2-4ch7-h545` (libheif)
   - `CVE-2026-96889` (librsvg)
-- **Classification:** Image transformation engine.
-- **Why it does not affect production:** Sharp is executed at build time only. SRM Compass does not provide user image upload capabilities or dynamic image resizing endpoints.
+- **Classification:** Build-time image transformation.
+- **Production Assessment:** Sharp executes during build time only. The site provides no image upload or dynamic image resizing endpoints.
 
-### 5. Zod Schema Validation
-- **Advisories:** `GHSA-mrhx-c7xc-m3w5` (Memory exhaustion via oversized collections).
+### 5. Schema Validation (`zod`)
+- **Advisories:** `GHSA-mrhx-c7xc-m3w5` (Memory consumption via oversized collections).
 - **Classification:** Schema parsing library.
-- **Why it does not affect production:** Zod is utilized solely during the build process to validate static content collection configurations. No runtime endpoints accept external JSON payloads.
+- **Production Assessment:** Zod is used during build time to validate static collections. No runtime endpoints accept external JSON payloads.
 
 ---
 
-## Production Security Posture & Hardening
+## Production Security Headers
 
-SRM Compass implements strict production security controls configured via `public/_headers` (deployed to Cloudflare Workers static edge):
+The real headers deployed via `public/_headers`:
 
 ```http
-Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; base-uri 'self'; object-src 'none'; form-action 'self'; frame-ancestors 'none'
-Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
-X-Content-Type-Options: nosniff
-Referrer-Policy: strict-origin-when-cross-origin
-Permissions-Policy: geolocation=(), camera=(), microphone=()
+/*
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; base-uri 'self'; object-src 'none'; form-action 'self'; frame-ancestors 'none';
+  Strict-Transport-Security: max-age=31536000
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: geolocation=(), camera=(), microphone=()
+
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable
 ```
 
-- **Zero-Storage Privacy Model:** The eligibility checker runs 100% client-side without storing data in `localStorage`, `sessionStorage`, cookies, or URL search parameters.
-- **No-JS URL Leakage Protection:** The eligibility form enforces `method="post"` and has its submit button disabled in static HTML until client JavaScript initialises, preventing accidental transmission of academic marks or dates of birth via HTTP GET query parameters.
+---
+
+## Privacy Architecture
+
+- **Client-Side Execution:** The eligibility checker runs in the user's browser without storing data in `localStorage`, `sessionStorage`, cookies, or URL search parameters.
+- **Form Method Isolation:** The eligibility form specifies `method="post"` and keeps the submit button disabled in static HTML until client JavaScript initialises, preventing academic marks or dates of birth from appearing in HTTP GET query parameters.

@@ -442,7 +442,7 @@ export function renderEligibilityResult(result: EligibilityResult): string {
       <div class="result-rule">
         <h4>SRM's rule, summarised</h4>
         <p class="rule-quote">${escapeHtml(result.ruleText || '')}</p>
-        <p class="rule-line"><strong>Nationality:</strong> ${escapeHtml(
+        <p class="rule-line"><strong>Residency:</strong> ${escapeHtml(
           result.nationalityText || NATIONALITY_RULE
         )}</p>
         <p class="rule-line"><strong>Age threshold:</strong> ${escapeHtml(

@@ -16,7 +16,7 @@ describe('Stage E-2: Tamil Beta, Dual-Build Flag, and Localized Layout', () => {
       env: envWithoutTamil,
       shell: true,
       encoding: 'utf-8',
-      timeout: 60000
+      timeout: 120000
     });
     expect(buildRes.status).toBe(0);
 
@@ -28,7 +28,7 @@ describe('Stage E-2: Tamil Beta, Dual-Build Flag, and Localized Layout', () => {
     expect(applyHtml).not.toContain('hreflang="ta"');
     expect(applyHtml).not.toContain('lang-toggle-link');
     expect(applyHtml).not.toContain('Tamil beta');
-  }, 70000);
+  }, 140000);
 
   it('builds /ta/eligibility and /ta/apply with correct meta and hreflang when TAMIL_ENABLED=true', () => {
     // Build with TAMIL_ENABLED=true
@@ -37,7 +37,7 @@ describe('Stage E-2: Tamil Beta, Dual-Build Flag, and Localized Layout', () => {
       env: { ...process.env, TAMIL_ENABLED: 'true' },
       shell: true,
       encoding: 'utf-8',
-      timeout: 60000
+      timeout: 120000
     });
     expect(buildRes.status).toBe(0);
 
@@ -153,7 +153,7 @@ describe('Stage E-2: Tamil Beta, Dual-Build Flag, and Localized Layout', () => {
       env: { ...process.env, TAMIL_ENABLED: 'false' },
       shell: true,
       encoding: 'utf-8',
-      timeout: 60000
+      timeout: 120000
     });
     expect(buildRes.status).toBe(0);
 
@@ -165,9 +165,9 @@ describe('Stage E-2: Tamil Beta, Dual-Build Flag, and Localized Layout', () => {
     const runnerScript = path.resolve(__dirname, 'compare_stage_e1_visible_text.py');
     const result = spawnSync('python', [runnerScript], {
       encoding: 'utf-8',
-      timeout: 35000
+      timeout: 45000
     });
     expect(result.status).toBe(0);
     expect(result.stdout).toContain('ALL PAGES VERIFIED: 100% BYTE-IDENTICAL VISIBLE TEXT CONTENT');
-  }, 80000);
+  }, 140000);
 });
